@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { DayError, addMonths, isDay, wholeMonths } from "../src/day.js";
+import { DayError, addMonths, dayBefore, isDay, wholeMonths } from "../src/day.js";
 
 test("a leap day exists only in a leap year", () =>
 {
@@ -70,4 +70,12 @@ test("counting from something that is not a day is a breakage, not a zero", () =
 {
     expect(() => addMonths("2024-02-30", 1)).toThrow(DayError);
     expect(() => wholeMonths("2024-10-04", "tomorrow")).toThrow(DayError);
+});
+
+test("the day before steps back across months and years", () =>
+{
+    expect(dayBefore("2026-07-01")).toBe("2026-06-30");
+    expect(dayBefore("2024-03-01")).toBe("2024-02-29");
+    expect(dayBefore("2025-01-01")).toBe("2024-12-31");
+    expect(dayBefore("2025-05-17")).toBe("2025-05-16");
 });

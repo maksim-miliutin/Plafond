@@ -53,6 +53,19 @@ export function wholeMonths(from: Day, to: Day): number
     return months;
 }
 
+export function dayBefore(day: Day): Day
+{
+    const { year, month, date } = parsed(day);
+    if (date > 1)
+    {
+        return format({ year, month, date: date - 1 });
+    }
+
+    const previous = month === 1 ? { year: year - 1, month: 12 } : { year, month: month - 1 };
+
+    return format({ ...previous, date: daysIn(previous.year, previous.month) });
+}
+
 function parse(text: string): Parts | null
 {
     const match = shape.exec(text);
