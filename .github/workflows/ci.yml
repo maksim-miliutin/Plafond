@@ -29,7 +29,7 @@ jobs:
       # so the check would pass on dashes and fail on a clean tree. Keep the block form.
       - name: dashes
         run: |
-          ! LC_ALL=C grep -rnIP --exclude-dir=node_modules --exclude-dir=.git '\xE2\x80[\x93\x94]' .
+          ! LC_ALL=C git grep --untracked -nIP '\xE2\x80[\x93\x94]'
 
       # ci, not install: it installs exactly what package-lock.json pins and fails
       # when the lock file has drifted from package.json.
