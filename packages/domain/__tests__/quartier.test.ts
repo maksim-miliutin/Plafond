@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { quartierAt, type Quartier } from "../src/quartier.js";
+import { arrondissementOf, quartierAt, type Quartier } from "../src/quartier.js";
 
 type Position = readonly [number, number];
 
@@ -96,4 +96,13 @@ test("a metre east to west is measured at the latitude of paris", () =>
 test("a point in line with an edge but far beyond its end is not near it", () =>
 {
     expect(quartierAt({ lon: west + 0.05, lat: south }, quartiers)).toEqual({ kind: "outside" });
+});
+
+test("each arrondissement holds four quartiers numbered in turn", () =>
+{
+    expect(arrondissementOf(1)).toBe(1);
+    expect(arrondissementOf(4)).toBe(1);
+    expect(arrondissementOf(5)).toBe(2);
+    expect(arrondissementOf(17)).toBe(5);
+    expect(arrondissementOf(80)).toBe(20);
 });

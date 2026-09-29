@@ -57,6 +57,11 @@ export function frenchDay(day: Day): string
     return `${date === 1 ? "1er" : date} ${months[month - 1]} ${year}`;
 }
 
+export function ordinal(n: number): string
+{
+    return n === 1 ? "1er" : `${n}e`;
+}
+
 function split(hundredths: number): [number, number]
 {
     if (!Number.isInteger(hundredths) || hundredths < 0)
