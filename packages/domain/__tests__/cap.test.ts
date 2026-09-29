@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
-import { CapError, check, type Claim } from "../cap.js";
-import type { Flat, Rate } from "../rates.js";
+import { CapError, check, type Claim } from "../src/cap.js";
+import type { Flat, Rate } from "../src/rates.js";
 
 const flat: Flat = { quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
 
