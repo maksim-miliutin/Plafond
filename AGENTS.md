@@ -45,11 +45,11 @@
 ## Перед коммитом
 
 ```
-! LC_ALL=C grep -rnIP --exclude-dir=node_modules --exclude-dir=.git '\xE2\x80[\x93\x94]' .
+! LC_ALL=C git grep --untracked -nIP '\xE2\x80[\x93\x94]'
 npm ci
 npx tsc --noEmit
 npm test
 npm run build
 ```
 
-Тире в первой команде записаны байтами, чтобы она не находила саму себя.
+Тире в первой команде записаны байтами, чтобы она не находила саму себя. Проверка идёт через git grep: она смотрит отслеживаемые и новые файлы, а всё из .gitignore (зависимости, сборки) пропускает.
