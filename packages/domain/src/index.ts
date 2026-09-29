@@ -4,3 +4,4 @@ export { RatesError, rateOn, type Contest, type Decree, type Flat, type NoRate, 
 export { arrondissementOf, quartierAt, type Border, type Found, type Outside, type Point, type Quartier } from "./quartier.js";
 export { FormatError, euros, frenchDay, ordinal, percent, squareMetres } from "./format.js";
 export { centsFrom, hundredthsFrom, type Unreadable } from "./input.js";
+export { letting, periods, rooms } from "./labels.js";

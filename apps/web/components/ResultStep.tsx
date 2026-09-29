@@ -1,7 +1,5 @@
-import { dayBefore, euros, frenchDay, percent, squareMetres } from "@plafond/domain";
+import { dayBefore, euros, frenchDay, letting, percent, periods, rooms, squareMetres } from "@plafond/domain";
 import type { Check, Claim, Complement, Contest, Day } from "@plafond/domain";
-
-import { periods, rooms } from "../lib/labels";
 
 export interface ResultProps
 {
@@ -118,7 +116,6 @@ function ContestNote({ contest }: { contest: Contest })
 function Sources({ check, claim, quartier }: ResultProps)
 {
     const { decree, majored, flat } = check.rate;
-    const letting = flat.furnished ? "loué meublé" : "loué vide";
 
     return (
         <section className="sources">
@@ -130,7 +127,7 @@ function Sources({ check, claim, quartier }: ResultProps)
                 </div>
                 <div>
                     <dt>Logement</dt>
-                    <dd>{rooms[flat.rooms]}, construit {periods[flat.period]}, {letting}</dd>
+                    <dd>{rooms[flat.rooms]}, construit {periods[flat.period]}, {letting(flat.furnished)}</dd>
                 </div>
                 <div>
                     <dt>Loyer de référence majoré</dt>

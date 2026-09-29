@@ -1,4 +1,4 @@
-import { periods, rooms } from "../lib/labels";
+import { periods, rooms } from "@plafond/domain";
 import type { FieldErrors, LeaseFields } from "../lib/lease";
 
 export interface LeaseProps
