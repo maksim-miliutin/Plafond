@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { DayError } from "../src/day.js";
-import { FormatError, euros, frenchDay, squareMetres } from "../src/format.js";
+import { FormatError, euros, frenchDay, percent, squareMetres } from "../src/format.js";
 
 // French typography: a narrow no-break space between thousands, a no-break space before the sign.
 const thin = "\u202F";
@@ -40,4 +40,11 @@ test("a day reads the french way, with 1er for the first of the month", () =>
 test("formatting something that is not a day is a breakage", () =>
 {
     expect(() => frenchDay("2026-02-30")).toThrow(DayError);
+});
+
+test("a share in hundredths of a percent reads as a french percentage", () =>
+{
+    expect(percent(1563)).toBe(`15,63${hard}%`);
+    expect(percent(2000)).toBe(`20${hard}%`);
+    expect(percent(1550)).toBe(`15,5${hard}%`);
 });

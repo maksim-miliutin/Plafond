@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "next dev",
-        "build": "next build"
+        "build": "tsc --noEmit -p . && next build"
     },
     "dependencies": {
         "@fontsource/atkinson-hyperlegible": "^5.3.0",

@@ -37,13 +37,12 @@ export function euros(cents: number): string
 
 export function squareMetres(hundredths: number): string
 {
-    const [whole, rest] = split(hundredths);
-    if (rest === 0)
-    {
-        return `${grouped(whole)}${hard}m²`;
-    }
+    return `${trimmed(hundredths)}${hard}m²`;
+}
 
-    return `${grouped(whole)},${String(rest).padStart(2, "0").replace(/0$/, "")}${hard}m²`;
+export function percent(hundredths: number): string
+{
+    return `${trimmed(hundredths)}${hard}%`;
 }
 
 export function frenchDay(day: Day): string
@@ -66,6 +65,17 @@ function split(hundredths: number): [number, number]
     }
 
     return [Math.floor(hundredths / 100), hundredths % 100];
+}
+
+function trimmed(hundredths: number): string
+{
+    const [whole, rest] = split(hundredths);
+    if (rest === 0)
+    {
+        return grouped(whole);
+    }
+
+    return `${grouped(whole)},${String(rest).padStart(2, "0").replace(/0$/, "")}`;
 }
 
 function grouped(whole: number): string
