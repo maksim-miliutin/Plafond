@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es2023",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "exactOptionalPropertyTypes": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "verbatimModuleSyntax": true,
+        "skipLibCheck": true,
+        "noEmit": true
+    },
+    "include": [
+        "packages/*/*.ts",
+        "packages/*/__tests__"
+    ]
+}

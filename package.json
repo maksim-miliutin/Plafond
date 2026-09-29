@@ -1,0 +1,16 @@
+{
+    "name": "plafond",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "test": "vitest run",
+        "build": "npm run build --workspaces"
+    },
+    "devDependencies": {
+        "typescript": "^7.0.2",
+        "vitest": "^5.0.2"
+    }
+}
