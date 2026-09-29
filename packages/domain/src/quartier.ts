@@ -35,6 +35,12 @@ export interface Outside
 const tolerance = 1;
 const metresPerDegree = 111_320;
 
+// Paris numbers its eighty administrative quartiers four to an arrondissement, in order.
+export function arrondissementOf(quartier: number): number
+{
+    return Math.ceil(quartier / 4);
+}
+
 export function quartierAt(point: Point, quartiers: readonly Quartier[]): Found | Border | Outside
 {
     const holding = quartiers

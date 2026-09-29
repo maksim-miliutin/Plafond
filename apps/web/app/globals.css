@@ -320,3 +320,87 @@ a:hover
 {
     margin: 0;
 }
+
+.step
+{
+    margin: 0;
+    font-size: 17px;
+    color: var(--muted);
+}
+
+.plaque
+{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px;
+    background: var(--blue);
+    color: #FFFFFF;
+    border: 4px solid var(--green);
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 2px #FFFFFF;
+    font-family: var(--display);
+}
+
+.plaque-arr
+{
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.plaque-name
+{
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.05;
+}
+
+.map
+{
+    width: 100%;
+    height: auto;
+    background: #E8EAE4;
+    border-radius: 12px;
+}
+
+.map .around
+{
+    fill: var(--paper);
+    stroke: #C9CEC6;
+    stroke-width: 1.5;
+}
+
+.map .own
+{
+    fill: rgba(29, 63, 115, 0.14);
+    stroke: var(--blue);
+    stroke-width: 2.5;
+}
+
+.map .pin
+{
+    fill: var(--signal);
+    stroke: #FFFFFF;
+    stroke-width: 3;
+}
+
+.found
+{
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.found dt
+{
+    color: var(--muted);
+}
+
+.found dd
+{
+    margin: 0;
+    font-weight: 700;
+}

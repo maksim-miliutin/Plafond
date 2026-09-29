@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { DayError } from "../src/day.js";
-import { FormatError, euros, frenchDay, percent, squareMetres } from "../src/format.js";
+import { FormatError, euros, frenchDay, ordinal, percent, squareMetres } from "../src/format.js";
 
 // French typography: a narrow no-break space between thousands, a no-break space before the sign.
 const thin = "\u202F";
@@ -47,4 +47,11 @@ test("a share in hundredths of a percent reads as a french percentage", () =>
     expect(percent(1563)).toBe(`15,63${hard}%`);
     expect(percent(2000)).toBe(`20${hard}%`);
     expect(percent(1550)).toBe(`15,5${hard}%`);
+});
+
+test("an ordinal reads 1er for the first and takes an e after the rest", () =>
+{
+    expect(ordinal(1)).toBe("1er");
+    expect(ordinal(2)).toBe("2e");
+    expect(ordinal(20)).toBe("20e");
 });
