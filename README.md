@@ -20,7 +20,7 @@ The City table stops at the rates of July 2025. The decree of 12 June 2026 appli
 
 ## Status
 
-The calculation core lives in `packages/domain` and is being built first. Screens come after its results match the official reference rent tool of the City of Paris.
+The calculation core lives in `packages/domain`. The web app in `apps/web` (Next.js) is being laid out screen by screen; it shows only what the domain calculates, and the flow is wired once the results match the official reference rent tool of the City of Paris.
 
 ## Development
 

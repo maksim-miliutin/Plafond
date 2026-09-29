@@ -1,0 +1,164 @@
+:root
+{
+    --paper: #F3F4F1;
+    --ink: #18212B;
+    --muted: #4F5B67;
+    --line: #D5D9D3;
+    --field-line: #8A949D;
+    --blue: #1D3F73;
+    --blue-dark: #132B50;
+    --green: #2E6A50;
+    --signal: #A34700;
+    --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --text: "Atkinson Hyperlegible", system-ui, sans-serif;
+    --letter: "Source Serif 4", Georgia, serif;
+}
+
+*,
+*::before,
+*::after
+{
+    box-sizing: border-box;
+}
+
+body
+{
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--text);
+}
+
+a
+{
+    color: var(--blue);
+}
+
+a:hover
+{
+    color: var(--blue-dark);
+}
+
+:focus-visible
+{
+    outline: 3px solid var(--signal);
+    outline-offset: 2px;
+}
+
+.screen
+{
+    max-width: 430px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 56px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.wordmark
+{
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--blue);
+}
+
+.title
+{
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 46px;
+    line-height: 1.02;
+}
+
+.lead
+{
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.stack
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.label
+{
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.field
+{
+    height: 52px;
+    padding: 0 16px;
+    border: 1.5px solid var(--field-line);
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: var(--ink);
+    font: 17px var(--text);
+}
+
+.primary,
+.secondary
+{
+    height: 52px;
+    border-radius: 10px;
+    font: 700 17px var(--text);
+    cursor: pointer;
+}
+
+.primary
+{
+    margin-top: 6px;
+    border: 0;
+    background: var(--blue);
+    color: #FFFFFF;
+}
+
+.secondary
+{
+    border: 1.5px solid var(--blue);
+    background: transparent;
+    color: var(--blue);
+}
+
+.grow
+{
+    flex-grow: 1;
+}
+
+.note
+{
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 16px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--blue);
+}
+
+.note p
+{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink);
+}
+
+.fine
+{
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--muted);
+}
