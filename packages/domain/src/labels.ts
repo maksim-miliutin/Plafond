@@ -1,4 +1,4 @@
-import type { Period, Rooms } from "@plafond/domain";
+import type { Period, Rooms } from "./rates.js";
 
 export const rooms: Record<Rooms, string> = {
     1: "1 pièce",
@@ -13,3 +13,8 @@ export const periods: Record<Period, string> = {
     "1971-1990": "entre 1971 et 1990",
     "after-1990": "après 1990",
 };
+
+export function letting(furnished: boolean): string
+{
+    return furnished ? "loué meublé" : "loué vide";
+}

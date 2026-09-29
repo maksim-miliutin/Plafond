@@ -1,7 +1,5 @@
-import { centsFrom, hundredthsFrom, isDay } from "@plafond/domain";
+import { centsFrom, hundredthsFrom, isDay, periods, rooms } from "@plafond/domain";
 import type { Claim, Day, Period, Rooms, Unreadable } from "@plafond/domain";
-
-import { periods, rooms } from "./labels";
 
 export interface LeaseFields
 {
