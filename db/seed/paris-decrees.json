@@ -1,0 +1,84 @@
+[
+    {
+        "year": 2019,
+        "title": "Arrêté préfectoral du 28 mai 2019",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/arrete-fixant-les-loyers-de-reference-les-loyers-a291.html?lang=fr",
+        "from": "2019-07-01",
+        "until": "2020-07-01",
+        "contest": {
+            "outcome": "pending",
+            "court": "Conseil d'État",
+            "decidedOn": "2024-11-18",
+            "claimsBy": null,
+            "source": "https://www.actu-juridique.fr/fiscalite/fiscal-finances/encadrement-des-loyers-a-paris-la-saga-juridique-continue/"
+        }
+    },
+    {
+        "year": 2020,
+        "title": "Arrêté préfectoral n° 2020-06-03-001",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/arrete-fixant-les-loyers-de-reference-les-loyers-a291.html?lang=fr",
+        "from": "2020-07-01",
+        "until": "2021-07-01",
+        "contest": {
+            "outcome": "annulled",
+            "court": "Cour administrative d'appel de Paris",
+            "decidedOn": "2023-10-02",
+            "claimsBy": "2023-10-02",
+            "source": "https://unpi.org/fr/1/16/1216/Annulations-d-arretes-prefectoraux-encadrant-les-loyers-a-l-initiative-de-l-UNPI.html"
+        }
+    },
+    {
+        "year": 2021,
+        "title": "Arrêté préfectoral n° 2021-06-04-0002",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/arrete-fixant-les-loyers-de-reference-les-loyers-a291.html?lang=fr",
+        "from": "2021-07-01",
+        "until": "2022-07-01",
+        "contest": null
+    },
+    {
+        "year": 2022,
+        "title": "Arrêté préfectoral n° 2022-06-01-0009",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/arrete-fixant-les-loyers-de-reference-les-loyers-a291.html?lang=fr",
+        "from": "2022-07-01",
+        "until": "2023-07-01",
+        "contest": null
+    },
+    {
+        "year": 2023,
+        "title": "Arrêté préfectoral n° 2023-05-30-0005",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/arrete-fixant-les-loyers-de-reference-les-loyers-a291.html?lang=fr",
+        "from": "2023-07-01",
+        "until": "2024-07-01",
+        "contest": {
+            "outcome": "annulled",
+            "court": "Tribunal administratif de Paris",
+            "decidedOn": "2025-10-24",
+            "claimsBy": "2025-10-24",
+            "source": "https://www.adil75.org/fiches-pratiques/fiche-pratique-les-loyers-a-paris-locataire/"
+        }
+    },
+    {
+        "year": 2024,
+        "title": "Arrêté préfectoral n° 2024-05-28-0001",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/arrete-fixant-les-loyers-de-reference-les-loyers-a291.html?lang=fr",
+        "from": "2024-07-01",
+        "until": "2025-07-01",
+        "contest": null
+    },
+    {
+        "year": 2025,
+        "title": "Arrêté préfectoral n° 2025-06-16-00003",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/arrete-fixant-les-loyers-de-reference-les-loyers-a291.html?lang=fr",
+        "from": "2025-07-01",
+        "until": "2026-07-01",
+        "contest": null
+    },
+    {
+        "year": 2026,
+        "title": "Arrêté préfectoral n° IDF-2026-06-12-00003",
+        "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/renouvellement-2026-de-l-arrete-annuel-d-a1512.html?lang=fr",
+        "from": "2026-07-01",
+        "until": "2026-11-25",
+        "contest": null
+    }
+]
