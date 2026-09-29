@@ -1,0 +1,12 @@
+{
+    "name": "@plafond/address",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json"
+    },
+    "dependencies": {
+        "@plafond/domain": "0.0.0"
+    }
+}
