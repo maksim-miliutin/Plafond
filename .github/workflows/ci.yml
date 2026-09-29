@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # A plain value starting with ! is read by YAML as a tag and the negation is lost,
+      # so the check would pass on dashes and fail on a clean tree. Keep the block form.
+      - name: dashes
+        run: |
+          ! LC_ALL=C grep -rnIP --exclude-dir=node_modules --exclude-dir=.git '\xE2\x80[\x93\x94]' .
+
+      # ci, not install: it installs exactly what package-lock.json pins and fails
+      # when the lock file has drifted from package.json.
+      - run: npm ci
+
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run build
