@@ -3,7 +3,9 @@
     "private": true,
     "type": "module",
     "workspaces": [
-        "packages/*"
+        "packages/domain",
+        "packages/import",
+        "packages/address"
     ],
     "scripts": {
         "test": "vitest run",

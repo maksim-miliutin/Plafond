@@ -6,7 +6,7 @@ Plafond checks whether a rent in a French city under rent control (encadrement d
 
 Reference rents are published open data: each rate is kept with the day it takes effect, the day it ends and the prefect's decree that sets it. A lease is always checked against the rates in force on the day it was signed.
 
-The calculation runs on the device. The address and the rent are never stored on a server or written to logs. There are no accounts, no fees and no ads.
+The calculation runs on the device. The address and the rent are never stored on a server or written to logs. To find the quartier, the device sends the address once, straight to the public geocoding service of the Géoplateforme, which runs the Base Adresse Nationale; it never passes through a Plafond server. There are no accounts, no fees and no ads.
 
 Plafond gives an estimate, not legal advice. Only the prefect's decree and the lease itself are authoritative.
 
