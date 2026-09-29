@@ -1,5 +1,7 @@
 import { dayBefore, euros, frenchDay, percent, squareMetres } from "@plafond/domain";
-import type { Check, Claim, Complement, Contest, Day, Period, Rooms } from "@plafond/domain";
+import type { Check, Claim, Complement, Contest, Day } from "@plafond/domain";
+
+import { periods, rooms } from "../lib/labels";
 
 export interface ResultProps
 {
@@ -7,20 +9,6 @@ export interface ResultProps
     claim: Claim;
     quartier: string;
 }
-
-const rooms: Record<Rooms, string> = {
-    1: "1 pièce",
-    2: "2 pièces",
-    3: "3 pièces",
-    4: "4 pièces et plus",
-};
-
-const periods: Record<Period, string> = {
-    "before-1946": "construit avant 1946",
-    "1946-1970": "construit entre 1946 et 1970",
-    "1971-1990": "construit entre 1971 et 1990",
-    "after-1990": "construit après 1990",
-};
 
 export function ResultStep({ check, claim, quartier }: ResultProps)
 {
@@ -142,7 +130,7 @@ function Sources({ check, claim, quartier }: ResultProps)
                 </div>
                 <div>
                     <dt>Logement</dt>
-                    <dd>{rooms[flat.rooms]}, {periods[flat.period]}, {letting}</dd>
+                    <dd>{rooms[flat.rooms]}, construit {periods[flat.period]}, {letting}</dd>
                 </div>
                 <div>
                     <dt>Loyer de référence majoré</dt>
