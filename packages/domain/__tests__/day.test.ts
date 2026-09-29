@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { DayError, addMonths, isDay, wholeMonths } from "../day.js";
+import { DayError, addMonths, isDay, wholeMonths } from "../src/day.js";
 
 test("a leap day exists only in a leap year", () =>
 {

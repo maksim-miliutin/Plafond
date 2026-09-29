@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
-import { DayError } from "../day.js";
-import { RatesError, rateOn, type Flat, type Rate } from "../rates.js";
+import { DayError } from "../src/day.js";
+import { RatesError, rateOn, type Flat, type Rate } from "../src/rates.js";
 
 const flat: Flat = { quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
 
