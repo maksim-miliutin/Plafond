@@ -13,17 +13,27 @@ export interface Flat
     furnished: boolean;
 }
 
+export interface Contest
+{
+    outcome: "annulled" | "pending";
+    court: string;
+    decidedOn: Day;
+    claimsBy: Day | null;  // an annulment reaches only claims brought by this day; null when not limited
+    source: string;
+}
+
 export interface Decree
 {
     title: string;
     url: string;
+    from: Day;
+    until: Day;  // the first day it no longer applies
+    contest: Contest | null;
 }
 
 export interface Rate
 {
     flat: Flat;
-    from: Day;
-    until: Day | null;  // the first day it no longer applies; null while still in force
     // The three published rents, in cents per square metre.
     reference: number;
     majored: number;
@@ -72,5 +82,5 @@ function sameFlat(a: Flat, b: Flat): boolean
 
 function covers(rate: Rate, on: Day): boolean
 {
-    return rate.from <= on && (rate.until === null || on < rate.until);
+    return rate.decree.from <= on && on < rate.decree.until;
 }

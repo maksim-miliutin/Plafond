@@ -43,7 +43,7 @@ export class CapError extends Error
 {
     constructor(rate: Rate)
     {
-        super(`cap: the rate from ${rate.from} for quartier ${rate.flat.quartier} gives a zero cap`);
+        super(`cap: the rate from ${rate.decree.from} for quartier ${rate.flat.quartier} gives a zero cap`);
         this.name = "CapError";
     }
 }
