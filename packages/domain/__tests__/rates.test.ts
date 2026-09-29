@@ -5,22 +5,20 @@ import { RatesError, rateOn, type Flat, type Rate } from "../src/rates.js";
 
 const flat: Flat = { quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
 
-function rate(from: string, until: string | null, majored: number): Rate
+function rate(from: string, until: string, majored: number): Rate
 {
     return {
         flat,
-        from,
-        until,
         reference: Math.round(majored / 1.2),
         majored,
         minored: Math.round(majored / 1.2 * 0.7),
-        decree: { title: `fixture decree from ${from}`, url: "https://example.org/decree" },
+        decree: { title: `fixture decree from ${from}`, url: "https://example.org/decree", from, until, contest: null },
     };
 }
 
 const rates = [
     rate("2024-07-01", "2025-07-01", 3144),
-    rate("2025-07-01", null, 3180),
+    rate("2025-07-01", "2026-07-01", 3180),
 ];
 
 test("a lease is checked against the rate in force on the day it was signed", () =>
@@ -34,9 +32,10 @@ test("rates change on their first day, not the day after", () =>
     expect(rateOn(rates, flat, "2025-07-01")).toBe(rates[1]);
 });
 
-test("a rate with no end is still in force", () =>
+test("a rate stops on the day its decree ends, whatever comes after", () =>
 {
-    expect(rateOn(rates, flat, "2030-01-01")).toBe(rates[1]);
+    expect(rateOn(rates, flat, "2026-06-30")).toBe(rates[1]);
+    expect(rateOn(rates, flat, "2026-07-01")).toEqual({ kind: "no-rate" });
 });
 
 test("every one of the four criteria has to match", () =>
