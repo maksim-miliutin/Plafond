@@ -162,3 +162,161 @@ a:hover
     line-height: 1.4;
     color: var(--muted);
 }
+
+.result
+{
+    gap: 24px;
+}
+
+.headline
+{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: var(--display);
+}
+
+.amount
+{
+    font-weight: 700;
+    font-size: 84px;
+    line-height: 0.95;
+    color: var(--signal);
+}
+
+.per
+{
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1.1;
+}
+
+.figures
+{
+    margin: 0;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.figure
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 18px;
+}
+
+.figure + .figure
+{
+    border-top: 1px solid var(--line);
+}
+
+.figure dd,
+.line dd
+{
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 28px;
+    white-space: nowrap;
+}
+
+.cap
+{
+    color: var(--blue);
+}
+
+.recovery
+{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.line
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+}
+
+.line dt
+{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-weight: 700;
+}
+
+.line dt span
+{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.note,
+.notice
+{
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.note
+{
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+}
+
+.notice
+{
+    background: #FFF4EC;
+    border: 1px solid var(--signal);
+}
+
+.note h2,
+.sources h2
+{
+    margin: 0 0 8px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.note p,
+.notice p
+{
+    margin: 0 0 8px;
+}
+
+.sources
+{
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.sources dl
+{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.sources dt
+{
+    color: var(--muted);
+}
+
+.sources dd
+{
+    margin: 0;
+}
