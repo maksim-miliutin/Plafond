@@ -404,3 +404,81 @@ a:hover
     margin: 0;
     font-weight: 700;
 }
+
+.form
+{
+    gap: 22px;
+}
+
+.choice
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.options
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.option
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #FFFFFF;
+    border: 1.5px solid var(--field-line);
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.option:has(input:checked)
+{
+    border-color: var(--blue);
+    background: rgba(29, 63, 115, 0.08);
+}
+
+.option span
+{
+    display: inline-block;
+}
+
+.option span::first-letter
+{
+    text-transform: uppercase;
+}
+
+.typed
+{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hint
+{
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.error
+{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--signal);
+}
+
+.field[aria-invalid="true"]
+{
+    border-color: var(--signal);
+}
