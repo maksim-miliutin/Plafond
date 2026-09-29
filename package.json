@@ -5,7 +5,8 @@
     "workspaces": [
         "packages/domain",
         "packages/import",
-        "packages/address"
+        "packages/address",
+        "apps/web"
     ],
     "scripts": {
         "test": "vitest run",
