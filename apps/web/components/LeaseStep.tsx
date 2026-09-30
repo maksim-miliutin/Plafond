@@ -12,6 +12,11 @@ const lettings: [string, string][] = [
     ["yes", "meublée"],
 ];
 
+const answers: [string, string][] = [
+    ["yes", "oui"],
+    ["no", "non"],
+];
+
 export function LeaseStep({ fields, errors }: LeaseProps)
 {
     return (
@@ -28,6 +33,13 @@ export function LeaseStep({ fields, errors }: LeaseProps)
                 <Typed id="complement" label="Complément de loyer" hint="Laissez vide si le bail n'en prévoit pas." value={fields.complement} error={errors.complement} />
                 <Typed id="signedOn" label="Date de signature du bail" type="date" value={fields.signedOn} error={errors.signedOn} />
                 <Typed id="startsOn" label="Date de prise d'effet" type="date" hint="Souvent la même que la signature." value={fields.startsOn} error={errors.startsOn} />
+                <Choice
+                    name="stated"
+                    legend={"Le bail mentionne-t-il le loyer de référence et le loyer de référence majoré\u00A0?"}
+                    options={answers}
+                    value={fields.stated}
+                    error={errors.stated}
+                />
                 <button type="submit" className="primary">Vérifier mon loyer</button>
             </form>
         </main>

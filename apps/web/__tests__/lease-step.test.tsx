@@ -13,6 +13,7 @@ const blank: LeaseFields = {
     complement: "",
     signedOn: "",
     startsOn: "",
+    stated: "",
 };
 
 function page(fields: Partial<LeaseFields> = {}, errors: Partial<Record<keyof LeaseFields, string>> = {}): string
@@ -34,6 +35,8 @@ test("the choices offered are the ones the published table distinguishes", () =>
     expect(page().match(/name="rooms"/g)).toHaveLength(4);
     expect(page().match(/name="period"/g)).toHaveLength(4);
     expect(page().match(/name="furnished"/g)).toHaveLength(2);
+    expect(page().match(/name="stated"/g)).toHaveLength(2);
+    expect(page()).toContain("loyer de référence majoré");
     expect(page()).toContain("4 pièces et plus");
     expect(page()).toContain("entre 1946 et 1970");
 });
