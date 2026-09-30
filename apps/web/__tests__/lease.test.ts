@@ -11,21 +11,26 @@ const filled: LeaseFields = {
     complement: "",
     signedOn: "2025-08-20",
     startsOn: "2025-09-01",
+    stated: "no",
 };
 
 const context = { quartier: 1, on: "2026-09-29" };
 
-test("a filled form becomes the lease the check expects", () =>
+test("a filled form becomes the lease the check expects, and says whether it states the reference rents", () =>
 {
     expect(leaseFrom(filled, context)).toEqual({
-        flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
-        surface: 4000,
-        signedOn: "2025-08-20",
-        startsOn: "2025-09-01",
-        rent: 150000,
-        complement: 0,
-        on: "2026-09-29",
+        claim: {
+            flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
+            surface: 4000,
+            signedOn: "2025-08-20",
+            startsOn: "2025-09-01",
+            rent: 150000,
+            complement: 0,
+            on: "2026-09-29",
+        },
+        stated: false,
     });
+    expect(leaseFrom({ ...filled, stated: "yes" }, context)).toMatchObject({ stated: true });
 });
 
 test("every missing answer is named at once, and the complement may stay empty", () =>
@@ -35,7 +40,7 @@ test("every missing answer is named at once, and the complement may stay empty",
 
     expect(result).toMatchObject({ kind: "unanswered" });
     expect(Object.keys("fields" in result ? result.fields : {}).sort()).toEqual(
-        ["furnished", "period", "rent", "rooms", "signedOn", "startsOn", "surface"],
+        ["furnished", "period", "rent", "rooms", "signedOn", "startsOn", "stated", "surface"],
     );
 });
 
@@ -52,8 +57,8 @@ test("a zero surface or rent is not a lease", () =>
 
 test("a complement is read when one is given", () =>
 {
-    expect(leaseFrom({ ...filled, complement: "200" }, context)).toMatchObject({ complement: 20000 });
-    expect(leaseFrom({ ...filled, complement: "   " }, context)).toMatchObject({ complement: 0 });
+    expect(leaseFrom({ ...filled, complement: "200" }, context)).toMatchObject({ claim: { complement: 20000 } });
+    expect(leaseFrom({ ...filled, complement: "   " }, context)).toMatchObject({ claim: { complement: 0 } });
     expect(leaseFrom({ ...filled, complement: "deux cents" }, context)).toMatchObject({ fields: { complement: expect.any(String) } });
 });
 
@@ -64,5 +69,6 @@ test("a choice outside the offered lists is refused", () =>
     expect(leaseFrom({ ...filled, period: "constructor" }, context)).toMatchObject({ fields: { period: expect.any(String) } });
     expect(leaseFrom({ ...filled, rooms: "toString" }, context)).toMatchObject({ fields: { rooms: expect.any(String) } });
     expect(leaseFrom({ ...filled, furnished: "maybe" }, context)).toMatchObject({ fields: { furnished: expect.any(String) } });
+    expect(leaseFrom({ ...filled, stated: "perhaps" }, context)).toMatchObject({ fields: { stated: expect.any(String) } });
     expect(leaseFrom({ ...filled, signedOn: "01/09/2025" }, context)).toMatchObject({ fields: { signedOn: expect.any(String) } });
 });
