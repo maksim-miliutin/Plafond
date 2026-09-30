@@ -55,3 +55,23 @@ test("nothing is fetched from another site, not even fonts", async ({ page, base
 
     expect(elsewhere).toEqual([]);
 });
+
+test("an address typed and sent never reaches our server", async ({ page, baseURL }) =>
+{
+    const ours: string[] = [];
+    page.on("request", (request) =>
+    {
+        if (request.url().startsWith(baseURL ?? "") && request.url().includes("Louvre"))
+        {
+            ours.push(request.url());
+        }
+    });
+
+    const field = page.getByLabel("Adresse du logement");
+    await field.fill("4 place du Louvre");
+    await field.press("Enter");
+    await page.waitForLoadState("networkidle");
+
+    expect(ours).toEqual([]);
+    expect(page.url()).not.toContain("Louvre");
+});

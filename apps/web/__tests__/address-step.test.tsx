@@ -29,3 +29,13 @@ test("the screen is in french and asks one plain question", () =>
     expect(page).toContain("<h1");
     expect(page).toContain("Votre loyer dépasse-t-il le plafond légal ?");
 });
+
+// A form sends its named fields to our own server when it is submitted before the script takes over,
+// and the address would land in the server log. A field without a name is never sent.
+test("the address field has no name, so a form sent too early carries nothing", () =>
+{
+    const field = page.match(/<input[^>]*id="address"[^>]*>/)?.[0] ?? "";
+
+    expect(field).not.toBe("");
+    expect(field).not.toContain("name=");
+});
