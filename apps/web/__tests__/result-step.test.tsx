@@ -33,12 +33,12 @@ const claim: Claim = {
     on: "2026-09-29",
 };
 
-function page(change: Partial<Claim> = {}, rates: Rate[] = [rate]): string
+function page(change: Partial<Claim> = {}, rates: Rate[] = [rate], writable = true): string
 {
     const lease = { ...claim, ...change };
     const result = check(lease, rates) as Check;
 
-    return renderToStaticMarkup(<ResultStep check={result} claim={lease} quartier="Saint-Germain-l'Auxerrois" />);
+    return renderToStaticMarkup(<ResultStep check={result} claim={lease} quartier="Saint-Germain-l'Auxerrois" writable={writable} />);
 }
 
 test("the overpayment each month is the headline", () =>
@@ -70,9 +70,9 @@ test("every figure shows where it came from", () =>
     expect(sources).toContain(`32,00${hard}€ × 40${hard}m² = 1${thin}280,00${hard}€`);
 });
 
-test("a rent within the cap is told plainly and asks for no letter", () =>
+test("a rent within the cap is told plainly and, with nothing to claim, asks for no letter", () =>
 {
-    const within = page({ rent: 120000 });
+    const within = page({ rent: 120000 }, [rate], false);
 
     expect(within).toContain("respecte le plafond");
     expect(within).not.toContain("de trop");
@@ -108,4 +108,10 @@ test("a decree struck down in court is flagged beside the figures", () =>
 
     expect(judged).toContain("Tribunal administratif de Paris, 24 octobre 2025");
     expect(judged).toContain("au plus tard le 24 octobre 2025");
+});
+
+test("a letter is offered whenever there is something to claim, even within the cap", () =>
+{
+    expect(page({ rent: 120000 }, [rate], true)).toContain("Préparer la lettre");
+    expect(page({}, [rate], false)).not.toContain("Préparer la lettre");
 });
