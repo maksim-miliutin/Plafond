@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { check, type Check, type Claim } from "../src/cap.js";
-import { letter, type Letter } from "../src/letter.js";
+import { letter, letterText, type Letter } from "../src/letter.js";
 import type { Contest, Rate } from "../src/rates.js";
 
 const thin = "\u202F";
@@ -156,4 +156,22 @@ test("the letter carries the day it is written and gives a month to answer", () 
 
     expect(sent.writtenOn).toBe("2026-09-29");
     expect(sent.closing.join("\n")).toContain("dans un délai d'un mois à compter de la réception");
+});
+
+test("the letter's text for copying carries every paragraph, the demands numbered", () =>
+{
+    const all = written({ complement: 20000, on: "2025-09-25" }, false) as Letter;
+    const copy = letterText(all);
+
+    expect(copy.startsWith("[Votre prénom et nom]\n4 Place du Louvre 75001 Paris\n\n[Nom du propriétaire]\n[Adresse du propriétaire]\n\nParis, le 25 septembre 2025\n")).toBe(true);
+    expect(copy.endsWith("\n[Signature]\n")).toBe(true);
+    for (const paragraph of [...all.opening, ...all.demands.flatMap((demand) => demand.paragraphs), ...all.closing])
+    {
+        expect(copy).toContain(paragraph);
+    }
+
+    all.demands.forEach((demand, index) =>
+    {
+        expect(copy).toContain(`\n${index + 1}. ${demand.paragraphs[0]}`);
+    });
 });

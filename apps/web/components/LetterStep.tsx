@@ -1,4 +1,5 @@
-import { frenchDay } from "@plafond/domain";
+import { Fragment } from "react";
+
 import type { Letter } from "@plafond/domain";
 
 import { ContestNote } from "./ContestNote";
@@ -6,10 +7,9 @@ import { ContestNote } from "./ContestNote";
 export interface LetterProps
 {
     letter: Letter;
-    address: string;
 }
 
-export function LetterStep({ letter, address }: LetterProps)
+export function LetterStep({ letter }: LetterProps)
 {
     return (
         <main className="screen">
@@ -20,17 +20,9 @@ export function LetterStep({ letter, address }: LetterProps)
             </p>
             {letter.caution !== null && <ContestNote contest={letter.caution} />}
             <article className="letter" aria-label="Lettre au propriétaire">
-                <p className="from">
-                    [Votre prénom et nom]
-                    <br />
-                    {address}
-                </p>
-                <p className="to">
-                    [Nom du propriétaire]
-                    <br />
-                    [Adresse du propriétaire]
-                </p>
-                <p className="to">Paris, le {frenchDay(letter.writtenOn)}</p>
+                <Lines className="from" lines={letter.sender} />
+                <Lines className="to" lines={letter.recipient} />
+                <p className="to">{letter.dated}</p>
                 <p className="subject">{letter.subject}</p>
                 <p>{letter.delivery}</p>
                 <p>{letter.greeting}</p>
@@ -43,7 +35,7 @@ export function LetterStep({ letter, address }: LetterProps)
                     ))}
                 </ol>
                 {letter.closing.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                <p className="signature">[Signature]</p>
+                <p className="signature">{letter.signature}</p>
             </article>
             <div className="stack">
                 <button type="button" className="primary">Imprimer ou enregistrer en PDF</button>
@@ -51,5 +43,19 @@ export function LetterStep({ letter, address }: LetterProps)
             </div>
             <p className="fine">Ce modèle n'est pas un conseil juridique. L'ADIL de Paris vous conseille gratuitement avant l'envoi.</p>
         </main>
+    );
+}
+
+function Lines({ className, lines }: { className: string; lines: string[] })
+{
+    return (
+        <p className={className}>
+            {lines.map((line, index) => (
+                <Fragment key={line}>
+                    {index > 0 && <br />}
+                    {line}
+                </Fragment>
+            ))}
+        </p>
     );
 }
