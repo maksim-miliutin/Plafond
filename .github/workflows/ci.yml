@@ -38,3 +38,44 @@ jobs:
       - run: npx tsc --noEmit
       - run: npm test
       - run: npm run build
+
+  # Browsers cannot be fetched where the steps are prepared, so this job is their only run.
+  # The iPhones run on macOS, whose WebKit is the one Safari is built on.
+  e2e:
+    name: e2e ${{ matrix.name }}
+    needs: build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: desktop
+            os: ubuntu-latest
+            browser: chromium
+            projects: --project=desktop
+          - name: iphone
+            os: macos-latest
+            browser: webkit
+            projects: --project=iphone-se --project=iphone-17
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --config apps/web/playwright.config.ts ${{ matrix.projects }}
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-${{ matrix.name }}
+          path: apps/web/test-results
+          retention-days: 7
