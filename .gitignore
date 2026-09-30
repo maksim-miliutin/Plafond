@@ -7,3 +7,5 @@ dist/
 next-env.d.ts
 *.tsbuildinfo
 apps/web/public/rates.json
+test-results/
+playwright-report/
