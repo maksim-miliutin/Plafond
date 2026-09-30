@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import type { Letter } from "@plafond/domain";
 
 import { ContestNote } from "./ContestNote";
+import { LetterActions } from "./LetterActions";
 
 export interface LetterProps
 {
@@ -37,10 +38,7 @@ export function LetterStep({ letter }: LetterProps)
                 {letter.closing.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                 <p className="signature">{letter.signature}</p>
             </article>
-            <div className="stack">
-                <button type="button" className="primary">Imprimer ou enregistrer en PDF</button>
-                <button type="button" className="secondary">Copier le texte</button>
-            </div>
+            <LetterActions letter={letter} />
             <p className="fine">Ce modèle n'est pas un conseil juridique. L'ADIL de Paris vous conseille gratuitement avant l'envoi.</p>
         </main>
     );
