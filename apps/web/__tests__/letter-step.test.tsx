@@ -87,3 +87,9 @@ test("the screen says it is not legal advice and where free advice is", () =>
     expect(page()).toContain("pas un conseil juridique");
     expect(page()).toContain("ADIL");
 });
+
+test("the letter can be printed or copied from the screen", () =>
+{
+    expect(page()).toContain("Imprimer ou enregistrer en PDF");
+    expect(page()).toContain("Copier le texte");
+});
