@@ -21,7 +21,7 @@
             }
         ],
         "allowJs": false,
-        "incremental": true,
+        "incremental": false,
         "esModuleInterop": true
     },
     "include": [
