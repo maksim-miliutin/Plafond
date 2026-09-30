@@ -3,6 +3,13 @@
     "version": "0.0.0",
     "private": true,
     "type": "module",
+    "exports": {
+        ".": {
+            "source": "./src/address.ts",
+            "types": "./dist/address.d.ts",
+            "default": "./dist/address.js"
+        }
+    },
     "scripts": {
         "build": "tsc -p tsconfig.build.json"
     },
