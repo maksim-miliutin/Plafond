@@ -15,12 +15,16 @@ export interface Demand
 export interface Letter
 {
     kind: "letter";
+    sender: string[];
+    recipient: string[];
+    dated: string;
     delivery: string;
     subject: string;
     greeting: string;
     opening: string[];
     demands: Demand[];
     closing: string[];
+    signature: string;
     writtenOn: Day;
     caution: Contest | null;
 }
@@ -51,6 +55,9 @@ export function letter(input: LetterInput): Letter | NothingToClaim
 
     return {
         kind: "letter",
+        sender: ["[Votre prénom et nom]", input.address],
+        recipient: ["[Nom du propriétaire]", "[Adresse du propriétaire]"],
+        dated: `Paris, le ${frenchDay(input.claim.on)}`,
         delivery: "Lettre recommandée avec accusé de réception",
         subject: "Objet\u00A0: mise en demeure au sujet du loyer de mon logement",
         greeting: "Madame, Monsieur,",
@@ -62,9 +69,28 @@ export function letter(input: LetterInput): Letter | NothingToClaim
                 + "conciliation ou le juge compétent.",
             "Je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.",
         ],
+        signature: "[Signature]",
         writtenOn: input.claim.on,
         caution: input.check.rate.decree.contest,
     };
+}
+
+export function letterText(letter: Letter): string
+{
+    const demands = letter.demands.map((demand, index) => `${index + 1}. ${demand.paragraphs.join("\n\n")}`);
+    const blocks = [
+        letter.sender.join("\n"),
+        letter.recipient.join("\n"),
+        letter.dated,
+        `${letter.subject}\n${letter.delivery}`,
+        letter.greeting,
+        ...letter.opening,
+        ...demands,
+        ...letter.closing,
+        letter.signature,
+    ];
+
+    return blocks.join("\n\n") + "\n";
 }
 
 function opening({ check, claim, address, quartier }: LetterInput): string[]

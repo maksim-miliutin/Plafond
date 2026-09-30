@@ -36,7 +36,7 @@ function page(contest: Contest | null = null): string
     const rates = [{ ...rate, decree: { ...rate.decree, contest } }];
     const sent = letter({ check: check(claim, rates) as Check, claim, address, quartier: "Saint-Germain-l'Auxerrois", stated: false });
 
-    return renderToStaticMarkup(<LetterStep letter={sent as Letter} address={address} />);
+    return renderToStaticMarkup(<LetterStep letter={sent as Letter} />);
 }
 
 test("the letter leaves brackets where only the tenant can fill in", () =>
