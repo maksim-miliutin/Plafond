@@ -1,5 +1,7 @@
 import { dayBefore, euros, frenchDay, letting, percent, periods, rooms, squareMetres } from "@plafond/domain";
-import type { Check, Claim, Complement, Contest, Day } from "@plafond/domain";
+import type { Check, Claim, Complement, Day } from "@plafond/domain";
+
+import { ContestNote } from "./ContestNote";
 
 export interface ResultProps
 {
@@ -92,23 +94,6 @@ function ComplementNote({ complement, on }: { complement: Complement; on: Day })
             {open
                 ? <p>Vous pouvez le contester devant la commission départementale de conciliation avant le {deadline}.</p>
                 : <p>Le délai pour le contester devant la commission départementale de conciliation a expiré le {deadline}.</p>}
-        </section>
-    );
-}
-
-function ContestNote({ contest }: { contest: Contest })
-{
-    const decision = `${contest.court}, ${frenchDay(contest.decidedOn)}`;
-
-    return (
-        <section className="notice" role="note">
-            {contest.outcome === "pending"
-                ? <p>La validité de l'arrêté de cette période est contestée en justice ({decision}) et l'affaire n'est pas close.</p>
-                : <p>L'arrêté de cette période a été annulé en justice ({decision}).</p>}
-            {contest.claimsBy !== null && (
-                <p>Le tribunal a limité les effets de cette annulation aux recours engagés au plus tard le {frenchDay(contest.claimsBy)}.</p>
-            )}
-            <p>Renseignez-vous auprès de l'ADIL de Paris avant d'agir.</p>
         </section>
     );
 }
