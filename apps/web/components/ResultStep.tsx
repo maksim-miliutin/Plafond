@@ -8,9 +8,10 @@ export interface ResultProps
     check: Check;
     claim: Claim;
     quartier: string;
+    writable: boolean;
 }
 
-export function ResultStep({ check, claim, quartier }: ResultProps)
+export function ResultStep({ check, claim, quartier, writable }: ResultProps)
 {
     const over = check.excess > 0;
 
@@ -33,7 +34,7 @@ export function ResultStep({ check, claim, quartier }: ResultProps)
             <Sources check={check} claim={claim} quartier={quartier} />
             <div className="grow" />
             <div className="stack">
-                {over && <button type="button" className="primary">Préparer la lettre au propriétaire</button>}
+                {writable && <button type="button" className="primary">Préparer la lettre au propriétaire</button>}
                 <button type="button" className="secondary">Trouver une aide gratuite</button>
             </div>
             <p className="fine">Une estimation, pas un conseil juridique. Seuls l'arrêté préfectoral et votre bail font foi.</p>
@@ -98,7 +99,7 @@ function ComplementNote({ complement, on }: { complement: Complement; on: Day })
     );
 }
 
-function Sources({ check, claim, quartier }: ResultProps)
+function Sources({ check, claim, quartier }: Omit<ResultProps, "writable">)
 {
     const { decree, majored, flat } = check.rate;
 
