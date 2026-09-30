@@ -1,5 +1,21 @@
-export function AddressStep()
+"use client";
+
+import type { FormEvent } from "react";
+
+export interface AddressProps
 {
+    onFind?: (typed: string) => void;
+}
+
+export function AddressStep({ onFind }: AddressProps)
+{
+    function find(event: FormEvent<HTMLFormElement>)
+    {
+        event.preventDefault();
+        const field = event.currentTarget.elements.namedItem("address");
+        onFind?.(field instanceof HTMLInputElement ? field.value.trim() : "");
+    }
+
     return (
         <main className="screen">
             <p className="wordmark">Plafond</p>
@@ -8,9 +24,9 @@ export function AddressStep()
                 À Paris, le loyer au mètre carré est plafonné depuis le 1er juillet 2019. Le plafond dépend du quartier :
                 commencez par l'adresse du logement.
             </p>
-            <form className="stack">
+            <form className="stack" onSubmit={find}>
                 <label htmlFor="address" className="label">Adresse du logement</label>
-                <input id="address" name="address" type="text" autoComplete="street-address" className="field" />
+                <input id="address" type="text" autoComplete="street-address" className="field" />
                 <button type="submit" className="primary">Trouver le quartier</button>
             </form>
             <div className="grow" />
