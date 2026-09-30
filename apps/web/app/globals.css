@@ -482,3 +482,73 @@ a:hover
 {
     border-color: var(--signal);
 }
+
+.back
+{
+    align-self: flex-start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--blue);
+    font: 700 16px var(--text);
+    cursor: pointer;
+}
+
+.letter
+{
+    padding: 28px 24px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(24, 33, 43, 0.08);
+    font-family: var(--letter);
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.letter p
+{
+    margin: 0 0 12px;
+}
+
+.letter .to
+{
+    text-align: right;
+}
+
+.letter .subject
+{
+    font-weight: 600;
+}
+
+.letter .demands
+{
+    margin: 0 0 12px;
+    padding-left: 22px;
+}
+
+.letter .signature
+{
+    margin-top: 28px;
+    text-align: right;
+}
+
+@media print
+{
+    body
+    {
+        background: #FFFFFF;
+    }
+
+    .screen > :not(.letter)
+    {
+        display: none;
+    }
+
+    .letter
+    {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+}
