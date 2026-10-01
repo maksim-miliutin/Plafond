@@ -74,3 +74,13 @@ test("the lease form sends nothing anywhere, even before the page wakes up", () 
 {
     expect(page()).toMatch(/<form[^>]*method="dialog"/);
 });
+
+test("a lease signed on a day no rate covers is told so, above the button, and only then", () =>
+{
+    const refused = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} noRate />);
+    const notice = refused.match(/<p[^>]*role="alert"[^>]*>([^<]*)<\/p>/)?.[1] ?? "";
+
+    expect(notice).toContain("Aucun loyer de référence");
+    expect(refused.indexOf("Aucun loyer de référence")).toBeLessThan(refused.indexOf("Vérifier mon loyer"));
+    expect(page()).not.toContain("Aucun loyer de référence");
+});
