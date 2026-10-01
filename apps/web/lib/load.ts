@@ -10,6 +10,23 @@ export interface Unreachable
     kind: "unreachable";
 }
 
+export interface Tables
+{
+    rates: Rate[];
+    quartiers: Quartier[];
+}
+
+export async function loadTables(fetcher: Fetcher): Promise<Tables | Unreachable>
+{
+    const [rates, quartiers] = await Promise.all([loadRates(fetcher), loadQuartiers(fetcher)]);
+    if ("kind" in rates || "kind" in quartiers)
+    {
+        return { kind: "unreachable" };
+    }
+
+    return { rates, quartiers };
+}
+
 export function loadRates(fetcher: Fetcher): Promise<Rate[] | Unreachable>
 {
     return load(fetcher, ratesFile, unpack);

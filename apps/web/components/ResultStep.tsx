@@ -9,14 +9,18 @@ export interface ResultProps
     claim: Claim;
     quartier: string;
     writable: boolean;
+    onWrite?: () => void;
+    onBack?: () => void;
+    onHelp?: () => void;
 }
 
-export function ResultStep({ check, claim, quartier, writable }: ResultProps)
+export function ResultStep({ check, claim, quartier, writable, onWrite, onBack, onHelp }: ResultProps)
 {
     const over = check.excess > 0;
 
     return (
         <main className="screen result">
+            {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Modifier le bail</button>}
             <Headline check={check} />
             <dl className="figures">
                 <div className="figure">
@@ -34,8 +38,8 @@ export function ResultStep({ check, claim, quartier, writable }: ResultProps)
             <Sources check={check} claim={claim} quartier={quartier} />
             <div className="grow" />
             <div className="stack">
-                {writable && <button type="button" className="primary">Préparer la lettre au propriétaire</button>}
-                <button type="button" className="secondary">Trouver une aide gratuite</button>
+                {writable && <button type="button" className="primary" onClick={onWrite}>Préparer la lettre au propriétaire</button>}
+                {onHelp !== undefined && <button type="button" className="secondary" onClick={onHelp}>Trouver une aide gratuite</button>}
             </div>
             <p className="fine">Une estimation, pas un conseil juridique. Seuls l'arrêté préfectoral et votre bail font foi.</p>
         </main>
@@ -99,7 +103,7 @@ function ComplementNote({ complement, on }: { complement: Complement; on: Day })
     );
 }
 
-function Sources({ check, claim, quartier }: Omit<ResultProps, "writable">)
+function Sources({ check, claim, quartier }: Pick<ResultProps, "check" | "claim" | "quartier">)
 {
     const { decree, majored, flat } = check.rate;
 
