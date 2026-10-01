@@ -2,12 +2,25 @@
 
 import type { FormEvent } from "react";
 
+import type { Problem } from "../lib/flow";
+
 export interface AddressProps
 {
+    typed?: string;
+    problem?: Problem | null;
     onFind?: (typed: string) => void;
 }
 
-export function AddressStep({ onFind }: AddressProps)
+export const problems: Record<Problem, string> = {
+    "not-found": "Cette adresse n'a pas été trouvée. Vérifiez le numéro, la rue et l'arrondissement.",
+    "not-paris": "Cette adresse n'est pas à Paris. Plafond ne couvre pour l'instant que Paris.",
+    "street-only": "Seule la rue a été trouvée. Ajoutez le numéro de l'immeuble.",
+    "unreachable": "Le service public de géocodage ne répond pas. Réessayez dans un instant.",
+    "border": "Cette adresse tombe sur la limite entre deux quartiers. Précisez le numéro ou vérifiez sur le plan de la Ville de Paris.",
+    "outside": "Cette adresse n'a pas pu être placée dans un quartier de Paris.",
+};
+
+export function AddressStep({ typed = "", problem = null, onFind }: AddressProps)
 {
     function find(event: FormEvent<HTMLFormElement>)
     {
@@ -26,7 +39,16 @@ export function AddressStep({ onFind }: AddressProps)
             </p>
             <form className="stack" onSubmit={find}>
                 <label htmlFor="address" className="label">Adresse du logement</label>
-                <input id="address" type="text" autoComplete="street-address" className="field" />
+                <input
+                    id="address"
+                    type="text"
+                    autoComplete="street-address"
+                    defaultValue={typed}
+                    className="field"
+                    aria-invalid={problem === null ? undefined : true}
+                    aria-describedby={problem === null ? undefined : "address-error"}
+                />
+                {problem !== null && <p id="address-error" className="error">{problems[problem]}</p>}
                 <button type="submit" className="primary">Trouver le quartier</button>
             </form>
             <div className="grow" />
