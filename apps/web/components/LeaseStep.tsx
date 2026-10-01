@@ -11,6 +11,7 @@ export interface LeaseProps
 {
     fields: LeaseFields;
     errors: FieldErrors;
+    noRate?: boolean;
     onAnswer?: (fields: LeaseFields) => void;
 }
 
@@ -24,7 +25,7 @@ const answers: [string, string][] = [
     ["no", "non"],
 ];
 
-export function LeaseStep({ fields, errors, onAnswer }: LeaseProps)
+export function LeaseStep({ fields, errors, noRate = false, onAnswer }: LeaseProps)
 {
     function answer(event: FormEvent<HTMLFormElement>)
     {
@@ -53,6 +54,12 @@ export function LeaseStep({ fields, errors, onAnswer }: LeaseProps)
                     value={fields.stated}
                     error={errors.stated}
                 />
+                {noRate && (
+                    <p className="error" role="alert">
+                        Aucun loyer de référence n'est disponible pour cette date de signature. L'encadrement s'applique aux
+                        baux signés à partir du 1er juillet 2019, et l'arrêté le plus récent n'est peut-être pas encore intégré.
+                    </p>
+                )}
                 <button type="submit" className="primary">Vérifier mon loyer</button>
             </LocalForm>
         </main>
