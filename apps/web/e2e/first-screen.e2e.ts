@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) =>
@@ -74,4 +75,12 @@ test("an address typed and sent never reaches our server", async ({ page, baseUR
 
     expect(ours).toEqual([]);
     expect(page.url()).not.toContain("Louvre");
+});
+
+// Next.js adds its own live region for route changes outside the page's landmarks; it is not ours to fix.
+test("the first screen passes an accessibility scan, contrast included", async ({ page }) =>
+{
+    const found = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
+
+    expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
 });
