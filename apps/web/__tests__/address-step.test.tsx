@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { AddressStep } from "../components/AddressStep";
+import { AddressStep, problems } from "../components/AddressStep";
 
 const page = renderToStaticMarkup(<AddressStep />);
 
@@ -38,4 +38,31 @@ test("the address field has no name, so a form sent too early carries nothing", 
 
     expect(field).not.toBe("");
     expect(field).not.toContain("name=");
+});
+
+test("every problem the search can meet is explained under the field and tied to it", () =>
+{
+    for (const [problem, explained] of Object.entries(problems))
+    {
+        const refused = renderToStaticMarkup(<AddressStep typed="4 place du louvre" problem={problem as keyof typeof problems} />);
+        const field = refused.match(/<input[^>]*id="address"[^>]*>/)?.[0] ?? "";
+
+        expect(refused, problem).toContain(explained.replaceAll("'", "&#x27;"));
+        expect(field, problem).toContain('aria-invalid="true"');
+        expect(field, problem).toContain('aria-describedby="address-error"');
+        expect(refused, problem).toMatch(/id="address-error"/);
+    }
+});
+
+test("what was typed stays in the field when the search sends it back", () =>
+{
+    const back = renderToStaticMarkup(<AddressStep typed="4 place du louvre" problem="not-found" />);
+
+    expect(back.match(/<input[^>]*id="address"[^>]*>/)?.[0]).toContain('value="4 place du louvre"');
+});
+
+test("a first visit shows no error", () =>
+{
+    expect(page).not.toContain("address-error");
+    expect(page).not.toContain("aria-invalid");
 });
