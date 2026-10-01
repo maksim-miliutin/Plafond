@@ -67,3 +67,10 @@ test("what was typed stays in place when the form comes back", () =>
     expect(checked.some((input) => input.includes('name="rooms"') && input.includes('value="3"'))).toBe(true);
     expect(checked.some((input) => input.includes('name="furnished"') && input.includes('value="yes"'))).toBe(true);
 });
+
+// A form sends its named fields to our own server when submitted before the script takes over,
+// and the rent would land in the server log. A form with method dialog outside a dialog sends nothing.
+test("the lease form sends nothing anywhere, even before the page wakes up", () =>
+{
+    expect(page()).toMatch(/<form[^>]*method="dialog"/);
+});

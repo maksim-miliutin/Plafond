@@ -1,10 +1,17 @@
+"use client";
+
+import type { FormEvent } from "react";
+
 import { periods, rooms } from "@plafond/domain";
-import type { FieldErrors, LeaseFields } from "../lib/lease";
+
+import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
+import { LocalForm } from "./LocalForm";
 
 export interface LeaseProps
 {
     fields: LeaseFields;
     errors: FieldErrors;
+    onAnswer?: (fields: LeaseFields) => void;
 }
 
 const lettings: [string, string][] = [
@@ -17,14 +24,20 @@ const answers: [string, string][] = [
     ["no", "non"],
 ];
 
-export function LeaseStep({ fields, errors }: LeaseProps)
+export function LeaseStep({ fields, errors, onAnswer }: LeaseProps)
 {
+    function answer(event: FormEvent<HTMLFormElement>)
+    {
+        event.preventDefault();
+        onAnswer?.(fieldsFrom(new FormData(event.currentTarget)));
+    }
+
     return (
         <main className="screen">
             <p className="step">Votre bail</p>
             <h1 className="title">Ce que dit votre bail</h1>
             <p className="lead">Tout figure dans le contrat de location, le plus souvent sur la première page.</p>
-            <form className="stack form" noValidate>
+            <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <Choice name="rooms" legend="Pièces principales" options={Object.entries(rooms)} value={fields.rooms} error={errors.rooms} />
                 <Choice name="period" legend="Construction de l'immeuble" options={Object.entries(periods)} value={fields.period} error={errors.period} />
                 <Choice name="furnished" legend="Location" options={lettings} value={fields.furnished} error={errors.furnished} />
@@ -41,7 +54,7 @@ export function LeaseStep({ fields, errors }: LeaseProps)
                     error={errors.stated}
                 />
                 <button type="submit" className="primary">Vérifier mon loyer</button>
-            </form>
+            </LocalForm>
         </main>
     );
 }

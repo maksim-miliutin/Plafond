@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { leaseFrom, type LeaseFields } from "../lib/lease";
+import { fieldsFrom, leaseFrom, type LeaseFields } from "../lib/lease";
 
 const filled: LeaseFields = {
     rooms: "3",
@@ -71,4 +71,15 @@ test("a choice outside the offered lists is refused", () =>
     expect(leaseFrom({ ...filled, furnished: "maybe" }, context)).toMatchObject({ fields: { furnished: expect.any(String) } });
     expect(leaseFrom({ ...filled, stated: "perhaps" }, context)).toMatchObject({ fields: { stated: expect.any(String) } });
     expect(leaseFrom({ ...filled, signedOn: "01/09/2025" }, context)).toMatchObject({ fields: { signedOn: expect.any(String) } });
+});
+
+test("a sent form reads back as every field, the unanswered ones empty", () =>
+{
+    const sent = new FormData();
+    sent.set("rooms", "3");
+    sent.set("rent", "1 500");
+    sent.set("stated", "no");
+    sent.set("complement", "");
+
+    expect(fieldsFrom(sent)).toEqual({ ...Object.fromEntries(Object.keys(filled).map((key) => [key, ""])), rooms: "3", rent: "1 500", stated: "no" });
 });

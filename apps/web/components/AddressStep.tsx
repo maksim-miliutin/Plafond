@@ -3,6 +3,7 @@
 import type { FormEvent } from "react";
 
 import type { Problem } from "../lib/flow";
+import { LocalForm } from "./LocalForm";
 
 export interface AddressProps
 {
@@ -37,7 +38,7 @@ export function AddressStep({ typed = "", problem = null, onFind }: AddressProps
                 À Paris, le loyer au mètre carré est plafonné depuis le 1er juillet 2019. Le plafond dépend du quartier :
                 commencez par l'adresse du logement.
             </p>
-            <form className="stack" onSubmit={find}>
+            <LocalForm className="stack" onSubmit={find}>
                 <label htmlFor="address" className="label">Adresse du logement</label>
                 <input
                     id="address"
@@ -50,7 +51,7 @@ export function AddressStep({ typed = "", problem = null, onFind }: AddressProps
                 />
                 {problem !== null && <p id="address-error" className="error">{problems[problem]}</p>}
                 <button type="submit" className="primary">Trouver le quartier</button>
-            </form>
+            </LocalForm>
             <div className="grow" />
             <aside className="note">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
