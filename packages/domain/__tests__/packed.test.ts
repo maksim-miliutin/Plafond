@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 
-import { PackedError, pack, unpack } from "../src/packed.js";
+import { PackedError, pack, packQuartiers, unpack, unpackQuartiers } from "../src/packed.js";
+import type { Quartier } from "../src/quartier.js";
 import type { Decree, Rate } from "../src/rates.js";
 
 const annulled: Decree = {
@@ -62,4 +63,26 @@ test("a row that cannot be read back is a breakage and names its place", () =>
     expect(() => unpack(broken([80, 4, "after-1990", 0, 22.1, 2650, 1550, 0]))).toThrow(PackedError);
     expect(() => unpack(broken([80, 4, "after-1990", 0, 2210, 2650]))).toThrow(PackedError);
     expect(() => unpack(broken([80, 4, "after-1990", 0, 2210, 2650, 1550, 0, 0]))).toThrow(PackedError);
+});
+
+const outlines: Quartier[] = [
+    { number: 1, name: "Saint-Germain-l'Auxerrois", rings: [[[2.34, 48.86], [2.345, 48.86], [2.345, 48.863], [2.34, 48.86]]] },
+    { number: 7, name: "Arts-et-Métiers", rings: [[[2.35, 48.86], [2.36, 48.86], [2.36, 48.87], [2.35, 48.86]], [[2.352, 48.862], [2.353, 48.862], [2.353, 48.863], [2.352, 48.862]]] },
+];
+
+test("packed outlines unpack to the very quartiers they were made from, through json as well", () =>
+{
+    expect(unpackQuartiers(JSON.parse(JSON.stringify(packQuartiers(outlines))))).toEqual(outlines);
+});
+
+test("outlines that cannot be read back are a breakage", () =>
+{
+    const packed = packQuartiers(outlines);
+
+    expect(() => unpackQuartiers({ ...packed, version: 2 })).toThrow(PackedError);
+    expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], number: 1.5 }] })).toThrow(PackedError);
+    expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], name: "" }] })).toThrow(PackedError);
+    expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: [[[2.3, "48.8"]]] }] })).toThrow(/quartier 0/);
+    expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: "rings" }] })).toThrow(PackedError);
+    expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: [[[2.3, 48.8, 35]]] }] })).toThrow(PackedError);
 });
