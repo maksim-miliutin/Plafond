@@ -66,3 +66,8 @@ test("a first visit shows no error", () =>
     expect(page).not.toContain("address-error");
     expect(page).not.toContain("aria-invalid");
 });
+
+test("the address form sends nothing anywhere either", () =>
+{
+    expect(page).toMatch(/<form[^>]*method="dialog"/);
+});
