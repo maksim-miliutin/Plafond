@@ -1,4 +1,5 @@
 import { periods, rooms } from "./labels.js";
+import type { Quartier } from "./quartier.js";
 import type { Decree, Period, Rate, Rooms } from "./rates.js";
 
 export class PackedError extends Error
@@ -88,4 +89,48 @@ function isRow(row: unknown): row is Row
         && Object.hasOwn(periods, period)
         && (furnished === 0 || furnished === 1)
         && rest.every((value) => Number.isInteger(value));
+}
+
+export interface PackedQuartiers
+{
+    version: 1;
+    quartiers: Quartier[];
+}
+
+export function packQuartiers(quartiers: readonly Quartier[]): PackedQuartiers
+{
+    return { version: 1, quartiers: [...quartiers] };
+}
+
+export function unpackQuartiers(source: unknown): Quartier[]
+{
+    if (typeof source !== "object" || source === null || !("version" in source) || source.version !== 1
+        || !("quartiers" in source) || !Array.isArray(source.quartiers))
+    {
+        throw new PackedError("these are not packed outlines of version 1");
+    }
+
+    return source.quartiers.map((quartier: unknown, index: number) =>
+    {
+        if (!isQuartier(quartier))
+        {
+            throw new PackedError(`quartier ${index} cannot be read back`);
+        }
+
+        return quartier;
+    });
+}
+
+function isQuartier(value: unknown): value is Quartier
+{
+    if (typeof value !== "object" || value === null || !("number" in value) || !("name" in value) || !("rings" in value))
+    {
+        return false;
+    }
+
+    const ringsRead = Array.isArray(value.rings) && value.rings.every((ring: unknown) =>
+        Array.isArray(ring) && ring.every((at: unknown) =>
+            Array.isArray(at) && at.length === 2 && at.every((degrees: unknown) => Number.isFinite(degrees))));
+
+    return Number.isInteger(value.number) && typeof value.name === "string" && value.name !== "" && ringsRead;
 }

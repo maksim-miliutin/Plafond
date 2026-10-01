@@ -4,8 +4,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "node scripts/rates.ts && next dev",
-        "build": "tsc --noEmit -p . && node scripts/rates.ts && next build",
+        "dev": "node scripts/tables.ts && next dev",
+        "build": "tsc --noEmit -p . && node scripts/tables.ts && next build",
         "start": "next start"
     },
     "dependencies": {

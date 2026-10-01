@@ -6,4 +6,4 @@ export { FormatError, euros, frenchDay, ordinal, percent, squareMetres } from ".
 export { centsFrom, hundredthsFrom, type Unreadable } from "./input.js";
 export { letting, periods, rooms } from "./labels.js";
 export { letter, letterText, type Demand, type Ground, type Letter, type LetterInput, type NothingToClaim } from "./letter.js";
-export { PackedError, pack, unpack, type Packed } from "./packed.js";
+export { PackedError, pack, packQuartiers, unpack, unpackQuartiers, type Packed, type PackedQuartiers } from "./packed.js";

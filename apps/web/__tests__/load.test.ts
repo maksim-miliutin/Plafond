@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
 
-import { PackedError, pack, type Rate } from "@plafond/domain";
+import { PackedError, pack, packQuartiers, type Quartier, type Rate } from "@plafond/domain";
 import type { Fetcher } from "@plafond/address";
 
-import { loadRates } from "../lib/rates";
+import { loadQuartiers, loadRates } from "../lib/load";
 
 const rates: Rate[] = [
     {
@@ -44,4 +44,14 @@ test("a table that cannot be reached is told apart from a broken one", async () 
     expect(await loadRates(offline)).toEqual({ kind: "unreachable" });
     expect(await loadRates(serving(pack(rates), [], false))).toEqual({ kind: "unreachable" });
     await expect(loadRates(serving({ version: 7 }))).rejects.toThrow(PackedError);
+});
+
+test("the quartier outlines arrive the same way, whole and in one request", async () =>
+{
+    const asked: string[] = [];
+    const quartiers: Quartier[] = [{ number: 1, name: "Saint-Germain-l'Auxerrois", rings: [[[2.34, 48.86], [2.345, 48.86], [2.34, 48.863], [2.34, 48.86]]] }];
+
+    expect(await loadQuartiers(serving(packQuartiers(quartiers), asked))).toEqual(quartiers);
+    expect(asked).toEqual(["/quartiers.json"]);
+    expect(await loadQuartiers(serving(packQuartiers(quartiers), [], false))).toEqual({ kind: "unreachable" });
 });
