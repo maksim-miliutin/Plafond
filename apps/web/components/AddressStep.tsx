@@ -9,6 +9,7 @@ export interface AddressProps
 {
     typed?: string;
     problem?: Problem | null;
+    busy?: boolean;
     onFind?: (typed: string) => void;
 }
 
@@ -21,7 +22,7 @@ export const problems: Record<Problem, string> = {
     "outside": "Cette adresse n'a pas pu être placée dans un quartier de Paris.",
 };
 
-export function AddressStep({ typed = "", problem = null, onFind }: AddressProps)
+export function AddressStep({ typed = "", problem = null, busy = false, onFind }: AddressProps)
 {
     function find(event: FormEvent<HTMLFormElement>)
     {
@@ -50,7 +51,9 @@ export function AddressStep({ typed = "", problem = null, onFind }: AddressProps
                     aria-describedby={problem === null ? undefined : "address-error"}
                 />
                 {problem !== null && <p id="address-error" className="error">{problems[problem]}</p>}
-                <button type="submit" className="primary">Trouver le quartier</button>
+                <button type="submit" className="primary" disabled={busy}>
+                    {busy ? "Recherche du quartier…" : "Trouver le quartier"}
+                </button>
             </LocalForm>
             <div className="grow" />
             <aside className="note">

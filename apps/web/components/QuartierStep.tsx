@@ -9,11 +9,13 @@ export interface QuartierProps
     around: readonly Quartier[];
     address: string;
     point: Point;
+    onConfirm?: () => void;
+    onBack?: () => void;
 }
 
 const frame = { width: 382, height: 300 };
 
-export function QuartierStep({ quartier, around, address, point }: QuartierProps)
+export function QuartierStep({ quartier, around, address, point, onConfirm, onBack }: QuartierProps)
 {
     const map = drawing(quartier, around, point, frame);
 
@@ -41,8 +43,8 @@ export function QuartierStep({ quartier, around, address, point }: QuartierProps
             </dl>
             <div className="grow" />
             <div className="stack">
-                <button type="button" className="primary">C'est bien ça</button>
-                <button type="button" className="secondary">Corriger l'adresse</button>
+                <button type="button" className="primary" onClick={onConfirm}>C'est bien ça</button>
+                <button type="button" className="secondary" onClick={onBack}>Corriger l'adresse</button>
             </div>
             <p className="fine">Les limites des quartiers viennent du plan officiel de la Ville de Paris.</p>
         </main>

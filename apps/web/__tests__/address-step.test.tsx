@@ -71,3 +71,11 @@ test("the address form sends nothing anywhere either", () =>
 {
     expect(page).toMatch(/<form[^>]*method="dialog"/);
 });
+
+test("while the search runs the button says so and cannot be pressed twice", () =>
+{
+    const button = renderToStaticMarkup(<AddressStep busy />).match(/<button[^>]*>[^<]*<\/button>/)?.[0] ?? "";
+
+    expect(button).toContain('disabled=""');
+    expect(button).toContain("Recherche du quartier");
+});

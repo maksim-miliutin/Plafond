@@ -3,7 +3,7 @@ import { expect, test } from "vitest";
 import { PackedError, pack, packQuartiers, type Quartier, type Rate } from "@plafond/domain";
 import type { Fetcher } from "@plafond/address";
 
-import { loadQuartiers, loadRates } from "../lib/load";
+import { loadQuartiers, loadRates, loadTables } from "../lib/load";
 
 const rates: Rate[] = [
     {
@@ -54,4 +54,14 @@ test("the quartier outlines arrive the same way, whole and in one request", asyn
     expect(await loadQuartiers(serving(packQuartiers(quartiers), asked))).toEqual(quartiers);
     expect(asked).toEqual(["/quartiers.json"]);
     expect(await loadQuartiers(serving(packQuartiers(quartiers), [], false))).toEqual({ kind: "unreachable" });
+});
+
+test("the app gets both tables or neither", async () =>
+{
+    const quartiers: Quartier[] = [{ number: 1, name: "Halles", rings: [[[2.34, 48.86], [2.345, 48.86], [2.34, 48.863], [2.34, 48.86]]] }];
+    const both: Fetcher = async (url) => ({ ok: true, status: 200, json: async () => (url.includes("rates") ? pack(rates) : packQuartiers(quartiers)) });
+    const halfway: Fetcher = async (url) => ({ ok: url.includes("rates"), status: url.includes("rates") ? 200 : 503, json: async () => pack(rates) });
+
+    expect(await loadTables(both)).toEqual({ rates, quartiers });
+    expect(await loadTables(halfway)).toEqual({ kind: "unreachable" });
 });

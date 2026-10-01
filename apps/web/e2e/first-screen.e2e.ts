@@ -3,6 +3,8 @@ import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) =>
 {
+    // The geocoder is a public service; tests answer in its place so they never leave the machine.
+    await page.route("https://data.geopf.fr/**", (route) => route.fulfill({ json: { type: "FeatureCollection", features: [] } }));
     await page.goto("/");
 });
 

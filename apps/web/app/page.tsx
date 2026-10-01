@@ -1,6 +1,6 @@
-import { AddressStep } from "../components/AddressStep";
+import { Plafond } from "../components/Plafond";
 
 export default function Home()
 {
-    return <AddressStep />;
+    return <Plafond />;
 }

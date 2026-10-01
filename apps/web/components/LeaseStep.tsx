@@ -13,6 +13,7 @@ export interface LeaseProps
     errors: FieldErrors;
     noRate?: boolean;
     onAnswer?: (fields: LeaseFields) => void;
+    onBack?: () => void;
 }
 
 const lettings: [string, string][] = [
@@ -25,7 +26,7 @@ const answers: [string, string][] = [
     ["no", "non"],
 ];
 
-export function LeaseStep({ fields, errors, noRate = false, onAnswer }: LeaseProps)
+export function LeaseStep({ fields, errors, noRate = false, onAnswer, onBack }: LeaseProps)
 {
     function answer(event: FormEvent<HTMLFormElement>)
     {
@@ -35,6 +36,7 @@ export function LeaseStep({ fields, errors, noRate = false, onAnswer }: LeasePro
 
     return (
         <main className="screen">
+            {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Retour au quartier</button>}
             <p className="step">Votre bail</p>
             <h1 className="title">Ce que dit votre bail</h1>
             <p className="lead">Tout figure dans le contrat de location, le plus souvent sur la première page.</p>

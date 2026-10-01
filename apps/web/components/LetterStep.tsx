@@ -8,13 +8,14 @@ import { LetterActions } from "./LetterActions";
 export interface LetterProps
 {
     letter: Letter;
+    onBack?: () => void;
 }
 
-export function LetterStep({ letter }: LetterProps)
+export function LetterStep({ letter, onBack }: LetterProps)
 {
     return (
         <main className="screen">
-            <button type="button" className="back">Retour au résultat</button>
+            <button type="button" className="back" onClick={onBack}>Retour au résultat</button>
             <h1 className="title">Votre lettre au propriétaire</h1>
             <p className="lead">
                 Complétez les noms entre crochets, relisez, puis envoyez-la en recommandé avec accusé de réception.
