@@ -82,7 +82,7 @@ export function letterText(letter: Letter): string
         letter.sender.join("\n"),
         letter.recipient.join("\n"),
         letter.dated,
-        `${letter.subject}\n${letter.delivery}`,
+        `${letter.delivery}\n${letter.subject}`,
         letter.greeting,
         ...letter.opening,
         ...demands,
