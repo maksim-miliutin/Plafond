@@ -25,8 +25,8 @@ export function LetterStep({ letter, onBack }: LetterProps)
                 <Lines className="from" lines={letter.sender} />
                 <Lines className="to" lines={letter.recipient} />
                 <p className="to">{letter.dated}</p>
-                <p className="subject">{letter.subject}</p>
                 <p>{letter.delivery}</p>
+                <p className="subject">{letter.subject}</p>
                 <p>{letter.greeting}</p>
                 {letter.opening.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                 <ol className="demands">

@@ -93,3 +93,10 @@ test("the letter can be printed or copied from the screen", () =>
     expect(page()).toContain("Imprimer ou enregistrer en PDF");
     expect(page()).toContain("Copier le texte");
 });
+
+test("the letter on screen states how it is sent above its subject", () =>
+{
+    const document = page().slice(page().indexOf("<article"));
+
+    expect(document.indexOf("Lettre recommandée avec accusé de réception")).toBeLessThan(document.indexOf("Objet"));
+});

@@ -193,3 +193,10 @@ test("an address the geocoder gives without a number is not put after au", () =>
     expect(sent.opening[0]).toContain("situé Place du Louvre, 75001 Paris,");
 });
 
+
+test("the copied letter states how it is sent above its subject, as French letters do", () =>
+{
+    const copy = letterText(written() as Letter);
+
+    expect(copy.indexOf("Lettre recommandée avec accusé de réception")).toBeLessThan(copy.indexOf("Objet"));
+});
