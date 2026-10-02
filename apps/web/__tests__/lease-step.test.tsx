@@ -84,3 +84,14 @@ test("a lease signed on a day no rate covers is told so, above the button, and o
     expect(refused.indexOf("Aucun loyer de référence")).toBeLessThan(refused.indexOf("Vérifier mon loyer"));
     expect(page()).not.toContain("Aucun loyer de référence");
 });
+
+// A date field shows the phone's own order of day and month; 01/09/2025 reads as January to a phone set to English.
+test("a date already filled is spelled out under its field, so day and month cannot be swapped unseen", () =>
+{
+    const filled = page({ signedOn: "2025-09-01" });
+    const field = filled.match(/<input[^>]*id="signedOn"[^>]*>/)?.[0] ?? "";
+
+    expect(filled).toMatch(/id="signedOn-read"[^>]*>Soit le 1er septembre 2025\.</);
+    expect(field).toMatch(/aria-describedby="[^"]*signedOn-read/);
+    expect(page()).not.toContain("Soit le");
+});
