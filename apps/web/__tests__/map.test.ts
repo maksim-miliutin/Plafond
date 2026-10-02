@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 
 import type { Quartier } from "@plafond/domain";
 
-import { drawing } from "../lib/map";
+import { drawing, mercator } from "../lib/map";
 
 // 300 metres a side at the latitude of Paris: a degree of longitude is shorter there than a degree of latitude.
 const lat = 48.86;
@@ -69,3 +69,42 @@ test("only the quartier itself is marked as the one found", () =>
 
     expect(map.paths.map((path) => [path.number, path.own])).toEqual([[1, true], [2, false]]);
 });
+
+// Counted apart from our code, with the asinh form of the projection: the tile numbers OpenStreetMap and IGN use at zoom 16.
+test("known places land on the tiles the map servers number them with", () =>
+{
+    const tile = (lon: number, lat: number) => [Math.floor(mercator(lon, lat).x * 2 ** 16), Math.floor(mercator(lon, lat).y * 2 ** 16)];
+
+    expect(tile(2.3499, 48.853)).toEqual([33195, 22547]);
+    expect(tile(2.2945, 48.8584)).toEqual([33185, 22545]);
+});
+
+test("the tiles cover the whole frame, all from one zoom, never stretched past their own pixels", () =>
+{
+    for (const shape of [frame, { width: 400, height: 200 }, { width: 382, height: 300 }])
+    {
+        const { tiles } = drawing(own, [beside], { lon: 2.341, lat }, shape);
+
+        expect(new Set(tiles.map((t) => t.z)).size).toBe(1);
+        expect(Math.min(...tiles.map((t) => t.left))).toBeLessThanOrEqual(0);
+        expect(Math.min(...tiles.map((t) => t.top))).toBeLessThanOrEqual(0);
+        expect(Math.max(...tiles.map((t) => t.left + t.size))).toBeGreaterThanOrEqual(shape.width);
+        expect(Math.max(...tiles.map((t) => t.top + t.size))).toBeGreaterThanOrEqual(shape.height);
+        expect(tiles.every((t) => t.size > 128 && t.size <= 256)).toBe(true);
+    }
+});
+
+test("the tile drawn under the pin is the tile that holds the address", () =>
+{
+    const point = { lon: 2.3412, lat: lat + north / 3 };
+    const { tiles, pin } = drawing(own, [], point, frame);
+    const under = tiles.find((t) => pin.x >= t.left && pin.x < t.left + t.size && pin.y >= t.top && pin.y < t.top + t.size);
+    const count = 2 ** under!.z;
+
+    const at = mercator(point.lon, point.lat);
+
+    expect([under!.x, under!.y]).toEqual([Math.floor(at.x * count), Math.floor(at.y * count)]);
+    expect(pin.x - under!.left).toBeCloseTo((at.x * count - under!.x) * under!.size, 2);
+    expect(pin.y - under!.top).toBeCloseTo((at.y * count - under!.y) * under!.size, 2);
+});
+
