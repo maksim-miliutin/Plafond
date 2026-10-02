@@ -26,12 +26,13 @@ function serving(body: unknown, asked: string[] = [], ok = true): Fetcher
 }
 
 // Asking for one quartier's rates would tell the server where the flat is; the whole table tells it nothing.
+// The address is relative, so the app works under the project path GitHub Pages gives it.
 test("the whole table arrives in one request that says nothing about the flat", async () =>
 {
     const asked: string[] = [];
 
     expect(await loadRates(serving(pack(rates), asked))).toEqual(rates);
-    expect(asked).toEqual(["/rates.json"]);
+    expect(asked).toEqual(["rates.json"]);
 });
 
 test("a table that cannot be reached is told apart from a broken one", async () =>
@@ -52,7 +53,7 @@ test("the quartier outlines arrive the same way, whole and in one request", asyn
     const quartiers: Quartier[] = [{ number: 1, name: "Saint-Germain-l'Auxerrois", rings: [[[2.34, 48.86], [2.345, 48.86], [2.34, 48.863], [2.34, 48.86]]] }];
 
     expect(await loadQuartiers(serving(packQuartiers(quartiers), asked))).toEqual(quartiers);
-    expect(asked).toEqual(["/quartiers.json"]);
+    expect(asked).toEqual(["quartiers.json"]);
     expect(await loadQuartiers(serving(packQuartiers(quartiers), [], false))).toEqual({ kind: "unreachable" });
 });
 

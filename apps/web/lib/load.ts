@@ -41,7 +41,7 @@ async function load<T>(fetcher: Fetcher, file: string, read: (body: unknown) => 
 {
     try
     {
-        const response = await fetcher(`/${file}`);
+        const response = await fetcher(file);
         if (!response.ok)
         {
             return { kind: "unreachable" };
