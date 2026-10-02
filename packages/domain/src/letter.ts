@@ -45,6 +45,10 @@ export interface LetterInput
 
 const law = "l'article 140 de la loi n° 2018-1021 du 23 novembre 2018";
 
+// Paris handed the fines of article 140, VII to its mayor in December 2018; they punish a rent above the cap.
+const fine = "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
+    + "par la Ville de Paris, en application de l'article 140, VII de la même loi.";
+
 export function letter(input: LetterInput): Letter | NothingToClaim
 {
     const demands = [excess(input), unstated(input), complement(input)].filter((demand) => demand !== null);
@@ -64,6 +68,7 @@ export function letter(input: LetterInput): Letter | NothingToClaim
         opening: opening(input),
         demands,
         closing: [
+            ...(demands.some((demand) => demand.ground === "excess") ? [fine] : []),
             "Je vous remercie de me répondre dans un délai d'un mois à compter de la réception de cette lettre. À défaut "
                 + "de réponse ou d'accord, je me réserve la possibilité de saisir la commission départementale de "
                 + "conciliation ou le juge compétent.",

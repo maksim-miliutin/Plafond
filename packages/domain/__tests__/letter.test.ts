@@ -213,3 +213,14 @@ test("the demands to lower the rent and to write in the reference rents are a fo
     expect(said(refund, "excess")).toMatch(/je vous mets en demeure de ramener le loyer de base[^.]* et de me rembourser le loyer perçu au-delà du plafond/);
     expect(said(all, "excess") + said(all, "unstated")).not.toContain("je vous demande");
 });
+
+test("a rent over the cap is reminded of the fine the City can impose, and only then", () =>
+{
+    const over = (written() as Letter).closing.join(" ");
+    const unstatedOnly = (written({ rent: 120000, on: "2025-09-30" }, false) as Letter).closing.join(" ");
+    const complementOnly = (written({ rent: 120000, complement: 20000, on: "2025-10-15" }) as Letter).closing.join(" ");
+
+    expect(over).toContain("amende administrative prononcée par la Ville de Paris, en application de l'article 140, VII");
+    expect(unstatedOnly).not.toContain("amende");
+    expect(complementOnly).not.toContain("amende");
+});
