@@ -86,3 +86,14 @@ test("the first screen passes an accessibility scan, contrast included", async (
 
     expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
 });
+
+test("the page can be put on the home screen of a phone", async ({ page }) =>
+{
+    const manifest = await page.locator('link[rel="manifest"]').getAttribute("href");
+    const touchIcon = await page.locator('link[rel="apple-touch-icon"]').getAttribute("href");
+
+    expect(manifest).not.toBeNull();
+    expect(touchIcon).not.toBeNull();
+    expect((await page.request.get(manifest!)).ok()).toBe(true);
+    expect((await page.request.get(touchIcon!)).ok()).toBe(true);
+});

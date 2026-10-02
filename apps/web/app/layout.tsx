@@ -13,6 +13,7 @@ import "./globals.css";
 export const metadata: Metadata = {
     title: "Plafond",
     description: "Vérifiez si votre loyer à Paris dépasse le plafond légal.",
+    appleWebApp: { capable: true, title: "Plafond", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
