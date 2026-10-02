@@ -20,9 +20,10 @@ export interface Needs
     now: () => Date;
 }
 
+// GitHub Pages lets a browser keep a file for ten minutes; asking first keeps an old table out of a fresh check.
 const live: Needs = {
     geocoder: geoplateforme((url) => fetch(url)),
-    tables: () => loadTables((url) => fetch(url)),
+    tables: () => loadTables((url) => fetch(url, { cache: "no-cache" })),
     now: () => new Date(),
 };
 
