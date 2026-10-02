@@ -20,13 +20,16 @@ The City table stops at the rates of July 2025. The decree of 12 June 2026 appli
 
 ## Status
 
-The calculation core lives in `packages/domain`. The web app in `apps/web` (Next.js) is being laid out screen by screen; it shows only what the domain calculates, and the flow is wired once the results match the official reference rent tool of the City of Paris.
+The calculation core lives in `packages/domain`. The web app in `apps/web` (Next.js) walks from the address to the letter and shows only what the domain calculates. Until its figures are checked against the official reference rent tool, it is a trial version.
 
 ## Development
 
-The Node version is in `.nvmrc`.
+The Node version is in `.nvmrc`; the test tools need 24.15 or newer.
 
 ```
 npm ci
 npm test
+npm run dev
 ```
+
+`npm run dev` builds the shared packages, then serves the app at http://localhost:3000.
