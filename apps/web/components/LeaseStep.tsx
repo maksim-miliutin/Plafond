@@ -1,8 +1,8 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
-import { periods, rooms } from "@plafond/domain";
+import { frenchDay, isDay, periods, rooms } from "@plafond/domain";
 
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
 import { LocalForm } from "./LocalForm";
@@ -107,7 +107,13 @@ interface TypedProps
 
 function Typed({ id, label, hint, type = "text", value, error }: TypedProps)
 {
-    const notes = [hint === undefined ? null : `${id}-hint`, error === undefined ? null : `${id}-error`].filter((note) => note !== null);
+    const [typed, setTyped] = useState(value);
+    const spelled = type === "date" && isDay(typed);
+    const notes = [
+        hint === undefined ? null : `${id}-hint`,
+        spelled ? `${id}-read` : null,
+        error === undefined ? null : `${id}-error`,
+    ].filter((note) => note !== null);
 
     return (
         <div className="typed">
@@ -119,10 +125,12 @@ function Typed({ id, label, hint, type = "text", value, error }: TypedProps)
                 type={type}
                 inputMode={type === "text" ? "decimal" : undefined}
                 defaultValue={value}
+                onChange={(event) => setTyped(event.currentTarget.value)}
                 className="field"
                 aria-invalid={error === undefined ? undefined : true}
                 aria-describedby={notes.length === 0 ? undefined : notes.join(" ")}
             />
+            {spelled && <p id={`${id}-read`} className="hint">Soit le {frenchDay(typed)}.</p>}
             {error !== undefined && <p id={`${id}-error`} className="error">{error}</p>}
         </div>
     );
