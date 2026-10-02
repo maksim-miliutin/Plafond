@@ -200,3 +200,16 @@ test("the copied letter states how it is sent above its subject, as French lette
 
     expect(copy.indexOf("Lettre recommandée avec accusé de réception")).toBeLessThan(copy.indexOf("Objet"));
 });
+
+// The subject says mise en demeure; the demands have to say it too, in the words article 140, V uses itself.
+test("the demands to lower the rent and to write in the reference rents are a formal notice", () =>
+{
+    const all = written({ on: "2025-09-25" }, false) as Letter;
+    const refund = written() as Letter;
+    const said = (letterOf: Letter, ground: string) => letterOf.demands.find((demand) => demand.ground === ground)!.paragraphs.join(" ");
+
+    expect(said(all, "excess")).toContain("je vous mets en demeure de ramener le loyer de base");
+    expect(said(all, "unstated")).toContain("je vous mets en demeure de porter ces montants au bail");
+    expect(said(refund, "excess")).toMatch(/je vous mets en demeure de ramener le loyer de base[^.]* et de me rembourser le loyer perçu au-delà du plafond/);
+    expect(said(all, "excess") + said(all, "unstated")).not.toContain("je vous demande");
+});
