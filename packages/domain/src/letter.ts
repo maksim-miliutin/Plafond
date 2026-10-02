@@ -96,17 +96,25 @@ export function letterText(letter: Letter): string
 function opening({ check, claim, address, quartier }: LetterInput): string[]
 {
     const { flat, reference, majored, decree } = check.rate;
+    const at = /^\d/.test(address) ? "au " : "";
+    const effect = claim.startsOn === claim.signedOn ? "le même jour" : `le ${frenchDay(claim.startsOn)}`;
 
     return [
-        `Vous me louez le logement situé ${address}, dans le quartier ${quartier}. Il s'agit d'un logement de `
+        `Vous me louez le logement situé ${at}${postal(address)}, dans le quartier ${quartier}. Il s'agit d'un logement de `
             + `${rooms[flat.rooms]}, ${letting(flat.furnished)}, dans un immeuble construit ${periods[flat.period]}, `
             + `d'une surface habitable de ${squareMetres(claim.surface)}. Le bail a été signé le ${frenchDay(claim.signedOn)} `
-            + `et a pris effet le ${frenchDay(claim.startsOn)}.`,
+            + `et a pris effet ${effect}.`,
         `Ce logement est soumis à l'encadrement des loyers prévu par ${law}. Pour cette catégorie de logement, le loyer `
             + `de référence est de ${euros(reference)} par m² et le loyer de référence majoré de ${euros(majored)} par m² `
             + `(${decree.title}, applicable à la date de signature du bail). Le loyer de base ne peut donc pas dépasser `
             + `${euros(majored)} × ${squareMetres(claim.surface)}, soit ${euros(check.cap)} par mois.`,
     ];
+}
+
+// The geocoder writes 4 Place du Louvre 75001 Paris; a French letter sets the postcode apart with a comma.
+function postal(address: string): string
+{
+    return address.replace(/ (\d{5}) /, ", $1 ");
 }
 
 function excess({ check, claim }: LetterInput): Demand | null
