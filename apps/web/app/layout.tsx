@@ -10,22 +10,33 @@ import "@fontsource/source-serif-4/400.css";
 import "@fontsource/source-serif-4/600.css";
 import "./globals.css";
 
+import { navy } from "../lib/brand";
+
 export const metadata: Metadata = {
     title: "Plafond",
     description: "Vérifiez si votre loyer à Paris dépasse le plafond légal.",
+    appleWebApp: { capable: true, title: "Plafond", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
-    themeColor: "#F3F4F1",
+    themeColor: navy,
 };
 
 export default function RootLayout({ children }: { children: ReactNode })
 {
     return (
         <html lang="fr">
-            <body>{children}</body>
+            <body>
+                <header className="beta">
+                    <p role="note">
+                        Version d'essai&nbsp;: les montants sont en cours de vérification avec le simulateur officiel. Ne
+                        vous en servez pas encore pour une démarche.
+                    </p>
+                </header>
+                {children}
+            </body>
         </html>
     );
 }

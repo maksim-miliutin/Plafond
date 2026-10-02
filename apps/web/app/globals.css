@@ -1,12 +1,14 @@
 :root
 {
-    --paper: #F3F4F1;
-    --ink: #18212B;
-    --muted: #4F5B67;
-    --line: #D5D9D3;
-    --field-line: #8A949D;
-    --blue: #1D3F73;
-    --blue-dark: #132B50;
+    --paper: #F2F6FB;
+    --ink: #0E1A2B;
+    --muted: #4A5A70;
+    --line: #D3DDE9;
+    --field-line: #7F93AD;
+    --blue: #022553;
+    --blue-dark: #011A3D;
+    --sky: #C5E1FA;
+    --sky-soft: #E8F2FD;
     --green: #2E6A50;
     --signal: #A34700;
     --display: "Barlow Condensed", "Arial Narrow", sans-serif;
@@ -362,20 +364,20 @@ a:hover
 {
     width: 100%;
     height: auto;
-    background: #E8EAE4;
+    background: #E4ECF6;
     border-radius: 12px;
 }
 
 .map .around
 {
     fill: var(--paper);
-    stroke: #C9CEC6;
+    stroke: #C3D0E0;
     stroke-width: 1.5;
 }
 
 .map .own
 {
-    fill: rgba(29, 63, 115, 0.14);
+    fill: var(--sky);
     stroke: var(--blue);
     stroke-width: 2.5;
 }
@@ -443,7 +445,7 @@ a:hover
 .option:has(input:checked)
 {
     border-color: var(--blue);
-    background: rgba(29, 63, 115, 0.08);
+    background: var(--sky-soft);
 }
 
 .option span
@@ -500,7 +502,7 @@ a:hover
     background: #FFFFFF;
     border: 1px solid var(--line);
     border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(24, 33, 43, 0.08);
+    box-shadow: 0 1px 3px rgba(14, 26, 43, 0.08);
     font-family: var(--letter);
     font-size: 15px;
     line-height: 1.55;
@@ -550,5 +552,29 @@ a:hover
         border: 0;
         box-shadow: none;
         padding: 0;
+    }
+}
+
+.beta
+{
+    margin: 0;
+    padding: 10px 24px;
+    background: var(--blue);
+    color: #FFFFFF;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.beta p
+{
+    margin: 0;
+}
+
+@media print
+{
+    .beta
+    {
+        display: none;
     }
 }
