@@ -552,3 +552,27 @@ a:hover
         padding: 0;
     }
 }
+
+.beta
+{
+    margin: 0;
+    padding: 10px 24px;
+    background: var(--blue);
+    color: #FFFFFF;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.beta p
+{
+    margin: 0;
+}
+
+@media print
+{
+    .beta
+    {
+        display: none;
+    }
+}
