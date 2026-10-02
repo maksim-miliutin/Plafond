@@ -124,18 +124,18 @@ function excess({ check, claim }: LetterInput): Demand | null
         return null;
     }
 
-    const lower = `En application de l'article 140, III, A de la même loi, je vous demande de ramener le loyer de base à `
-        + `${euros(check.cap)} par mois à compter de la prochaine échéance.`;
+    const lower = "Par la présente, et en application de l'article 140, III, A de la même loi, je vous mets en demeure de "
+        + `ramener le loyer de base à ${euros(check.cap)} par mois à compter de la prochaine échéance`;
     const paragraphs = [`Le loyer de base prévu au bail, ${euros(claim.rent)} par mois, dépasse ce plafond de ${euros(check.excess)}.`];
     if (check.recoverable === 0)
     {
-        return { ground: "excess", paragraphs: [...paragraphs, lower] };
+        return { ground: "excess", paragraphs: [...paragraphs, `${lower}.`] };
     }
 
     const span = check.recoverable < check.sinceStart
         ? "pour les trois dernières années, le remboursement ne pouvant remonter plus loin"
         : `pour les ${check.months} mois complets écoulés depuis le ${frenchDay(claim.startsOn)}`;
-    const refund = `Je vous demande également de me rembourser le loyer perçu au-delà du plafond, soit ${euros(check.recoverable)} ${span}.`;
+    const refund = `et de me rembourser le loyer perçu au-delà du plafond, soit ${euros(check.recoverable)} ${span}.`;
 
     return { ground: "excess", paragraphs: [...paragraphs, `${lower} ${refund}`] };
 }
@@ -152,7 +152,7 @@ function unstated({ check, claim, stated }: LetterInput): Demand | null
         ground: "unstated",
         paragraphs: [
             "Le bail ne mentionne pas le loyer de référence et le loyer de référence majoré applicables à ce logement. "
-                + "En application de l'article 140, V de la même loi, je vous demande de porter ces montants au bail, "
+                + "En application de l'article 140, V de la même loi, je vous mets en demeure de porter ces montants au bail, "
                 + `soit ${euros(check.rate.reference)} par m² pour le loyer de référence et ${euros(check.rate.majored)} `
                 + "par m² pour le loyer de référence majoré.",
         ],
