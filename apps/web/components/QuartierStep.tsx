@@ -1,7 +1,7 @@
 import { arrondissementOf, ordinal } from "@plafond/domain";
 import type { Point, Quartier } from "@plafond/domain";
 
-import { drawing } from "../lib/map";
+import { drawing, planIgn } from "../lib/map";
 
 export interface QuartierProps
 {
@@ -32,11 +32,24 @@ export function QuartierStep({ quartier, around, address, point, onConfirm, onBa
                 role="img"
                 aria-label={`Plan du quartier ${quartier.name} avec l'adresse trouvée`}
             >
+                {map.tiles.map((tile) => (
+                    <image
+                        key={`${tile.z}/${tile.x}/${tile.y}`}
+                        href={planIgn(tile)}
+                        x={tile.left}
+                        y={tile.top}
+                        width={tile.size + 0.5}
+                        height={tile.size + 0.5}
+                    />
+                ))}
                 {map.paths.map((path) => (
                     <path key={path.number} d={path.d} className={path.own ? "own" : "around"} fillRule="evenodd" />
                 ))}
                 <circle cx={map.pin.x} cy={map.pin.y} r="7" className="pin" />
             </svg>
+            <p className="credit">
+                Fond de carte © <a href="https://www.ign.fr/">IGN</a>, Plan IGN
+            </p>
             <dl className="found">
                 <dt>Adresse trouvée</dt>
                 <dd>{address}</dd>

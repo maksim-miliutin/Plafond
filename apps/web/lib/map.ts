@@ -79,6 +79,25 @@ export function drawing(own: Quartier, around: readonly Quartier[], point: Point
     };
 }
 
+// IGN serves Plan IGN free and without a key, from the same Géoplateforme as the geocoder, asking only for credit.
+export function planIgn(tile: Tile): string
+{
+    const query = new URLSearchParams({
+        SERVICE: "WMTS",
+        REQUEST: "GetTile",
+        VERSION: "1.0.0",
+        LAYER: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+        STYLE: "normal",
+        FORMAT: "image/png",
+        TILEMATRIXSET: "PM",
+        TILEMATRIX: String(tile.z),
+        TILEROW: String(tile.y),
+        TILECOL: String(tile.x),
+    });
+
+    return `https://data.geopf.fr/wmts?${query}`;
+}
+
 function tilesFor(scale: number, corner: Unit, frame: Frame): Tile[]
 {
     const z = Math.min(deepest, Math.max(0, Math.ceil(Math.log2(scale / tilePixels))));
