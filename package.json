@@ -10,7 +10,8 @@
     ],
     "scripts": {
         "test": "vitest run",
-        "build": "npm run build --workspaces"
+        "build": "npm run build --workspaces",
+        "dev": "npm run build -w @plafond/domain -w @plafond/import -w @plafond/address && npm run dev -w @plafond/web"
     },
     "devDependencies": {
         "typescript": "^7.0.2",
