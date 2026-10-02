@@ -63,7 +63,7 @@ test("the letter shows how the cap follows from the decree and the surface", () 
 {
     const facts = (written() as Letter).opening.join("\n");
 
-    expect(facts).toContain("situé 4 Place du Louvre 75001 Paris, dans le quartier Saint-Germain-l'Auxerrois");
+    expect(facts).toContain("situé au 4 Place du Louvre, 75001 Paris, dans le quartier Saint-Germain-l'Auxerrois");
     expect(facts).toContain("3 pièces, loué meublé, dans un immeuble construit entre 1946 et 1970");
     expect(facts).toContain("Arrêté préfectoral n° 2025-06-16-00003");
     expect(facts).toContain(`32,00${hard}€ × 40${hard}m²`);
@@ -175,3 +175,21 @@ test("the letter's text for copying carries every paragraph, the demands numbere
         expect(copy).toContain(`\n${index + 1}. ${demand.paragraphs[0]}`);
     });
 });
+
+test("a lease that takes effect the day it is signed says so once", () =>
+{
+    const same = (written() as Letter).opening[0];
+    const apart = (written({ signedOn: "2025-08-20", startsOn: "2025-09-01" }) as Letter).opening[0];
+
+    expect(same).toContain("signé le 1er septembre 2025 et a pris effet le même jour.");
+    expect(apart).toContain("signé le 20 août 2025 et a pris effet le 1er septembre 2025.");
+});
+
+test("an address the geocoder gives without a number is not put after au", () =>
+{
+    const lease = { ...claim, on: "2026-09-29" };
+    const sent = letter({ check: check(lease, [rate]) as Check, claim: lease, address: "Place du Louvre 75001 Paris", quartier: "Saint-Germain-l'Auxerrois", stated: true }) as Letter;
+
+    expect(sent.opening[0]).toContain("situé Place du Louvre, 75001 Paris,");
+});
+
