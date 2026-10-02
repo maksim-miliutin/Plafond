@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+import { navy } from "../lib/brand";
+
 export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest
@@ -12,8 +14,8 @@ export default function manifest(): MetadataRoute.Manifest
         start_url: "./",
         scope: "./",
         display: "standalone",
-        background_color: "#F3F4F1",
-        theme_color: "#F3F4F1",
+        background_color: navy,
+        theme_color: navy,
         icons: [
             { src: "icon-192.png", sizes: "192x192", type: "image/png" },
             { src: "icon-512.png", sizes: "512x512", type: "image/png" },
