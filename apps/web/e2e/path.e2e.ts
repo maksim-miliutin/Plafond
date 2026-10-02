@@ -1,16 +1,15 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-const louvre = {
-    type: "FeatureCollection",
-    features: [
-        {
-            type: "Feature",
-            geometry: { type: "Point", coordinates: [2.3376, 48.8606] },
-            properties: { label: "4 Place du Louvre 75001 Paris", type: "housenumber", citycode: "75101" },
-        },
-    ],
-};
+import { answerForGeoplateforme } from "./geoplateforme";
+
+const louvre = [
+    {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [2.3376, 48.8606] },
+        properties: { label: "4 Place du Louvre 75001 Paris", type: "housenumber", citycode: "75101" },
+    },
+];
 
 async function scanned(page: Page, screen: string): Promise<void>
 {
@@ -36,7 +35,7 @@ test("a tenant goes from the address to the letter, and only the geocoder hears 
         elsewhere.push(url.host);
     });
 
-    await page.route("https://data.geopf.fr/**", (route) => route.fulfill({ json: louvre }));
+    await answerForGeoplateforme(page, louvre);
     await page.clock.setFixedTime(new Date("2026-09-29T10:00:00+02:00"));
     await page.goto("/");
 

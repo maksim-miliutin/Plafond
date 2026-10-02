@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 
 import type { Quartier } from "@plafond/domain";
 
-import { drawing, mercator } from "../lib/map";
+import { drawing, mercator, planIgn } from "../lib/map";
 
 // 300 metres a side at the latitude of Paris: a degree of longitude is shorter there than a degree of latitude.
 const lat = 48.86;
@@ -108,3 +108,14 @@ test("the tile drawn under the pin is the tile that holds the address", () =>
     expect(pin.y - under!.top).toBeCloseTo((at.y * count - under!.y) * under!.size, 2);
 });
 
+
+// WMTS counts rows down from the north and columns east: TILEROW is y and TILECOL is x, the other way round silently shows the wrong place.
+test("a tile is asked from Plan IGN with its row and its column in the right places", () =>
+{
+    const url = new URL(planIgn({ z: 16, x: 33195, y: 22547, left: 0, top: 0, size: 256 }));
+
+    expect(url.origin).toBe("https://data.geopf.fr");
+    expect(url.searchParams.get("LAYER")).toBe("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2");
+    expect(url.searchParams.get("TILEMATRIXSET")).toBe("PM");
+    expect([url.searchParams.get("TILEMATRIX"), url.searchParams.get("TILEROW"), url.searchParams.get("TILECOL")]).toEqual(["16", "22547", "33195"]);
+});

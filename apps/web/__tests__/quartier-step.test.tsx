@@ -34,3 +34,16 @@ test("the address found is shown so a wrong match can be caught", () =>
     expect(page(1)).toContain("C&#x27;est bien ça");
     expect(page(1)).toContain("Corriger l&#x27;adresse");
 });
+
+test("the quartier is drawn over the official map of France, with its streets", () =>
+{
+    const html = page(1);
+
+    expect(html).toMatch(/<image[^>]*href="https:\/\/data\.geopf\.fr\/wmts\?[^"]*PLANIGNV2/);
+    expect(html.indexOf("<image")).toBeLessThan(html.indexOf("<path"));
+});
+
+test("the map credits IGN, as its open licence asks", () =>
+{
+    expect(page(1)).toMatch(/© <a href="https:\/\/www\.ign\.fr\/">IGN<\/a>/);
+});

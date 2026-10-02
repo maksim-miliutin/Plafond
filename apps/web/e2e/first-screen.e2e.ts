@@ -1,10 +1,12 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+import { answerForGeoplateforme } from "./geoplateforme";
+
 test.beforeEach(async ({ page }) =>
 {
-    // The geocoder is a public service; tests answer in its place so they never leave the machine.
-    await page.route("https://data.geopf.fr/**", (route) => route.fulfill({ json: { type: "FeatureCollection", features: [] } }));
+    // The geocoder and the map are a public service; tests answer in its place so they never leave the machine.
+    await answerForGeoplateforme(page, []);
     await page.goto("/");
 });
 
