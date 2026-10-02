@@ -115,3 +115,10 @@ test("a letter is offered whenever there is something to claim, even within the 
     expect(page({ rent: 120000 }, [rate], true)).toContain("Préparer la lettre");
     expect(page({}, [rate], false)).not.toContain("Préparer la lettre");
 });
+
+test("the result says when the lease was signed, since that date picks the decree", () =>
+{
+    const signed = page({ signedOn: "2025-08-20", startsOn: "2025-09-01" });
+
+    expect(signed).toMatch(/<dt>Bail<\/dt><dd>[^<]*signé le 20 août 2025[^<]*pris effet le 1er septembre 2025/);
+});

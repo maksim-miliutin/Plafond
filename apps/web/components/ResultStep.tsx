@@ -116,6 +116,10 @@ function Sources({ check, claim, quartier }: Pick<ResultProps, "check" | "claim"
                     <dd>{quartier}</dd>
                 </div>
                 <div>
+                    <dt>Bail</dt>
+                    <dd>signé le {frenchDay(claim.signedOn)}, pris effet le {frenchDay(claim.startsOn)}</dd>
+                </div>
+                <div>
                     <dt>Logement</dt>
                     <dd>{rooms[flat.rooms]}, construit {periods[flat.period]}, {letting(flat.furnished)}</dd>
                 </div>
