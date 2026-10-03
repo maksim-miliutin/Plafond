@@ -138,3 +138,19 @@ test("a reply of an unexpected shape is a breakage whose message never repeats t
         await expect(lookup).rejects.not.toThrow(/Louvre/);
     }
 });
+
+test("asked for mainland France, an address outside Paris is located too", async () =>
+{
+    const lyon: Match = { id: "69381_1234_00010", type: "housenumber", citycode: "69381", label: "10 Rue de la République 69001 Lyon", coordinates: [4.8357, 45.7640] };
+
+    expect(await geoplateforme(answering(reply([lyon])), "mainland").locate("10 rue de la République Lyon")).toMatchObject({ kind: "located", id: lyon.id });
+    expect(await geoplateforme(answering(reply([lyon]))).locate("10 rue de la République Lyon")).toMatchObject({ kind: "not-paris" });
+});
+
+// The overseas departments, 971 to 976, apply the same laws from other dates, which mainland rules would get wrong.
+test("an overseas address is turned away from mainland rules, and says why", async () =>
+{
+    const reunion: Match = { id: "97411_0001_00001", type: "housenumber", citycode: "97411", label: "1 Rue de Paris 97400 Saint-Denis", coordinates: [55.45, -20.88] };
+
+    expect(await geoplateforme(answering(reply([reunion])), "mainland").locate("1 rue de Paris Saint-Denis")).toEqual({ kind: "overseas", label: reunion.label });
+});
