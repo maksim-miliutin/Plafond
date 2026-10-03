@@ -38,21 +38,26 @@ const undecent: readonly { label: Label; from: Day }[] = [
     { label: "E", from: "2034-01-01" },
 ];
 
+export function undecentFrom(label: Label): Day | null
+{
+    return undecent.find((row) => row.label === label)?.from ?? null;
+}
+
 export function decency(dpe: Dpe, tenancy: Tenancy): DecencyFinding
 {
-    const rule = undecent.find((row) => row.label === dpe.label);
-    if (rule === undefined)
+    const from = undecentFrom(dpe.label);
+    if (from === null)
     {
         return { kind: "decent" };
     }
 
-    const reached = termStarts(tenancy, tenancy.on).find((start) => start >= rule.from);
+    const reached = termStarts(tenancy, tenancy.on).find((start) => start >= from);
     if (reached !== undefined)
     {
         return { kind: "not-decent", since: reached };
     }
 
-    return { kind: "from", on: firstTermFrom(tenancy, rule.from) };
+    return { kind: "from", on: firstTermFrom(tenancy, from) };
 }
 
 export function increase(dpe: Dpe, tenancy: Tenancy, raisedOn: Day): IncreaseFinding

@@ -4,7 +4,7 @@ import { euros, frenchDay, squareMetres } from "./format.js";
 import { letting, periods, rooms } from "./labels.js";
 import type { Contest } from "./rates.js";
 
-export type Ground = "excess" | "unstated" | "complement";
+export type Ground = "excess" | "unstated" | "complement" | "freeze" | "decency";
 
 export interface Demand
 {
@@ -57,27 +57,63 @@ export function letter(input: LetterInput): Letter | NothingToClaim
         return { kind: "nothing-to-claim" };
     }
 
-    return {
-        kind: "letter",
-        sender: ["[Votre prénom et nom]", input.address],
-        recipient: ["[Nom du propriétaire]", "[Adresse du propriétaire]"],
-        dated: `Paris, le ${frenchDay(input.claim.on)}`,
-        delivery: "Lettre recommandée avec accusé de réception",
-        subject: "Objet\u00A0: mise en demeure au sujet du loyer de mon logement",
-        greeting: "Madame, Monsieur,",
+    return framed({
+        address: input.address,
+        on: input.claim.on,
+        subject: "mise en demeure au sujet du loyer de mon logement",
         opening: opening(input),
         demands,
+        reminders: demands.some((demand) => demand.ground === "excess") ? [fine] : [],
+        caution: input.check.rate.decree.contest,
+    });
+}
+
+export interface Frame
+{
+    address: string;
+    on: Day;
+    subject: string;
+    opening: string[];
+    demands: Demand[];
+    reminders: string[];
+    caution: Contest | null;
+}
+
+export function framed(frame: Frame): Letter
+{
+    return {
+        kind: "letter",
+        sender: ["[Votre prénom et nom]", frame.address],
+        recipient: ["[Nom du propriétaire]", "[Adresse du propriétaire]"],
+        dated: `${townOf(frame.address)}, le ${frenchDay(frame.on)}`,
+        delivery: "Lettre recommandée avec accusé de réception",
+        subject: `Objet\u00A0: ${frame.subject}`,
+        greeting: "Madame, Monsieur,",
+        opening: frame.opening,
+        demands: frame.demands,
         closing: [
-            ...(demands.some((demand) => demand.ground === "excess") ? [fine] : []),
+            ...frame.reminders,
             "Je vous remercie de me répondre dans un délai d'un mois à compter de la réception de cette lettre. À défaut "
                 + "de réponse ou d'accord, je me réserve la possibilité de saisir la commission départementale de "
                 + "conciliation ou le juge compétent.",
             "Je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.",
         ],
         signature: "[Signature]",
-        writtenOn: input.claim.on,
-        caution: input.check.rate.decree.contest,
+        writtenOn: frame.on,
+        caution: frame.caution,
     };
+}
+
+// The geocoder ends an address with its postcode and town, 75005 Paris; a letter is dated from that town.
+function townOf(address: string): string
+{
+    return /\d{5} (.+)$/.exec(address)?.[1] ?? "[Ville]";
+}
+
+// The geocoder writes 4 Place du Louvre 75001 Paris; a French letter sets the postcode apart with a comma.
+export function postal(address: string): string
+{
+    return address.replace(/ (\d{5}) /, ", $1 ");
 }
 
 export function letterText(letter: Letter): string
@@ -114,12 +150,6 @@ function opening({ check, claim, address, quartier }: LetterInput): string[]
             + `(${decree.title}, applicable à la date de signature du bail). Le loyer de base ne peut donc pas dépasser `
             + `${euros(majored)} × ${squareMetres(claim.surface)}, soit ${euros(check.cap)} par mois.`,
     ];
-}
-
-// The geocoder writes 4 Place du Louvre 75001 Paris; a French letter sets the postcode apart with a comma.
-function postal(address: string): string
-{
-    return address.replace(/ (\d{5}) /, ", $1 ");
 }
 
 function excess({ check, claim }: LetterInput): Demand | null
