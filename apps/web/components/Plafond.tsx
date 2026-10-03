@@ -20,10 +20,13 @@ export interface Needs
     now: () => Date;
 }
 
+// The tables sit at the root of the site, empty locally and /Plafond on GitHub Pages, while this page lives at /loyer/.
+const siteRoot = process.env.NEXT_PUBLIC_SITE_ROOT ?? "";
+
 // GitHub Pages lets a browser keep a file for ten minutes; asking first keeps an old table out of a fresh check.
 const live: Needs = {
     geocoder: geoplateforme((url) => fetch(url)),
-    tables: () => loadTables((url) => fetch(url, { cache: "no-cache" })),
+    tables: () => loadTables((file) => fetch(`${siteRoot}/${file}`, { cache: "no-cache" })),
     now: () => new Date(),
 };
 

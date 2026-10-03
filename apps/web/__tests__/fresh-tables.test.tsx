@@ -25,7 +25,7 @@ test("every opening asks the server whether the tables changed, instead of trust
         createRoot(host).render(<Plafond />);
     });
 
-    expect(asked).toEqual(expect.arrayContaining([["rates.json", { cache: "no-cache" }], ["quartiers.json", { cache: "no-cache" }]]));
+    expect(asked).toEqual(expect.arrayContaining([["/rates.json", { cache: "no-cache" }], ["/quartiers.json", { cache: "no-cache" }]]));
     vi.unstubAllGlobals();
     host.remove();
 });

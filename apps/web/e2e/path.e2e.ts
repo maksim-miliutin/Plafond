@@ -37,7 +37,7 @@ test("a tenant goes from the address to the letter, and only the geocoder hears 
 
     await answerForGeoplateforme(page, louvre);
     await page.clock.setFixedTime(new Date("2026-09-29T10:00:00+02:00"));
-    await page.goto("/");
+    await page.goto("/loyer/");
 
     await page.getByLabel("Adresse du logement").fill("4 place du Louvre");
     await page.getByRole("button", { name: "Trouver le quartier" }).click();

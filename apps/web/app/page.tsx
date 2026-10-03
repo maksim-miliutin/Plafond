@@ -1,6 +1,6 @@
-import { Plafond } from "../components/Plafond";
+import { Home } from "../components/Home";
 
-export default function Home()
+export default function Start()
 {
-    return <Plafond />;
+    return <Home />;
 }
