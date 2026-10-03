@@ -12,6 +12,7 @@ import { AddressStep } from "../components/AddressStep";
 import { DpeChooseStep } from "../components/DpeChooseStep";
 import { DpeFindStep } from "../components/DpeFindStep";
 import { DpeLeaseStep } from "../components/DpeLeaseStep";
+import { DpeResultStep } from "../components/DpeResultStep";
 import { LeaseStep } from "../components/LeaseStep";
 import { LetterStep } from "../components/LetterStep";
 import { QuartierStep } from "../components/QuartierStep";
@@ -42,6 +43,7 @@ const screens: Record<string, ReactElement> = {
     "dpe search": <DpeFindStep />,
     "refused dpe search": <DpeFindStep typed="7 place du Panthéon" problem="no-diagnosis" />,
     "dpe lease": <DpeLeaseStep fields={{ signedOn: "", furnished: "", raised: "", raisedOn: "" }} errors={{ raised: "Indiquez si votre loyer a augmenté depuis la signature." }} />,
+    "dpe result": <DpeResultStep listing={listing} raisedOn="2024-03-01" decency={{ kind: "not-decent", since: "2026-03-01" }} increase={{ kind: "forbidden", since: "2023-03-01" }} writable />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,

@@ -676,3 +676,39 @@ a:hover
     background: #D7221F;
     color: #FFFFFF;
 }
+
+.headline-dpe
+{
+    margin: 0;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font: 600 40px/1.05 var(--display);
+}
+
+.headline-dpe .label
+{
+    width: 72px;
+    height: 72px;
+    font-size: 44px;
+}
+
+.findings
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.findings h2
+{
+    margin: 0;
+    font: 600 24px var(--display);
+}
+
+.findings p
+{
+    margin: 0;
+}
