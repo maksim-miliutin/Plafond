@@ -12,6 +12,7 @@ export type Lookup =
     | Located
     | { kind: "not-found" }
     | { kind: "not-paris"; label: string }
+    | { kind: "overseas"; label: string }
     | { kind: "street-only"; label: string }
     | { kind: "unreachable" };
 
@@ -53,14 +54,21 @@ const endpoint = "https://data.geopf.fr/geocodage/search";
 const shortest = 3;
 const longest = 200;
 
+export type Area = "paris" | "mainland";
+
 const arrondissement = /^751(0[1-9]|1[0-9]|20)$/;
 
-export function geoplateforme(fetcher: Fetcher): Geocoder
+const areas: Record<Area, { holds: (citycode: string) => boolean; refusal: "not-paris" | "overseas" }> = {
+    paris: { holds: (citycode) => arrondissement.test(citycode), refusal: "not-paris" },
+    mainland: { holds: (citycode) => !citycode.startsWith("97"), refusal: "overseas" },
+};
+
+export function geoplateforme(fetcher: Fetcher, area: Area = "paris"): Geocoder
 {
-    return { locate: (text) => locate(fetcher, text.trim()) };
+    return { locate: (text) => locate(fetcher, text.trim(), area) };
 }
 
-async function locate(fetcher: Fetcher, text: string): Promise<Lookup>
+async function locate(fetcher: Fetcher, text: string, area: Area): Promise<Lookup>
 {
     if (text.length < shortest || text.length > longest)
     {
@@ -79,9 +87,9 @@ async function locate(fetcher: Fetcher, text: string): Promise<Lookup>
         return { kind: "not-found" };
     }
 
-    if (!arrondissement.test(match.citycode))
+    if (!areas[area].holds(match.citycode))
     {
-        return { kind: "not-paris", label: match.label };
+        return { kind: areas[area].refusal, label: match.label };
     }
 
     if (match.type !== "housenumber")

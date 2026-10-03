@@ -16,6 +16,7 @@ export interface AddressProps
 export const problems: Record<Problem, string> = {
     "not-found": "Cette adresse n'a pas été trouvée. Vérifiez le numéro, la rue et l'arrondissement.",
     "not-paris": "Cette adresse n'est pas à Paris. Plafond ne couvre pour l'instant que Paris.",
+    "overseas": "Cette adresse est outre-mer, où ces règles s'appliquent à d'autres dates. Plafond ne les couvre pas encore.",
     "street-only": "Seule la rue a été trouvée. Ajoutez le numéro de l'immeuble.",
     "unreachable": "Le service public de géocodage ne répond pas. Réessayez dans un instant.",
     "border": "Cette adresse tombe sur la limite entre deux quartiers. Précisez le numéro ou vérifiez sur le plan de la Ville de Paris.",
