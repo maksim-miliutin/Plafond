@@ -423,6 +423,14 @@ a:hover
     gap: 10px;
 }
 
+/* A legend that is not floated is drawn across the top border of its fieldset; a long one, wrapped on a narrow
+   phone, then lies over the choices above it and takes their taps. Floated, it is an ordinary item of the column. */
+.choice > legend
+{
+    float: left;
+    padding: 0;
+}
+
 .options
 {
     display: flex;
