@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) =>
 {
     // The geocoder and the map are a public service; tests answer in its place so they never leave the machine.
     await answerForGeoplateforme(page, []);
-    await page.goto("/");
+    await page.goto("/loyer/");
 });
 
 test("the first screen fits the screen without sideways scrolling", async ({ page }) =>

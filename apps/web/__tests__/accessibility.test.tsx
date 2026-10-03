@@ -6,7 +6,13 @@ import { expect, test } from "vitest";
 
 import { check, letter, type Check, type Claim, type Contest, type Letter, type Quartier, type Rate } from "@plafond/domain";
 
+import type { Listing } from "@plafond/ademe";
+
 import { AddressStep } from "../components/AddressStep";
+import { DpeChooseStep } from "../components/DpeChooseStep";
+import { DpeFindStep } from "../components/DpeFindStep";
+import { DpeLeaseStep } from "../components/DpeLeaseStep";
+import { DpeResultStep } from "../components/DpeResultStep";
 import { LeaseStep } from "../components/LeaseStep";
 import { LetterStep } from "../components/LetterStep";
 import { QuartierStep } from "../components/QuartierStep";
@@ -24,7 +30,21 @@ const written = letter({ check: checked, claim, address: "4 Place du Louvre 7500
 const quartier: Quartier = { number: 1, name: "Saint-Germain-l'Auxerrois", rings: [[[2.34, 48.86], [2.345, 48.86], [2.345, 48.863], [2.34, 48.86]]] };
 const blank = Object.fromEntries(Object.keys(questions).map((key) => [key, ""])) as unknown as LeaseFields;
 
+const listing: Listing = {
+    dpe: { number: "2375E0345814N", label: "G", establishedOn: "2023-02-02", validUntil: "2033-02-01" },
+    address: "7 Place du Panthéon 75005 Paris",
+    surface: 7320,
+    floor: 4,
+    detail: null,
+    electric: true,
+};
+
 const screens: Record<string, ReactElement> = {
+    "dpe search": <DpeFindStep />,
+    "refused dpe search": <DpeFindStep typed="7 place du Panthéon" problem="no-diagnosis" />,
+    "dpe lease": <DpeLeaseStep fields={{ signedOn: "", furnished: "", raised: "", raisedOn: "" }} errors={{ raised: "Indiquez si votre loyer a augmenté depuis la signature." }} />,
+    "dpe result": <DpeResultStep listing={listing} raisedOn="2024-03-01" decency={{ kind: "not-decent", since: "2026-03-01" }} increase={{ kind: "forbidden", since: "2023-03-01" }} writable />,
+    "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
     "quartier": <QuartierStep quartier={quartier} around={[]} address="4 Place du Louvre 75001 Paris" point={{ lon: 2.342, lat: 48.861 }} />,
