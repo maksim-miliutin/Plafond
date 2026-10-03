@@ -1,10 +1,11 @@
 import { expect, test } from "vitest";
 
-import type { Quartier, Rate } from "@plafond/domain";
+import type { Quartier } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
 import type { LeaseFields } from "../lib/lease";
 import { next, start, type Step, type World } from "../lib/flow";
+import { rate } from "./fixtures";
 
 const side = 0.005;
 
@@ -18,14 +19,6 @@ function square(number: number, name: string, west: number): Quartier
 
 const one = square(1, "Saint-Germain-l'Auxerrois", 2.34);
 const two = square(2, "Halles", 2.34 + side);
-
-const rate: Rate = {
-    flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
-    reference: 2670,
-    majored: 3200,
-    minored: 1870,
-    decree: { title: "Arrêté préfectoral n° 2025-06-16-00003", url: "https://example.org", from: "2025-07-01", until: "2026-07-01", contest: null },
-};
 
 const world: World = { rates: [rate], quartiers: [one, two], on: "2026-09-29" };
 

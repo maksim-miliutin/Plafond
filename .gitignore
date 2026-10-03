@@ -1,13 +1,20 @@
+# dependencies and builds
 node_modules/
 dist/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# tables the build writes for the browser
+apps/web/public/rates.json
+apps/web/public/quartiers.json
+
+# browser test reports
+test-results/
+playwright-report/
+
+# local settings and logs
 .env
 .env.*
 *.log
-.next/
-next-env.d.ts
-*.tsbuildinfo
-apps/web/public/rates.json
-test-results/
-playwright-report/
-apps/web/public/quartiers.json
-out/
