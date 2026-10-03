@@ -1,7 +1,9 @@
 import { expect, test } from "vitest";
 
 import seen from "./lines.json" with { type: "json" };
-import { AdemeError, listingsFrom } from "../src/ademe.js";
+import type { Fetcher } from "@plafond/address";
+
+import { AdemeError, ademe, listingsFrom } from "../src/ademe.js";
 
 // A real answer of the ADEME open data for five diagnoses on the Place du Panthéon, cut down to the fields read.
 test("every diagnosis becomes a listing with its rating, its dates and its flat, the newest first", () =>
@@ -58,4 +60,66 @@ test("a surface with two decimals keeps both, and a blank detail is no detail", 
     const [listing] = listingsFrom({ results: [{ ...first, surface_habitable_logement: 64.35, complement_adresse_logement: "  " }] });
 
     expect(listing).toMatchObject({ surface: 6435, detail: null });
+});
+
+function answering(body: unknown, ok = true): Fetcher & { asked: URL[] }
+{
+    const asked: URL[] = [];
+    const fetcher: Fetcher = async (url) =>
+    {
+        asked.push(new URL(url));
+
+        return { ok, status: ok ? 200 : 503, json: async () => body };
+    };
+
+    return Object.assign(fetcher, { asked });
+}
+
+// A text search for an address brings the neighbours in: 24 200 matches for one square. Only the exact field keeps them out.
+test("the diagnoses of an address are asked by its BAN identifier, exactly", async () =>
+{
+    const fetcher = answering(seen);
+    const found = await ademe(fetcher).atAddress("75105_7034_00005");
+
+    expect(Array.isArray(found) && found.length).toBe(5);
+    expect(fetcher.asked[0]!.origin + fetcher.asked[0]!.pathname).toBe("https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines");
+    expect(fetcher.asked[0]!.searchParams.get("qs")).toBe('identifiant_ban:"75105_7034_00005"');
+    expect(fetcher.asked[0]!.searchParams.get("select")?.split(",")).toEqual(expect.arrayContaining(["numero_dpe", "etiquette_dpe", "date_etablissement_dpe"]));
+});
+
+test("a diagnosis is asked by its number as printed on the lease, spaces and case aside", async () =>
+{
+    const fetcher = answering(seen);
+    await ademe(fetcher).byNumber(" 2375 e192 9024f ");
+
+    expect(fetcher.asked[0]!.searchParams.get("qs")).toBe('numero_dpe:"2375E1929024F"');
+});
+
+test("a number that cannot be a diagnosis number is refused without asking", async () =>
+{
+    const fetcher = answering(seen);
+
+    expect(await ademe(fetcher).byNumber("2375E19")).toEqual({ kind: "malformed" });
+    expect(await ademe(fetcher).byNumber('2375E1929024"')).toEqual({ kind: "malformed" });
+    expect(fetcher.asked).toEqual([]);
+});
+
+test("an ADEME that cannot be reached is told apart from one that answers nonsense", async () =>
+{
+    const offline: Fetcher = async () =>
+    {
+        throw new TypeError("Failed to fetch");
+    };
+
+    expect(await ademe(offline).atAddress("75105_7034_00005")).toEqual({ kind: "unreachable" });
+    expect(await ademe(answering(seen, false)).atAddress("75105_7034_00005")).toEqual({ kind: "unreachable" });
+    await expect(ademe(answering({ error: "boom" })).atAddress("75105_7034_00005")).rejects.toThrow(AdemeError);
+});
+
+test("an identifier that could break out of the query is a breakage, and nothing is sent", async () =>
+{
+    const fetcher = answering(seen);
+
+    await expect(ademe(fetcher).atAddress('75105" OR *')).rejects.toThrow(AdemeError);
+    expect(fetcher.asked).toEqual([]);
 });
