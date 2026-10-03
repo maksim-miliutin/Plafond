@@ -11,6 +11,7 @@ import type { Listing } from "@plafond/ademe";
 import { AddressStep } from "../components/AddressStep";
 import { DpeChooseStep } from "../components/DpeChooseStep";
 import { DpeFindStep } from "../components/DpeFindStep";
+import { DpeLeaseStep } from "../components/DpeLeaseStep";
 import { LeaseStep } from "../components/LeaseStep";
 import { LetterStep } from "../components/LetterStep";
 import { QuartierStep } from "../components/QuartierStep";
@@ -40,6 +41,7 @@ const listing: Listing = {
 const screens: Record<string, ReactElement> = {
     "dpe search": <DpeFindStep />,
     "refused dpe search": <DpeFindStep typed="7 place du Panthéon" problem="no-diagnosis" />,
+    "dpe lease": <DpeLeaseStep fields={{ signedOn: "", furnished: "", raised: "", raisedOn: "" }} errors={{ raised: "Indiquez si votre loyer a augmenté depuis la signature." }} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,

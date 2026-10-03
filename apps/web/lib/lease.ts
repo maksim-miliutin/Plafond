@@ -1,6 +1,8 @@
 import { centsFrom, hundredthsFrom, isDay, periods, rooms } from "@plafond/domain";
 import type { Claim, Day, Period, Rooms, Unreadable } from "@plafond/domain";
 
+import { readForm } from "./forms";
+
 export interface LeaseFields
 {
     rooms: string;
@@ -50,14 +52,7 @@ type Complete<T> = { [K in keyof T]: NonNullable<T[K]> };
 
 export function fieldsFrom(sent: FormData): LeaseFields
 {
-    const read = (key: string) =>
-    {
-        const value = sent.get(key);
-
-        return typeof value === "string" ? value : "";
-    };
-
-    return Object.fromEntries(Object.keys(questions).map((key) => [key, read(key)])) as unknown as LeaseFields;
+    return readForm(sent, Object.keys(questions) as (keyof LeaseFields)[]);
 }
 
 export function leaseFrom(fields: LeaseFields, context: Context): Lease | Unanswered
