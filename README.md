@@ -1,12 +1,15 @@
 # Plafond
 
-Plafond checks whether a rent in a French city under rent control (encadrement des loyers) is above the legal cap, works out the overpayment since the lease began and drafts a formal notice (lettre de mise en demeure) for the tenant to send to the landlord. Paris comes first; other cities follow as their data is published.
+Plafond is a set of free checks for tenants in France, each ending with a formal notice (lettre de mise en demeure) the tenant can send to the landlord.
+
+- **Rent cap.** Whether a rent in a city under rent control (encadrement des loyers) is above the legal cap, and the overpayment since the lease began. Paris comes first; other cities follow as their data is published.
+- **Energy rating.** From the flat's energy diagnosis (DPE), whether a rent rise was allowed for an F or G flat and whether a G flat still counts as decent, across mainland France.
 
 ## What it stands on
 
 Reference rents are published open data: each rate is kept with the day it takes effect, the day it ends and the prefect's decree that sets it. A lease is always checked against the rates in force on the day it was signed.
 
-The calculation runs on the device. The address and the rent are never stored on a server or written to logs. To find the quartier, the device sends the address once, straight to the public geocoding service of the Géoplateforme, which runs the Base Adresse Nationale; it never passes through a Plafond server. The map of the quartier comes from the same service (Plan IGN), which learns the area shown but not the address. There are no accounts, no fees and no ads.
+The calculation runs on the device. The address and the rent are never stored on a server or written to logs. To find the quartier, the device sends the address once, straight to the public geocoding service of the Géoplateforme, which runs the Base Adresse Nationale; it never passes through a Plafond server. The map of the quartier comes from the same service (Plan IGN), which learns the area shown but not the address. For the energy check, the BAN identifier of the address, or the diagnosis number, then goes to the open data of the ADEME, which publishes the diagnoses. There are no accounts, no fees and no ads.
 
 Plafond gives an estimate, not legal advice. Only the prefect's decree and the lease itself are authoritative.
 
@@ -27,6 +30,7 @@ The app is live at https://maksim-miliutin.github.io/Plafond/ and can be added t
 - `packages/domain`: the calculation, the letter and the rules of law, in plain TypeScript with no framework, so that the web app and a later mobile app share them.
 - `packages/import`: reads the published tables (the City's rents, the annexes of the decrees, the outlines of the quartiers) and checks them line by line.
 - `packages/address`: the client of the Géoplateforme geocoder.
+- `packages/ademe`: the client of the ADEME open data on energy diagnoses.
 - `apps/web`: the Next.js app, exported as plain files and published on GitHub Pages; `e2e` holds the tests that run in real browsers, iPhones included.
 - `db/seed`: the published data the build reads, each file described above.
 - `.github/workflows`: the checks every change goes through, and the deploy.

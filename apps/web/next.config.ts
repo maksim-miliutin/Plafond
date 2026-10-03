@@ -5,6 +5,7 @@ const config: NextConfig = {
     output: "export",
     basePath: process.env.PAGES_BASE_PATH ?? "",
     trailingSlash: true,
+    env: { NEXT_PUBLIC_SITE_ROOT: process.env.PAGES_BASE_PATH ?? "" },
 };
 
 export default config;
