@@ -6,6 +6,7 @@
         "packages/domain",
         "packages/import",
         "packages/address",
+        "packages/ademe",
         "apps/web"
     ],
     "scripts": {

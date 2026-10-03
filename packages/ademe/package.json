@@ -1,0 +1,19 @@
+{
+    "name": "@plafond/ademe",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": {
+            "source": "./src/ademe.ts",
+            "types": "./dist/ademe.d.ts",
+            "default": "./dist/ademe.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json"
+    },
+    "dependencies": {
+        "@plafond/domain": "0.0.0"
+    }
+}

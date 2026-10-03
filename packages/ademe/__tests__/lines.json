@@ -1,0 +1,71 @@
+{
+    "total": 24200,
+    "results": [
+        {
+            "numero_dpe": "2375E1929024F",
+            "etiquette_dpe": "D",
+            "etiquette_ges": "D",
+            "date_etablissement_dpe": "2023-06-10",
+            "date_fin_validite_dpe": "2033-06-09",
+            "adresse_ban": "5 Place du Panthéon 75005 Paris",
+            "identifiant_ban": "75105_7034_00005",
+            "type_batiment": "appartement",
+            "surface_habitable_logement": 175,
+            "numero_etage_appartement": 0,
+            "type_energie_principale_chauffage": "Réseau de Chauffage urbain"
+        },
+        {
+            "numero_dpe": "2375E1759742J",
+            "etiquette_dpe": "E",
+            "etiquette_ges": "E",
+            "date_etablissement_dpe": "2023-05-29",
+            "date_fin_validite_dpe": "2033-05-28",
+            "adresse_ban": "15 Place du Panthéon 75005 Paris",
+            "identifiant_ban": "75105_7034_00015",
+            "type_batiment": "appartement",
+            "surface_habitable_logement": 172.6,
+            "numero_etage_appartement": 0,
+            "complement_adresse_logement": "Bat. 1; Etage 3; Porte Face",
+            "type_energie_principale_chauffage": "Gaz naturel"
+        },
+        {
+            "numero_dpe": "2675E2325806E",
+            "etiquette_dpe": "E",
+            "etiquette_ges": "D",
+            "date_etablissement_dpe": "2026-09-10",
+            "date_fin_validite_dpe": "2036-09-09",
+            "adresse_ban": "3 Place du Panthéon 75005 Paris",
+            "identifiant_ban": "75105_7034_00003",
+            "type_batiment": "appartement",
+            "surface_habitable_logement": 146.8,
+            "numero_etage_appartement": 4,
+            "type_energie_principale_chauffage": "Réseau de Chauffage urbain"
+        },
+        {
+            "numero_dpe": "2375E0345814N",
+            "etiquette_dpe": "D",
+            "etiquette_ges": "B",
+            "date_etablissement_dpe": "2023-02-02",
+            "date_fin_validite_dpe": "2033-02-01",
+            "adresse_ban": "7 Place du Panthéon 75005 Paris",
+            "identifiant_ban": "75105_7034_00007",
+            "type_batiment": "appartement",
+            "surface_habitable_logement": 73.2,
+            "numero_etage_appartement": 4,
+            "type_energie_principale_chauffage": "Électricité"
+        },
+        {
+            "numero_dpe": "2475E0959198G",
+            "etiquette_dpe": "D",
+            "etiquette_ges": "D",
+            "date_etablissement_dpe": "2024-03-14",
+            "date_fin_validite_dpe": "2034-03-13",
+            "adresse_ban": "5 Place du Panthéon 75005 Paris",
+            "identifiant_ban": "75105_7034_00005",
+            "type_batiment": "appartement",
+            "surface_habitable_logement": 194,
+            "complement_adresse_logement": "N°Lot : 4",
+            "type_energie_principale_chauffage": "Réseau de Chauffage urbain"
+        }
+    ]
+}
