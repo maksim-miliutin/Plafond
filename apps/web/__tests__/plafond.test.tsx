@@ -18,7 +18,7 @@ const square = (number: number, name: string, west: number): Quartier => ({
     rings: [[[west, 48.86], [west + side, 48.86], [west + side, 48.865], [west, 48.865], [west, 48.86]]],
 });
 
-const found: Lookup = { kind: "located", label: "4 Place du Louvre 75001 Paris", point: { lon: 2.3425, lat: 48.8625 } };
+const found: Lookup = { kind: "located", id: "75101_5925_00004", label: "4 Place du Louvre 75001 Paris", point: { lon: 2.3425, lat: 48.8625 } };
 
 function needs(change: Partial<Needs> = {}, lookup: Lookup = found): Needs
 {

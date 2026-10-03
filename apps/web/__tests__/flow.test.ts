@@ -35,7 +35,7 @@ const filled: LeaseFields = {
 };
 
 const typed = "4 place du louvre";
-const found: Lookup = { kind: "located", label: "4 Place du Louvre 75001 Paris", point: { lon: 2.3425, lat: 48.8625 } };
+const found: Lookup = { kind: "located", id: "75101_5925_00004", label: "4 Place du Louvre 75001 Paris", point: { lon: 2.3425, lat: 48.8625 } };
 
 function walk(...events: Parameters<typeof next>[1][]): Step
 {
@@ -67,8 +67,8 @@ test("an address the geocoder cannot place stays on the first step, keeps the te
 
 test("an address that falls outside every outline, or on the line between two, is told apart", () =>
 {
-    const far: Lookup = { kind: "located", label: "Somewhere", point: { lon: 2.2, lat: 48.8 } };
-    const line: Lookup = { kind: "located", label: "On the line", point: { lon: 2.34 + side, lat: 48.8625 } };
+    const far: Lookup = { kind: "located", id: "75116_0001_00001", label: "Somewhere", point: { lon: 2.2, lat: 48.8 } };
+    const line: Lookup = { kind: "located", id: "75101_0001_00001", label: "On the line", point: { lon: 2.34 + side, lat: 48.8625 } };
 
     expect(walk({ type: "located", typed, lookup: far })).toMatchObject({ at: "address", problem: "outside" });
     expect(walk({ type: "located", typed, lookup: line })).toMatchObject({ at: "address", problem: "border" });

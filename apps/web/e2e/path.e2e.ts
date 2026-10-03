@@ -7,7 +7,7 @@ const louvre = [
     {
         type: "Feature",
         geometry: { type: "Point", coordinates: [2.3376, 48.8606] },
-        properties: { label: "4 Place du Louvre 75001 Paris", type: "housenumber", citycode: "75101" },
+        properties: { id: "75101_5925_00004", label: "4 Place du Louvre 75001 Paris", type: "housenumber", citycode: "75101" },
     },
 ];
 
