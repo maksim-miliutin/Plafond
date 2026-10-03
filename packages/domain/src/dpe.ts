@@ -1,0 +1,110 @@
+import { addMonths, type Day } from "./day.js";
+
+export type Label = "A" | "B" | "C" | "D" | "E" | "F" | "G";
+
+export interface Dpe
+{
+    number: string;
+    label: Label;
+    establishedOn: Day;
+    validUntil: Day;
+}
+
+export interface Tenancy
+{
+    signedOn: Day;
+    furnished: boolean;
+    on: Day;
+}
+
+export type DecencyFinding =
+    | { kind: "not-decent"; since: Day }
+    | { kind: "from"; on: Day }
+    | { kind: "decent" };
+
+export type IncreaseFinding =
+    | { kind: "forbidden"; since: Day }
+    | { kind: "allowed"; reason: "label" | "before-freeze" | "term-before-freeze" }
+    | { kind: "unknown"; reason: "dpe-after-increase" };
+
+// Loi Climat et résilience, article 159: no rise for an F or G flat in a lease signed, renewed or tacitly renewed from this day.
+const freezeFrom: Day = "2022-08-24";
+const frozen: readonly Label[] = ["F", "G"];
+
+// Loi Climat et résilience, article 160: a flat of these classes is no longer decent in a lease signed or renewed from these days.
+const undecent: readonly { label: Label; from: Day }[] = [
+    { label: "G", from: "2025-01-01" },
+    { label: "F", from: "2028-01-01" },
+    { label: "E", from: "2034-01-01" },
+];
+
+export function decency(dpe: Dpe, tenancy: Tenancy): DecencyFinding
+{
+    const rule = undecent.find((row) => row.label === dpe.label);
+    if (rule === undefined)
+    {
+        return { kind: "decent" };
+    }
+
+    const reached = termStarts(tenancy, tenancy.on).find((start) => start >= rule.from);
+    if (reached !== undefined)
+    {
+        return { kind: "not-decent", since: reached };
+    }
+
+    return { kind: "from", on: firstTermFrom(tenancy, rule.from) };
+}
+
+export function increase(dpe: Dpe, tenancy: Tenancy, raisedOn: Day): IncreaseFinding
+{
+    if (dpe.establishedOn > raisedOn)
+    {
+        return { kind: "unknown", reason: "dpe-after-increase" };
+    }
+
+    if (!frozen.includes(dpe.label))
+    {
+        return { kind: "allowed", reason: "label" };
+    }
+
+    if (raisedOn < freezeFrom)
+    {
+        return { kind: "allowed", reason: "before-freeze" };
+    }
+
+    const term = termStarts(tenancy, raisedOn).at(-1) ?? tenancy.signedOn;
+    if (term < freezeFrom)
+    {
+        return { kind: "allowed", reason: "term-before-freeze" };
+    }
+
+    return { kind: "forbidden", since: term };
+}
+
+function termStarts(tenancy: Tenancy, until: Day): Day[]
+{
+    const starts: Day[] = [];
+    for (let count = 0; termStart(tenancy, count) <= until; count++)
+    {
+        starts.push(termStart(tenancy, count));
+    }
+
+    return starts;
+}
+
+function firstTermFrom(tenancy: Tenancy, from: Day): Day
+{
+    let count = 0;
+    while (termStart(tenancy, count) < from)
+    {
+        count++;
+    }
+
+    return termStart(tenancy, count);
+}
+
+// An empty flat let by a person runs for 3 years, a furnished one for 1, each renewed tacitly for the same span.
+function termStart(tenancy: Tenancy, count: number): Day
+{
+    return addMonths(tenancy.signedOn, (tenancy.furnished ? 12 : 36) * count);
+}

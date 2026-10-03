@@ -1,33 +1,12 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { check, letter, type Check, type Claim, type Contest, type Letter, type Rate } from "@plafond/domain";
+import { check, letter, type Check, type Claim, type Contest, type Letter } from "@plafond/domain";
 
 import { LetterStep } from "../components/LetterStep";
+import { claim as lease, rate } from "./fixtures";
 
-const rate: Rate = {
-    flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
-    reference: 2670,
-    majored: 3200,
-    minored: 1870,
-    decree: {
-        title: "Arrêté préfectoral n° 2025-06-16-00003",
-        url: "https://example.org/decree",
-        from: "2025-07-01",
-        until: "2026-07-01",
-        contest: null,
-    },
-};
-
-const claim: Claim = {
-    flat: rate.flat,
-    surface: 4000,
-    signedOn: "2025-09-01",
-    startsOn: "2025-09-01",
-    rent: 150000,
-    complement: 20000,
-    on: "2025-09-25",
-};
+const claim: Claim = { ...lease, complement: 20000, on: "2025-09-25" };
 
 const address = "4 Place du Louvre 75001 Paris";
 

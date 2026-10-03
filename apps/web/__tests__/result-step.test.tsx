@@ -4,34 +4,10 @@ import { expect, test } from "vitest";
 import { check, type Check, type Claim, type Contest, type Rate } from "@plafond/domain";
 
 import { ResultStep } from "../components/ResultStep";
+import { claim, rate } from "./fixtures";
 
 const thin = "\u202F";
 const hard = "\u00A0";
-
-// The 2025 rate for St-Germain-l'Auxerrois, three rooms, 1946-1970, furnished, from the published table.
-const rate: Rate = {
-    flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
-    reference: 2670,
-    majored: 3200,
-    minored: 1870,
-    decree: {
-        title: "Arrêté préfectoral n° 2025-06-16-00003",
-        url: "https://example.org/decree",
-        from: "2025-07-01",
-        until: "2026-07-01",
-        contest: null,
-    },
-};
-
-const claim: Claim = {
-    flat: rate.flat,
-    surface: 4000,
-    signedOn: "2025-09-01",
-    startsOn: "2025-09-01",
-    rent: 150000,
-    complement: 0,
-    on: "2026-09-29",
-};
 
 function page(change: Partial<Claim> = {}, rates: Rate[] = [rate], writable = true): string
 {

@@ -3,10 +3,11 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, expect, test } from "vitest";
 
-import type { Quartier, Rate } from "@plafond/domain";
+import type { Quartier } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
 import { Plafond, type Needs } from "../components/Plafond";
+import { rate } from "./fixtures";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -16,14 +17,6 @@ const square = (number: number, name: string, west: number): Quartier => ({
     name,
     rings: [[[west, 48.86], [west + side, 48.86], [west + side, 48.865], [west, 48.865], [west, 48.86]]],
 });
-
-const rate: Rate = {
-    flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
-    reference: 2670,
-    majored: 3200,
-    minored: 1870,
-    decree: { title: "Arrêté préfectoral n° 2025-06-16-00003", url: "https://example.org", from: "2025-07-01", until: "2026-07-01", contest: null },
-};
 
 const found: Lookup = { kind: "located", label: "4 Place du Louvre 75001 Paris", point: { lon: 2.3425, lat: 48.8625 } };
 
