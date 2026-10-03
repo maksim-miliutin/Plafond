@@ -587,3 +587,92 @@ a:hover
     color: var(--muted);
     text-align: right;
 }
+
+.listings
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.listing
+{
+    width: 100%;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 14px;
+    background: #FFFFFF;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    color: var(--ink);
+    font: 15px var(--text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.listing .facts
+{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.listing .number
+{
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.label
+{
+    flex: none;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font: 700 26px var(--display);
+    color: #000000;
+}
+
+.label-A
+{
+    background: #009C6D;
+    color: #FFFFFF;
+}
+
+.label-B
+{
+    background: #52B153;
+}
+
+.label-C
+{
+    background: #A5CC74;
+}
+
+.label-D
+{
+    background: #F4E70F;
+}
+
+.label-E
+{
+    background: #F0B50F;
+}
+
+.label-F
+{
+    background: #EB8235;
+}
+
+.label-G
+{
+    background: #D7221F;
+    color: #FFFFFF;
+}
