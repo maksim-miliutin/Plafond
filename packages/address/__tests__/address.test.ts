@@ -4,6 +4,7 @@ import { AddressError, geoplateforme, type Fetcher } from "../src/address.js";
 
 interface Match
 {
+    id: string;
     type: string;
     citycode: string;
     label: string;
@@ -11,6 +12,7 @@ interface Match
 }
 
 const louvre: Match = {
+    id: "75101_5925_00004",
     type: "housenumber",
     citycode: "75101",
     label: "4 Place du Louvre 75001 Paris",
@@ -26,7 +28,7 @@ function reply(matches: Match[]): unknown
         features: matches.map((m) => ({
             type: "Feature",
             geometry: { type: "Point", coordinates: m.coordinates },
-            properties: { label: m.label, score: 0.97, type: m.type, citycode: m.citycode, postcode: "75001", city: "Paris" },
+            properties: { id: m.id, label: m.label, score: 0.97, type: m.type, citycode: m.citycode, postcode: "75001", city: "Paris" },
         })),
     };
 }
@@ -48,7 +50,17 @@ test("a house number in paris is located at its point", async () =>
 {
     const found = await geoplateforme(answering(reply([louvre]))).locate("4 place du Louvre");
 
-    expect(found).toEqual({ kind: "located", label: louvre.label, point: { lon: 2.341191, lat: 48.860081 } });
+    expect(found).toEqual({ kind: "located", id: louvre.id, label: louvre.label, point: { lon: 2.341191, lat: 48.860081 } });
+});
+
+// The BAN identifier is the key the ADEME files its energy diagnoses under; a text address would match the neighbours.
+test("a located address keeps its BAN identifier", async () =>
+{
+    const found = await geoplateforme(answering(reply([louvre]))).locate("4 place du Louvre");
+    const nameless = { ...louvre, id: undefined as unknown as string };
+
+    expect(found).toMatchObject({ id: "75101_5925_00004" });
+    await expect(geoplateforme(answering(reply([nameless]))).locate("4 place du Louvre")).rejects.toThrow(AddressError);
 });
 
 test("the question goes to the geoplateforme with the text encoded and one answer asked for", async () =>

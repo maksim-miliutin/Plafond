@@ -3,6 +3,7 @@ import type { Point } from "@plafond/domain";
 export interface Located
 {
     kind: "located";
+    id: string;
     label: string;
     point: Point;
 }
@@ -39,6 +40,7 @@ export class AddressError extends Error
 
 interface Match
 {
+    id: string;
     label: string;
     type: string;
     citycode: string;
@@ -87,7 +89,7 @@ async function locate(fetcher: Fetcher, text: string): Promise<Lookup>
         return { kind: "street-only", label: match.label };
     }
 
-    return { kind: "located", label: match.label, point: match.point };
+    return { kind: "located", id: match.id, label: match.label, point: match.point };
 }
 
 async function ask(fetcher: Fetcher, url: string): Promise<unknown>
@@ -120,15 +122,16 @@ function firstMatch(body: unknown): Match | null
     const properties = field(features[0], "properties");
     const coordinates = field(field(features[0], "geometry"), "coordinates");
     const [lon, lat] = Array.isArray(coordinates) ? coordinates : [];
+    const id = field(properties, "id");
     const label = field(properties, "label");
     const type = field(properties, "type");
     const citycode = field(properties, "citycode");
-    if (typeof lon !== "number" || typeof lat !== "number" || typeof label !== "string" || typeof type !== "string" || typeof citycode !== "string")
+    if (typeof lon !== "number" || typeof lat !== "number" || typeof id !== "string" || typeof label !== "string" || typeof type !== "string" || typeof citycode !== "string")
     {
         throw new AddressError("the geocoder replied with a feature of an unexpected shape");
     }
 
-    return { label, type, citycode, point: { lon, lat } };
+    return { id, label, type, citycode, point: { lon, lat } };
 }
 
 function field(value: unknown, name: string): unknown
