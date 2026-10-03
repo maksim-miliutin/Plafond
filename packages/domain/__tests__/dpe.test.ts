@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { increase, type Dpe, type Tenancy } from "../src/dpe.js";
+import { decency, increase, type Dpe, type Tenancy } from "../src/dpe.js";
 
 // Dates counted by hand from the loi Climat et résilience: the freeze starts on 24 August 2022 and binds a lease
 // only once it is signed, renewed or tacitly renewed after that day; an empty flat renews every 3 years, a furnished one every year.
@@ -41,3 +41,31 @@ test("a diagnosis made after the rise says nothing of the rating the flat had th
 
     expect(increase(later, empty("2023-03-01"), "2024-03-01")).toEqual({ kind: "unknown", reason: "dpe-after-increase" });
 });
+
+// From the same law: a G flat stops being decent in a lease signed or renewed from 1 January 2025, F from 2028, E from 2034.
+test("a G flat is not decent once its lease was signed or renewed in 2025 or later", () =>
+{
+    expect(decency(g, empty("2025-02-01"))).toEqual({ kind: "not-decent", since: "2025-02-01" });
+    expect(decency(g, empty("2023-03-01"))).toEqual({ kind: "not-decent", since: "2026-03-01" });
+    expect(decency(g, furnished("2024-06-01"))).toEqual({ kind: "not-decent", since: "2025-06-01" });
+});
+
+test("a lease not yet renewed under the rule learns the day the rule will reach it", () =>
+{
+    expect(decency(g, empty("2024-06-01"))).toEqual({ kind: "from", on: "2027-06-01" });
+    expect(decency({ ...g, label: "F" }, empty("2023-03-01"))).toEqual({ kind: "from", on: "2029-03-01" });
+    expect(decency(e, furnished("2024-05-10"))).toEqual({ kind: "from", on: "2034-05-10" });
+});
+
+test("a flat rated A to D meets the energy rule of decency", () =>
+{
+    expect(decency({ ...g, label: "D" }, empty("2023-03-01"))).toEqual({ kind: "decent" });
+});
+
+test("a lease signed or renewed on the very day the rule starts falls under it", () =>
+{
+    expect(decency(g, empty("2025-01-01"))).toEqual({ kind: "not-decent", since: "2025-01-01" });
+    expect(decency(g, empty("2022-01-01"))).toEqual({ kind: "not-decent", since: "2025-01-01" });
+    expect(decency({ ...g, label: "F" }, empty("2025-01-01"))).toEqual({ kind: "from", on: "2028-01-01" });
+});
+
