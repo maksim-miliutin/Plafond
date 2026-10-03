@@ -14,6 +14,7 @@
         "build": "tsc -p tsconfig.build.json"
     },
     "dependencies": {
+        "@plafond/address": "0.0.0",
         "@plafond/domain": "0.0.0"
     }
 }
