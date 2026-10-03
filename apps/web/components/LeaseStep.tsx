@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import type { FormEvent } from "react";
 
-import { frenchDay, isDay, periods, rooms } from "@plafond/domain";
+import { periods, rooms } from "@plafond/domain";
 
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
+import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
 
 export interface LeaseProps
@@ -65,73 +66,5 @@ export function LeaseStep({ fields, errors, noRate = false, onAnswer, onBack }: 
                 <button type="submit" className="primary">Vérifier mon loyer</button>
             </LocalForm>
         </main>
-    );
-}
-
-interface ChoiceProps
-{
-    name: keyof LeaseFields;
-    legend: string;
-    options: [string, string][];
-    value: string;
-    error: string | undefined;
-}
-
-function Choice({ name, legend, options, value, error }: ChoiceProps)
-{
-    return (
-        <fieldset className="choice" aria-describedby={error === undefined ? undefined : `${name}-error`}>
-            <legend className="label">{legend}</legend>
-            <div className="options">
-                {options.map(([option, text]) => (
-                    <label key={option} className="option">
-                        <input type="radio" name={name} value={option} defaultChecked={option === value} />
-                        <span>{text}</span>
-                    </label>
-                ))}
-            </div>
-            {error !== undefined && <p id={`${name}-error`} className="error">{error}</p>}
-        </fieldset>
-    );
-}
-
-interface TypedProps
-{
-    id: keyof LeaseFields;
-    label: string;
-    hint?: string;
-    type?: "text" | "date";
-    value: string;
-    error: string | undefined;
-}
-
-function Typed({ id, label, hint, type = "text", value, error }: TypedProps)
-{
-    const [typed, setTyped] = useState(value);
-    const spelled = type === "date" && isDay(typed);
-    const notes = [
-        hint === undefined ? null : `${id}-hint`,
-        spelled ? `${id}-read` : null,
-        error === undefined ? null : `${id}-error`,
-    ].filter((note) => note !== null);
-
-    return (
-        <div className="typed">
-            <label htmlFor={id} className="label">{label}</label>
-            {hint !== undefined && <p id={`${id}-hint`} className="hint">{hint}</p>}
-            <input
-                id={id}
-                name={id}
-                type={type}
-                inputMode={type === "text" ? "decimal" : undefined}
-                defaultValue={value}
-                onChange={(event) => setTyped(event.currentTarget.value)}
-                className="field"
-                aria-invalid={error === undefined ? undefined : true}
-                aria-describedby={notes.length === 0 ? undefined : notes.join(" ")}
-            />
-            {spelled && <p id={`${id}-read`} className="hint">Soit le {frenchDay(typed)}.</p>}
-            {error !== undefined && <p id={`${id}-error`} className="error">{error}</p>}
-        </div>
     );
 }
