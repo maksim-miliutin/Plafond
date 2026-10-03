@@ -28,7 +28,7 @@ export type IncreaseFinding =
     | { kind: "unknown"; reason: "dpe-after-increase" };
 
 // Loi Climat et résilience, article 159: no rise for an F or G flat in a lease signed, renewed or tacitly renewed from this day.
-const freezeFrom: Day = "2022-08-24";
+export const freezeFrom: Day = "2022-08-24";
 const frozen: readonly Label[] = ["F", "G"];
 
 // Loi Climat et résilience, article 160: a flat of these classes is no longer decent in a lease signed or renewed from these days.
