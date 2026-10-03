@@ -4,16 +4,9 @@ import { PackedError, pack, packQuartiers, type Quartier, type Rate } from "@pla
 import type { Fetcher } from "@plafond/address";
 
 import { loadQuartiers, loadRates, loadTables } from "../lib/load";
+import { rate } from "./fixtures";
 
-const rates: Rate[] = [
-    {
-        flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
-        reference: 2670,
-        majored: 3200,
-        minored: 1870,
-        decree: { title: "Arrêté préfectoral n° 2025-06-16-00003", url: "https://example.org", from: "2025-07-01", until: "2026-07-01", contest: null },
-    },
-];
+const rates: Rate[] = [rate];
 
 function serving(body: unknown, asked: string[] = [], ok = true): Fetcher
 {

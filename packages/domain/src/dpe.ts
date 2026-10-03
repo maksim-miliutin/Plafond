@@ -81,7 +81,7 @@ export function increase(dpe: Dpe, tenancy: Tenancy, raisedOn: Day): IncreaseFin
     return { kind: "forbidden", since: term };
 }
 
-export function termStarts(tenancy: Tenancy, until: Day): Day[]
+function termStarts(tenancy: Tenancy, until: Day): Day[]
 {
     const starts: Day[] = [];
     for (let count = 0; termStart(tenancy, count) <= until; count++)

@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { check, letter, type Check, type Claim, type Letter, type Quartier, type Rate } from "@plafond/domain";
+import { check, letter, type Check, type Claim, type Contest, type Letter, type Quartier, type Rate } from "@plafond/domain";
 
 import { AddressStep } from "../components/AddressStep";
 import { LeaseStep } from "../components/LeaseStep";
@@ -12,30 +12,12 @@ import { LetterStep } from "../components/LetterStep";
 import { QuartierStep } from "../components/QuartierStep";
 import { ResultStep } from "../components/ResultStep";
 import { questions, type LeaseFields } from "../lib/lease";
+import { claim as lease, rate as base } from "./fixtures";
 
-const rate: Rate = {
-    flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
-    reference: 2670,
-    majored: 3200,
-    minored: 1870,
-    decree: {
-        title: "Arrêté préfectoral n° 2025-06-16-00003",
-        url: "https://example.org/decree",
-        from: "2025-07-01",
-        until: "2026-07-01",
-        contest: { outcome: "pending", court: "Conseil d'État", decidedOn: "2024-11-18", claimsBy: null, source: "https://example.org" },
-    },
-};
+const contest: Contest = { outcome: "pending", court: "Conseil d'État", decidedOn: "2024-11-18", claimsBy: null, source: "https://example.org" };
+const rate: Rate = { ...base, decree: { ...base.decree, contest } };
 
-const claim: Claim = {
-    flat: rate.flat,
-    surface: 4000,
-    signedOn: "2025-09-01",
-    startsOn: "2025-09-01",
-    rent: 150000,
-    complement: 20000,
-    on: "2025-09-25",
-};
+const claim: Claim = { ...lease, complement: 20000, on: "2025-09-25" };
 
 const checked = check(claim, [rate]) as Check;
 const written = letter({ check: checked, claim, address: "4 Place du Louvre 75001 Paris", quartier: "Saint-Germain-l'Auxerrois", stated: false }) as Letter;

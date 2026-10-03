@@ -20,7 +20,16 @@ The City's table stops at 2025. The rents in force from 1 July 2026 are copied f
 
 ## Status
 
-The calculation core lives in `packages/domain`. The web app in `apps/web` (Next.js) walks from the address to the letter and shows only what the domain calculates. Until its figures are checked against the official reference rent tool, it is a trial version.
+The app is live at https://maksim-miliutin.github.io/Plafond/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. Until its figures are checked against the official reference rent tool, it is a trial version.
+
+## Layout
+
+- `packages/domain`: the calculation, the letter and the rules of law, in plain TypeScript with no framework, so that the web app and a later mobile app share them.
+- `packages/import`: reads the published tables (the City's rents, the annexes of the decrees, the outlines of the quartiers) and checks them line by line.
+- `packages/address`: the client of the Géoplateforme geocoder.
+- `apps/web`: the Next.js app, exported as plain files and published on GitHub Pages; `e2e` holds the tests that run in real browsers, iPhones included.
+- `db/seed`: the published data the build reads, each file described above.
+- `.github/workflows`: the checks every change goes through, and the deploy.
 
 ## Development
 
