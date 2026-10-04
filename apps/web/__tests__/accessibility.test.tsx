@@ -54,7 +54,7 @@ const screens: Record<string, ReactElement> = {
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
     "quartier": <QuartierStep quartier={quartier} around={[]} address="4 Place du Louvre 75001 Paris" point={{ lon: 2.342, lat: 48.861 }} />,
     "lease": <LeaseStep fields={blank} errors={{}} />,
-    "refused lease": <LeaseStep fields={blank} errors={questions} noRate />,
+    "refused lease": <LeaseStep fields={blank} errors={questions} noRate={{ side: "after", until: "2026-11-24" }} />,
     "result": <ResultStep check={checked} claim={claim} quartier="Saint-Germain-l'Auxerrois" writable />,
     "letter": <LetterStep letter={written} />,
 };

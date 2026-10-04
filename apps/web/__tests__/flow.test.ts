@@ -78,7 +78,7 @@ test("a confirmed quartier opens an empty lease form", () =>
 {
     const step = walk({ type: "located", typed, lookup: found }, { type: "confirmed" });
 
-    expect(step).toMatchObject({ at: "lease", errors: {}, noRate: false });
+    expect(step).toMatchObject({ at: "lease", errors: {}, noRate: null });
     expect(step.at === "lease" && Object.values(step.fields).every((value) => value === "")).toBe(true);
 });
 
@@ -89,11 +89,12 @@ test("an incomplete lease stays on the form with its questions", () =>
     expect(step).toMatchObject({ at: "lease", fields: { rent: "" }, errors: { rent: expect.any(String) } });
 });
 
-test("a lease signed on a day no rate covers says so on the form instead of guessing", () =>
+test("a lease signed on a day no rate covers says so on the form, and on which side of the known decrees", () =>
 {
-    const step = walk({ type: "located", typed, lookup: found }, { type: "confirmed" }, { type: "answered", fields: { ...filled, signedOn: "2026-08-01" } });
+    const signed = (signedOn: string) => walk({ type: "located", typed, lookup: found }, { type: "confirmed" }, { type: "answered", fields: { ...filled, signedOn, startsOn: signedOn } });
 
-    expect(step).toMatchObject({ at: "lease", noRate: true, errors: {} });
+    expect(signed("2026-08-01")).toMatchObject({ at: "lease", noRate: { side: "after", until: "2026-06-30" }, errors: {} });
+    expect(signed("2025-06-01")).toMatchObject({ at: "lease", noRate: { side: "before", from: "2025-07-01" }, errors: {} });
 });
 
 test("a lease over the cap shows the check and offers the letter", () =>

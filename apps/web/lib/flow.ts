@@ -1,4 +1,4 @@
-import { check, letter, quartierAt } from "@plafond/domain";
+import { check, dayBefore, letter, quartierAt } from "@plafond/domain";
 import type { Check, Claim, Day, Letter, Point, Quartier, Rate } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
@@ -43,10 +43,15 @@ interface Checked extends Found
     check: Check;
 }
 
+export type Gap =
+    | { side: "before"; from: Day }
+    | { side: "after"; until: Day }
+    | { side: "between" };
+
 export type Step =
     | { at: "address"; typed: string; problem: Problem | null }
     | ({ at: "quartier" } & Found)
-    | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; noRate: boolean } & Found)
+    | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; noRate: Gap | null } & Found)
     | ({ at: "result"; letter: Letter | null } & Checked)
     | ({ at: "letter"; letter: Letter } & Checked)
     | { at: "help"; from: Extract<Step, { at: "result" }> };
@@ -71,7 +76,7 @@ export function next(step: Step, event: Event, world: World): Step
             return step.at === "address" ? located(event.typed, event.lookup, world) : step;
 
         case "confirmed":
-            return step.at === "quartier" ? { at: "lease", typed: step.typed, place: step.place, fields: empty, errors: {}, noRate: false } : step;
+            return step.at === "quartier" ? { at: "lease", typed: step.typed, place: step.place, fields: empty, errors: {}, noRate: null } : step;
 
         case "answered":
             return step.at === "lease" ? answered(step, event.fields, world) : step;
@@ -116,13 +121,13 @@ function answered(step: Extract<Step, { at: "lease" }>, fields: LeaseFields, wor
     const lease = leaseFrom(fields, { quartier: step.place.quartier.number, on: world.on });
     if ("kind" in lease)
     {
-        return { ...step, fields, errors: lease.fields, noRate: false };
+        return { ...step, fields, errors: lease.fields, noRate: null };
     }
 
     const result = check(lease.claim, world.rates);
     if (result.kind === "no-rate")
     {
-        return { ...step, fields, errors: {}, noRate: true };
+        return { ...step, fields, errors: {}, noRate: gapOf(lease.claim.signedOn, world.rates) };
     }
 
     if (result.kind === "invalid")
@@ -163,7 +168,7 @@ function back(step: Step): Step
             return { at: "quartier", typed: step.typed, place: step.place };
 
         case "result":
-            return { at: "lease", typed: step.typed, place: step.place, fields: step.fields, errors: {}, noRate: false };
+            return { at: "lease", typed: step.typed, place: step.place, fields: step.fields, errors: {}, noRate: null };
 
         case "letter":
             return { ...step, at: "result" };
@@ -172,3 +177,23 @@ function back(step: Step): Step
             return step.from;
     }
 }
+
+function gapOf(signedOn: Day, rates: readonly Rate[]): Gap
+{
+    const starts = rates.map((rate) => rate.decree.from).sort();
+    const ends = rates.map((rate) => rate.decree.until).sort();
+    const first = starts[0];
+    const last = ends.at(-1);
+    if (first !== undefined && signedOn < first)
+    {
+        return { side: "before", from: first };
+    }
+
+    if (last !== undefined && signedOn >= last)
+    {
+        return { side: "after", until: dayBefore(last) };
+    }
+
+    return { side: "between" };
+}
+
