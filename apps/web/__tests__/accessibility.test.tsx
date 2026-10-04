@@ -14,6 +14,8 @@ import { DpeFindStep } from "../components/DpeFindStep";
 import { DpeLeaseStep } from "../components/DpeLeaseStep";
 import { DpeResultStep } from "../components/DpeResultStep";
 import { HelpStep } from "../components/HelpStep";
+import { DepositFormStep } from "../components/DepositFormStep";
+import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 import { Mentions } from "../components/Mentions";
 import { helpers, parisRent } from "../lib/help";
 import { LeaseStep } from "../components/LeaseStep";
@@ -49,6 +51,7 @@ const screens: Record<string, ReactElement> = {
     "dpe result": <DpeResultStep listing={listing} raisedOn="2024-03-01" decency={{ kind: "not-decent", since: "2026-03-01" }} increase={{ kind: "forbidden", since: "2023-03-01" }} writable />,
     "help": <HelpStep helpers={[parisRent, ...helpers]} onBack={() => undefined} />,
     "legal notice": <Mentions />,
+    "deposit form": <DepositFormStep fields={Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields} errors={{ keysOn: "Indiquez la date de remise des clés." }} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
