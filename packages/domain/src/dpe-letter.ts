@@ -13,7 +13,7 @@ export interface DpeLetterInput
     decency: DecencyFinding;
 }
 
-const climate = "la loi n° 2021-1104 du 22 août 2021 dite Climat et résilience";
+const climate = "loi n° 2021-1104 du 22 août 2021 dite Climat et résilience";
 
 export function dpeLetter(input: DpeLetterInput): Letter | NothingToClaim
 {
@@ -73,7 +73,7 @@ function decent({ dpe, decency }: DpeLetterInput): Demand | null
         paragraphs: [
             `Depuis le ${frenchDay(from)}, un logement classé ${dpe.label} ne répond plus aux critères de décence énergétique `
                 + "pour un bail signé ou renouvelé à compter de cette date (article 6 de la loi n° 89-462 du 6 juillet 1989, "
-                + `modifié par ${climate}). Le bail en cours a commencé le ${frenchDay(decency.since)}.`,
+                + `modifié par la ${climate}). Le bail en cours a commencé le ${frenchDay(decency.since)}.`,
             "Par la présente, je vous mets en demeure de réaliser les travaux nécessaires pour que le logement réponde à ces critères.",
         ],
     };

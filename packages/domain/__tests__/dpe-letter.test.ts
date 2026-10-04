@@ -60,3 +60,12 @@ test("the copied DPE letter reads like the rent letter, numbered and signed", ()
     expect(copy).toContain("\n2. ");
     expect(copy.endsWith("\n[Signature]\n")).toBe(true);
 });
+
+test("the climate law is cited plainly, without an article in front of it inside the brackets", () =>
+{
+    const said = (written(g, lease, "2024-03-01") as Letter).demands.map((demand) => demand.paragraphs.join(" ")).join(" ");
+
+    expect(said).toContain("(loi n° 2021-1104 du 22 août 2021 dite Climat et résilience)");
+    expect(said).toContain("modifié par la loi n° 2021-1104");
+    expect(said).not.toContain("(la loi");
+});
