@@ -10,5 +10,6 @@ test("the first screen offers every check, each a link relative to the page, so 
     expect(page).toMatch(/<a[^>]*href="loyer\/"[^>]*>.*Mon loyer.*<\/a>/s);
     expect(page).toMatch(/<a[^>]*href="dpe\/"[^>]*>.*DPE.*<\/a>/s);
     expect(page).toMatch(/<a[^>]*href="depot\/"[^>]*>.*dépôt de garantie.*<\/a>/s);
+    expect(page).toMatch(/<a[^>]*href="charges\/"[^>]*>.*régularisation de charges.*<\/a>/s);
     expect(page.match(/<h1/g)).toHaveLength(1);
 });

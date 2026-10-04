@@ -18,6 +18,10 @@ export function Home()
                     <strong>Mon dépôt de garantie m'a-t-il été rendu à temps ?</strong>
                     <span>Partout en France, d'après la loi du 6 juillet 1989.</span>
                 </a>
+                <a href="charges/" className="check">
+                    <strong>Ma régularisation de charges est-elle juste ?</strong>
+                    <span>Partout en France, d'après le décret du 26 août 1987.</span>
+                </a>
             </nav>
             <div className="grow" />
             <p className="fine">Une estimation, pas un conseil juridique. <a href="mentions/">Mentions légales</a></p>
