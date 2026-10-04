@@ -35,13 +35,15 @@ export type DpeStep =
     | { at: "choose"; typed: string; listings: Listing[] }
     | ({ at: "lease"; fields: DpeFields; errors: DpeErrors; listings: Listing[] } & Chosen)
     | ({ at: "result"; letter: Letter | null; listings: Listing[] } & Judged)
-    | ({ at: "letter"; letter: Letter; listings: Listing[] } & Judged);
+    | ({ at: "letter"; letter: Letter; listings: Listing[] } & Judged)
+    | { at: "help"; from: Extract<DpeStep, { at: "result" }> };
 
 export type DpeEvent =
     | { type: "searched"; typed: string; outcome: Searched }
     | { type: "chose"; index: number }
     | { type: "answered"; fields: DpeFields }
     | { type: "wrote" }
+    | { type: "helped" }
     | { type: "back" };
 
 export const dpeStart: DpeStep = { at: "find", typed: "", problem: null };
@@ -77,6 +79,9 @@ export function nextDpe(step: DpeStep, event: DpeEvent, world: { on: Day }): Dpe
 
         case "wrote":
             return step.at === "result" && step.letter !== null ? { ...step, at: "letter", letter: step.letter } : step;
+
+        case "helped":
+            return step.at === "result" ? { at: "help", from: step } : step;
 
         case "back":
             return back(step);
@@ -140,5 +145,8 @@ function back(step: DpeStep): DpeStep
 
         case "letter":
             return { ...step, at: "result" };
+
+        case "help":
+            return step.from;
     }
 }

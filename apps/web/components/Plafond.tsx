@@ -7,7 +7,9 @@ import { geoplateforme, type Geocoder } from "@plafond/address";
 import { next, start, type Event, type Step } from "../lib/flow";
 import { loadTables, type Tables, type Unreachable } from "../lib/load";
 import { todayInParis } from "../lib/today";
+import { helpers, parisRent } from "../lib/help";
 import { AddressStep } from "./AddressStep";
+import { HelpStep } from "./HelpStep";
 import { LeaseStep } from "./LeaseStep";
 import { LetterStep } from "./LetterStep";
 import { QuartierStep } from "./QuartierStep";
@@ -123,12 +125,16 @@ export function Plafond({ needs = live }: { needs?: Needs })
                     quartier={step.place.quartier.name}
                     writable={step.letter !== null}
                     onWrite={() => go({ type: "wrote" }, world)}
+                    onHelp={() => go({ type: "helped" }, world)}
                     onBack={back}
                 />
             );
 
         case "letter":
             return <LetterStep letter={step.letter} onBack={back} />;
+
+        case "help":
+            return <HelpStep helpers={[parisRent, ...helpers]} onBack={back} />;
     }
 }
 

@@ -7,11 +7,13 @@ import { geoplateforme, type Geocoder } from "@plafond/address";
 
 import { dpeStart, nextDpe, type DpeEvent, type DpeStep } from "../lib/dpe-flow";
 import { search } from "../lib/dpe-search";
+import { helpers } from "../lib/help";
 import { todayInParis } from "../lib/today";
 import { DpeChooseStep } from "./DpeChooseStep";
 import { DpeFindStep } from "./DpeFindStep";
 import { DpeLeaseStep } from "./DpeLeaseStep";
 import { DpeResultStep } from "./DpeResultStep";
+import { HelpStep } from "./HelpStep";
 import { LetterStep } from "./LetterStep";
 
 export interface EnergyNeeds
@@ -72,11 +74,15 @@ export function Energie({ needs = live }: { needs?: EnergyNeeds })
                     increase={step.increase}
                     writable={step.letter !== null}
                     onWrite={() => go({ type: "wrote" })}
+                    onHelp={() => go({ type: "helped" })}
                     onBack={back}
                 />
             );
 
         case "letter":
             return <LetterStep letter={step.letter} onBack={back} />;
+
+        case "help":
+            return <HelpStep helpers={helpers} onBack={back} />;
     }
 }
