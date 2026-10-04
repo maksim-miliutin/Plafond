@@ -30,6 +30,9 @@ export type IncreaseFinding =
 
 // Loi Climat et résilience, article 159: no rise for an F or G flat in a lease signed, renewed or tacitly renewed from this day.
 export const freezeFrom: Day = "2022-08-24";
+
+// Loi du 16 août 2022 pour le pouvoir d'achat: no complement may be applied to an F or G flat in a lease signed from this day.
+export const noComplementFrom: Day = "2022-08-18";
 const frozen: readonly Label[] = ["F", "G"];
 
 // Loi Climat et résilience, article 160: a flat of these classes is no longer decent in a lease signed or renewed from these days.

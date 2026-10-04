@@ -8,5 +8,5 @@ export { letting, periods, rooms } from "./labels.js";
 export { letter, letterText, type Demand, type Ground, type Letter, type LetterInput, type NothingToClaim } from "./letter.js";
 export { PackedError, pack, packQuartiers, unpack, unpackQuartiers, type Packed, type PackedQuartiers } from "./packed.js";
 export type { Dpe, Label } from "./dpe.js";
-export { decency, freezeFrom, increase, undecentFrom, type DecencyFinding, type IncreaseFinding, type Tenancy } from "./dpe.js";
+export { decency, freezeFrom, increase, noComplementFrom, undecentFrom, type DecencyFinding, type IncreaseFinding, type Tenancy } from "./dpe.js";
 export { dpeLetter } from "./dpe-letter.js";

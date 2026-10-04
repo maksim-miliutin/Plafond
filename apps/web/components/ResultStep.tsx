@@ -1,4 +1,4 @@
-import { dayBefore, euros, frenchDay, letting, percent, periods, rooms, squareMetres } from "@plafond/domain";
+import { dayBefore, euros, frenchDay, letting, noComplementFrom, percent, periods, rooms, squareMetres } from "@plafond/domain";
 import type { Check, Claim, Complement, Day } from "@plafond/domain";
 
 import { ContestNote } from "./ContestNote";
@@ -33,7 +33,7 @@ export function ResultStep({ check, claim, quartier, writable, onWrite, onBack, 
                 </div>
             </dl>
             {over && <Recovery check={check} claim={claim} />}
-            {check.complement !== null && <ComplementNote complement={check.complement} on={claim.on} />}
+            {check.complement !== null && <ComplementNote complement={check.complement} on={claim.on} signedOn={claim.signedOn} />}
             {check.rate.decree.contest !== null && <ContestNote contest={check.rate.decree.contest} />}
             <Sources check={check} claim={claim} quartier={quartier} />
             <div className="grow" />
@@ -83,7 +83,7 @@ function Recovery({ check, claim }: { check: Check; claim: Claim })
     );
 }
 
-function ComplementNote({ complement, on }: { complement: Complement; on: Day })
+function ComplementNote({ complement, on, signedOn }: { complement: Complement; on: Day; signedOn: Day })
 {
     const deadline = frenchDay(complement.contestUntil);
     const open = on <= complement.contestUntil;
@@ -99,6 +99,12 @@ function ComplementNote({ complement, on }: { complement: Complement; on: Day })
             {open
                 ? <p>Vous pouvez le contester devant la commission départementale de conciliation avant le {deadline}.</p>
                 : <p>Le délai pour le contester devant la commission départementale de conciliation a expiré le {deadline}.</p>}
+            {signedOn >= noComplementFrom && (
+                <p>
+                    Depuis le {frenchDay(noComplementFrom)}, aucun complément de loyer ne peut être appliqué à un logement classé F
+                    ou G au diagnostic de performance énergétique. <a href="../dpe/">Vérifier le DPE du logement</a>
+                </p>
+            )}
         </section>
     );
 }

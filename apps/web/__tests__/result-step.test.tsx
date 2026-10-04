@@ -98,3 +98,17 @@ test("the result says when the lease was signed, since that date picks the decre
 
     expect(signed).toMatch(/<dt>Bail<\/dt><dd>[^<]*signé le 20 août 2025[^<]*pris effet le 1er septembre 2025/);
 });
+
+// Loi du 16 août 2022: from 18 August 2022 no complement may be applied to a flat rated F or G; the screen cannot know
+// the rating, so it says the rule and points to the DPE check, without judging this complement.
+test("a complement in a lease signed since 18 August 2022 comes with the rule for F and G flats and a way to check", () =>
+{
+    const recent = page({ complement: 20000 });
+    const decree2022 = { ...rate, decree: { ...rate.decree, from: "2022-07-01", until: "2023-07-01" } };
+    const older = page({ complement: 20000, signedOn: "2022-08-17", startsOn: "2022-08-17" }, [decree2022]);
+
+    expect(recent).toContain("aucun complément de loyer ne peut être appliqué à un logement classé F ou G");
+    expect(recent).toMatch(/<a[^>]*href="\.\.\/dpe\/"[^>]*>Vérifier le DPE du logement<\/a>/);
+    expect(older).not.toContain("classé F ou G");
+    expect(page()).not.toContain("classé F ou G");
+});
