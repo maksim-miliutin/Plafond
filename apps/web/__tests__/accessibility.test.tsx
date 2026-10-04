@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { check, letter, type Check, type Claim, type Contest, type Letter, type Quartier, type Rate } from "@plafond/domain";
+import { check, deposit, letter, type Check, type Claim, type Contest, type Deposit, type Letter, type Quartier, type Rate } from "@plafond/domain";
 
 import type { Listing } from "@plafond/ademe";
 
@@ -15,6 +15,7 @@ import { DpeLeaseStep } from "../components/DpeLeaseStep";
 import { DpeResultStep } from "../components/DpeResultStep";
 import { HelpStep } from "../components/HelpStep";
 import { DepositFormStep } from "../components/DepositFormStep";
+import { DepositResultStep } from "../components/DepositResultStep";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 import { Mentions } from "../components/Mentions";
 import { helpers, parisRent } from "../lib/help";
@@ -44,6 +45,8 @@ const listing: Listing = {
     electric: true,
 };
 
+const held: Deposit = { paid: 120000, rent: 120000, furnished: false, keysOn: "2026-07-01", conforming: true, addressGiven: true, returned: 0, returnedOn: null, on: "2026-10-03" };
+
 const screens: Record<string, ReactElement> = {
     "dpe search": <DpeFindStep />,
     "refused dpe search": <DpeFindStep typed="7 place du Panthéon" problem="no-diagnosis" />,
@@ -52,6 +55,7 @@ const screens: Record<string, ReactElement> = {
     "help": <HelpStep helpers={[parisRent, ...helpers]} onBack={() => undefined} />,
     "legal notice": <Mentions />,
     "deposit form": <DepositFormStep fields={Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields} errors={{ keysOn: "Indiquez la date de remise des clés." }} />,
+    "deposit result": <DepositResultStep held={held} check={deposit(held)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
