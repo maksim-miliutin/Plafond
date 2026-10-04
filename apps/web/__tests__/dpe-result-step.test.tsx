@@ -14,7 +14,7 @@ const g: Listing = {
     detail: null,
     electric: true,
 };
-const lease: Tenancy = { signedOn: "2023-03-01", furnished: false, on: "2026-10-03" };
+const lease: Tenancy = { signedOn: "2023-03-01", furnished: false, company: false, on: "2026-10-03" };
 
 function page(listing: Listing, raisedOn: string | null, writable = false, tenancy: Tenancy = lease): string
 {

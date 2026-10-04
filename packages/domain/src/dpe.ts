@@ -14,6 +14,7 @@ export interface Tenancy
 {
     signedOn: Day;
     furnished: boolean;
+    company: boolean;
     on: Day;
 }
 
@@ -108,8 +109,10 @@ function firstTermFrom(tenancy: Tenancy, from: Day): Day
     return termStart(tenancy, count);
 }
 
-// An empty flat let by a person runs for 3 years, a furnished one for 1, each renewed tacitly for the same span.
+// An empty flat runs for 3 years when a person lets it and 6 when a company does, a furnished one for 1; each renews for the same span.
 function termStart(tenancy: Tenancy, count: number): Day
 {
-    return addMonths(tenancy.signedOn, (tenancy.furnished ? 12 : 36) * count);
+    const months = tenancy.furnished ? 12 : tenancy.company ? 72 : 36;
+
+    return addMonths(tenancy.signedOn, months * count);
 }

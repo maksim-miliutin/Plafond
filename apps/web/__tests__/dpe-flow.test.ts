@@ -16,7 +16,7 @@ const e: Listing = { ...g, dpe: { ...g.dpe, number: "2375E1759742J", label: "E" 
 
 const world = { on: "2026-10-03" };
 const typed = "7 place du Panthéon";
-const filled: DpeFields = { signedOn: "2023-03-01", furnished: "no", raised: "yes", raisedOn: "2024-03-01" };
+const filled: DpeFields = { signedOn: "2023-03-01", furnished: "no", landlord: "person", raised: "yes", raisedOn: "2024-03-01" };
 
 function walk(...events: DpeEvent[]): DpeStep
 {
@@ -82,3 +82,12 @@ test("going back retraces every step and keeps what was typed", () =>
     expect(walk(...all, back, back, back)).toMatchObject({ at: "choose", listings: [g] });
     expect(walk(...all, back, back, back, back)).toEqual({ at: "find", typed, problem: null });
 });
+
+test("who lets the flat is asked, and a company's lease is reckoned in spans of 6 years", () =>
+{
+    const chosen: DpeEvent[] = [{ type: "searched", typed, outcome: { kind: "listed", listings: [g] } }, { type: "chose", index: 0 }];
+
+    expect(walk(...chosen, { type: "answered", fields: { ...filled, landlord: "" } })).toMatchObject({ at: "lease", errors: { landlord: expect.any(String) } });
+    expect(walk(...chosen, { type: "answered", fields: { ...filled, landlord: "company" } })).toMatchObject({ at: "result", decency: { kind: "from", on: "2029-03-01" } });
+});
+

@@ -8,6 +8,7 @@ export interface DpeFields
 {
     signedOn: string;
     furnished: string;
+    landlord: string;
     raised: string;
     raisedOn: string;
 }
@@ -48,11 +49,12 @@ export const dpeStart: DpeStep = { at: "find", typed: "", problem: null };
 export const dpeQuestions: Record<keyof DpeFields, string> = {
     signedOn: "Indiquez la date de signature du bail.",
     furnished: "Indiquez si le logement est loué vide ou meublé.",
+    landlord: "Indiquez qui vous loue le logement.",
     raised: "Indiquez si votre loyer a augmenté depuis la signature.",
     raisedOn: "Indiquez la date de l'augmentation.",
 };
 
-const empty: DpeFields = { signedOn: "", furnished: "", raised: "", raisedOn: "" };
+const empty: DpeFields = { signedOn: "", furnished: "", landlord: "", raised: "", raisedOn: "" };
 
 export function nextDpe(step: DpeStep, event: DpeEvent, world: { on: Day }): DpeStep
 {
@@ -92,6 +94,7 @@ function answered(step: Extract<DpeStep, { at: "lease" }>, fields: DpeFields, on
     const errors: DpeErrors = {
         ...(isDay(fields.signedOn) ? {} : { signedOn: dpeQuestions.signedOn }),
         ...(fields.furnished === "yes" || fields.furnished === "no" ? {} : { furnished: dpeQuestions.furnished }),
+        ...(fields.landlord === "person" || fields.landlord === "company" ? {} : { landlord: dpeQuestions.landlord }),
         ...(raised === null ? { raised: dpeQuestions.raised } : {}),
         ...(raised === true && !isDay(fields.raisedOn) ? { raisedOn: dpeQuestions.raisedOn } : {}),
     };
@@ -101,7 +104,7 @@ function answered(step: Extract<DpeStep, { at: "lease" }>, fields: DpeFields, on
     }
 
     const { dpe, address } = step.listing;
-    const tenancy: Tenancy = { signedOn: fields.signedOn, furnished: fields.furnished === "yes", on };
+    const tenancy: Tenancy = { signedOn: fields.signedOn, furnished: fields.furnished === "yes", company: fields.landlord === "company", on };
     const raisedOn = raised === true ? fields.raisedOn : null;
     const judged = { decency: decency(dpe, tenancy), increase: raisedOn === null ? null : increase(dpe, tenancy, raisedOn) };
     const written = dpeLetter({ dpe, tenancy, address, raisedOn, ...judged });

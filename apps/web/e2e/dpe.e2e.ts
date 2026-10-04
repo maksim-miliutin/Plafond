@@ -68,6 +68,7 @@ test("a tenant goes from an address to the DPE letter, and only the public servi
     await page.getByRole("button", { name: /2375E0345814N/ }).click();
     await page.getByLabel("Date de signature du bail").fill("2023-03-01");
     await page.getByLabel("vide", { exact: true }).check();
+    await page.getByLabel("un particulier").check();
     await page.getByLabel("oui", { exact: true }).check();
     await page.getByLabel("Date de l'augmentation").fill("2024-03-01");
     await scanned(page, "lease");

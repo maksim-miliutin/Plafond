@@ -16,6 +16,7 @@ export interface DpeLeaseProps
 }
 
 const lettings: [string, string][] = [["no", "vide"], ["yes", "meublée"]];
+const landlords: [string, string][] = [["person", "un particulier"], ["company", "une société"]];
 const answers: [string, string][] = [["yes", "oui"], ["no", "non"]];
 
 export function DpeLeaseStep({ fields, errors, onAnswer, onBack }: DpeLeaseProps)
@@ -32,12 +33,19 @@ export function DpeLeaseStep({ fields, errors, onAnswer, onBack }: DpeLeaseProps
             <p className="step">Votre bail</p>
             <h1 className="title">Ce que dit votre bail</h1>
             <p className="lead">
-                Les règles dépendent de la date du bail et de ses renouvellements. Le calcul suppose un propriétaire
-                particulier. Si c'est une société, un bail vide dure 6 ans et non 3.
+                Les règles dépendent de la date du bail et de ses renouvellements, qui reviennent plus ou moins souvent selon
+                le propriétaire et le type de location.
             </p>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <Typed id="signedOn" label="Date de signature du bail" type="date" value={fields.signedOn} error={errors.signedOn} />
                 <Choice name="furnished" legend="Location" options={lettings} value={fields.furnished} error={errors.furnished} />
+                <Choice
+                    name="landlord"
+                    legend={"Qui vous loue le logement\u00A0?"}
+                    options={landlords}
+                    value={fields.landlord}
+                    error={errors.landlord}
+                />
                 <Choice
                     name="raised"
                     legend={"Votre loyer a-t-il augmenté depuis la signature\u00A0?"}
