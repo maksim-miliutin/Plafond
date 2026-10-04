@@ -1,5 +1,6 @@
 import { addMonths, isDay, wholeMonths, type Day } from "./day.js";
 import { rateOn, type Flat, type NoRate, type Rate } from "./rates.js";
+import { rounded } from "./money.js";
 
 export interface Claim
 {
@@ -109,9 +110,4 @@ function complementOf(claim: Claim, cap: number): Complement | null
         share: rounded(claim.complement * 10000, cap),
         contestUntil: addMonths(claim.signedOn, contestMonths),
     };
-}
-
-function rounded(numerator: number, denominator: number): number
-{
-    return Math.floor((2 * numerator + denominator) / (2 * denominator));
 }
