@@ -10,3 +10,5 @@ export { PackedError, pack, packQuartiers, unpack, unpackQuartiers, type Packed,
 export type { Dpe, Label } from "./dpe.js";
 export { decency, freezeFrom, increase, noComplementFrom, undecentFrom, type DecencyFinding, type IncreaseFinding, type Tenancy } from "./dpe.js";
 export { dpeLetter } from "./dpe-letter.js";
+export { deposit, type Deposit, type DepositCheck } from "./deposit.js";
+export { depositLetter } from "./deposit-letter.js";
