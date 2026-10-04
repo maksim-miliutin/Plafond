@@ -79,3 +79,10 @@ test("the letter on screen states how it is sent above its subject", () =>
 
     expect(document.indexOf("Lettre recommandée avec accusé de réception")).toBeLessThan(document.indexOf("Objet"));
 });
+
+// The same letter screen serves the DPE check across mainland France, where the ADIL of Paris is not the one to call.
+test("the letter sends the reader to the ADIL of their own département", () =>
+{
+    expect(page()).toContain("L&#x27;ADIL de votre département vous conseille gratuitement");
+    expect(page()).not.toContain("ADIL de Paris");
+});

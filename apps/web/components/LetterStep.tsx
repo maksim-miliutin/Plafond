@@ -40,7 +40,7 @@ export function LetterStep({ letter, onBack }: LetterProps)
                 <p className="signature">{letter.signature}</p>
             </article>
             <LetterActions letter={letter} />
-            <p className="fine">Ce modèle n'est pas un conseil juridique. L'ADIL de Paris vous conseille gratuitement avant l'envoi.</p>
+            <p className="fine">Ce modèle n'est pas un conseil juridique. L'ADIL de votre département vous conseille gratuitement avant l'envoi.</p>
         </main>
     );
 }
