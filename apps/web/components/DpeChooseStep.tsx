@@ -41,7 +41,7 @@ function described({ surface, floor, detail }: Listing): string
 {
     const parts = [
         surface === null ? null : squareMetres(surface),
-        floor === null ? null : floor === 0 ? "rez-de-chaussée" : `${ordinal(floor)} étage`,
+        floor === null ? null : `${ordinal(floor)} étage`,
         detail,
     ];
 

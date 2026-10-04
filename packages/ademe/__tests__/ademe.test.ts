@@ -21,11 +21,14 @@ test("every diagnosis becomes a listing with its rating, its dates and its flat,
     });
 });
 
-test("a surface is kept in hundredths of a square metre and the floor and lot as written", () =>
+// Seen live on the Place du Panthéon: floor 0 beside a detail reading "Etage 3" or "ETAGE 4". A 0 is what ADEME files
+// when the diagnostician left the floor empty, so it is not taken for the ground floor.
+test("a surface is kept in hundredths of a square metre, the lot as written, and a floor of 0 as not filled in", () =>
 {
     const byNumber = new Map(listingsFrom(seen).map((l) => [l.dpe.number, l]));
 
-    expect(byNumber.get("2375E1759742J")).toMatchObject({ surface: 17260, floor: 0, detail: "Bat. 1; Etage 3; Porte Face" });
+    expect(byNumber.get("2375E1759742J")).toMatchObject({ surface: 17260, floor: null, detail: "Bat. 1; Etage 3; Porte Face" });
+    expect(byNumber.get("2675E2325806E")).toMatchObject({ floor: 4 });
     expect(byNumber.get("2475E0959198G")).toMatchObject({ surface: 19400, floor: null, detail: "N°Lot : 4" });
 });
 
