@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { check, deposit, letter, type Check, type Claim, type Contest, type Deposit, type Letter, type Quartier, type Rate } from "@plafond/domain";
+import { charges, check, deposit, letter, type Check, type Claim, type Contest, type Deposit, type Letter, type Regularisation, type Quartier, type Rate } from "@plafond/domain";
 
 import type { Listing } from "@plafond/ademe";
 
@@ -17,6 +17,7 @@ import { HelpStep } from "../components/HelpStep";
 import { DepositFormStep } from "../components/DepositFormStep";
 import { DepositResultStep } from "../components/DepositResultStep";
 import { ChargesFormStep } from "../components/ChargesFormStep";
+import { ChargesResultStep } from "../components/ChargesResultStep";
 import { chargesStart } from "../lib/charges-flow";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 import { Mentions } from "../components/Mentions";
@@ -49,6 +50,8 @@ const listing: Listing = {
 
 const held: Deposit = { paid: 120000, rent: 120000, furnished: false, keysOn: "2026-07-01", conforming: true, addressGiven: true, returned: 0, returnedOn: null, on: "2026-10-03" };
 
+const statement: Regularisation = { year: 2024, lines: [{ kind: "water", billed: 30000 }, { kind: "insurance", billed: 15000 }], provisions: 30000, receivedOn: "2026-02-10" };
+
 const screens: Record<string, ReactElement> = {
     "dpe search": <DpeFindStep />,
     "refused dpe search": <DpeFindStep typed="7 place du Panthéon" problem="no-diagnosis" />,
@@ -59,6 +62,7 @@ const screens: Record<string, ReactElement> = {
     "deposit form": <DepositFormStep fields={Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields} errors={{ keysOn: "Indiquez la date de remise des clés." }} />,
     "deposit result": <DepositResultStep held={held} check={deposit(held)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "charges form": <ChargesFormStep fields={chargesStart.at === "form" ? chargesStart.fields : {}} errors={{ lines: "Reportez au moins un poste de votre décompte." }} />,
+    "charges result": <ChargesResultStep regularised={statement} check={charges(statement)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
