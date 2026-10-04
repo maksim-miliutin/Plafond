@@ -2,8 +2,9 @@
 
 import type { FormEvent } from "react";
 
-import { periods, rooms } from "@plafond/domain";
+import { frenchDay, periods, rooms } from "@plafond/domain";
 
+import type { Gap } from "../lib/flow";
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
@@ -12,7 +13,7 @@ export interface LeaseProps
 {
     fields: LeaseFields;
     errors: FieldErrors;
-    noRate?: boolean;
+    noRate?: Gap | null;
     onAnswer?: (fields: LeaseFields) => void;
     onBack?: () => void;
 }
@@ -27,7 +28,7 @@ const answers: [string, string][] = [
     ["no", "non"],
 ];
 
-export function LeaseStep({ fields, errors, noRate = false, onAnswer, onBack }: LeaseProps)
+export function LeaseStep({ fields, errors, noRate = null, onAnswer, onBack }: LeaseProps)
 {
     function answer(event: FormEvent<HTMLFormElement>)
     {
@@ -57,10 +58,9 @@ export function LeaseStep({ fields, errors, noRate = false, onAnswer, onBack }: 
                     value={fields.stated}
                     error={errors.stated}
                 />
-                {noRate && (
+                {noRate !== null && (
                     <p className="error" role="alert">
-                        Aucun loyer de référence n'est disponible pour cette date de signature. L'encadrement s'applique aux
-                        baux signés à partir du 1er juillet 2019, et l'arrêté le plus récent n'est peut-être pas encore intégré.
+                        Aucun loyer de référence n'est disponible pour cette date de signature. {gapText(noRate)}
                     </p>
                 )}
                 <button type="submit" className="primary">Vérifier mon loyer</button>
@@ -68,3 +68,19 @@ export function LeaseStep({ fields, errors, noRate = false, onAnswer, onBack }: 
         </main>
     );
 }
+
+function gapText(gap: Gap): string
+{
+    switch (gap.side)
+    {
+        case "before":
+            return `L'encadrement des loyers s'applique aux baux signés à partir du ${frenchDay(gap.from)}.`;
+
+        case "after":
+            return `Plafond ne connaît pas encore d'arrêté pour cette date\u00A0: le plus récent s'applique jusqu'au ${frenchDay(gap.until)}.`;
+
+        case "between":
+            return "Aucun arrêté ne couvre ce quartier à cette date.";
+    }
+}
+
