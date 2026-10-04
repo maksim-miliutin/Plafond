@@ -1,3 +1,6 @@
+import { addMonths, type Day } from "./day.js";
+import { rounded } from "./money.js";
+
 export type Verdict = "recoverable" | "not-recoverable" | "caretaker";
 
 export interface ChargeKind
@@ -30,3 +33,86 @@ export const chargeKinds: readonly ChargeKind[] = [
 ];
 
 export const caretakerShares: Record<CaretakerCase, number> = { both: 75, one: 40, employee: 100 };
+
+export interface ChargeLine
+{
+    kind: string;
+    billed: number;
+    caretaker?: CaretakerCase;
+}
+
+export interface Regularisation
+{
+    year: number;
+    lines: ChargeLine[];
+    provisions: number;
+    receivedOn: Day;
+}
+
+export interface CheckedLine
+{
+    kind: ChargeKind;
+    billed: number;
+    allowed: number;
+}
+
+export interface ChargesCheck
+{
+    kind: "charges";
+    lines: CheckedLine[];
+    billed: number;
+    allowed: number;
+    wrong: number;
+    provisions: number;
+    balance: number;  // what may be charged less the advances: below zero, the landlord owes the tenant
+    twelfths: boolean;
+    proofsUntil: Day;
+}
+
+export class ChargesError extends Error
+{
+    constructor(problem: string)
+    {
+        super(`charges: ${problem}`);
+        this.name = "ChargesError";
+    }
+}
+
+export function charges(regularised: Regularisation): ChargesCheck
+{
+    const lines = regularised.lines.map(checked);
+    const billed = lines.reduce((sum, line) => sum + line.billed, 0);
+    const allowed = lines.reduce((sum, line) => sum + line.allowed, 0);
+
+    return {
+        kind: "charges",
+        lines,
+        billed,
+        allowed,
+        wrong: billed - allowed,
+        provisions: regularised.provisions,
+        balance: allowed - regularised.provisions,
+        twelfths: regularised.receivedOn > `${regularised.year + 1}-12-31`,
+        proofsUntil: addMonths(regularised.receivedOn, 6),
+    };
+}
+
+function checked(line: ChargeLine): CheckedLine
+{
+    const kind = chargeKinds.find((known) => known.id === line.kind);
+    if (kind === undefined)
+    {
+        throw new ChargesError(`no kind of charge is called ${line.kind}`);
+    }
+
+    if (kind.verdict === "caretaker" && line.caretaker === undefined)
+    {
+        throw new ChargesError("a caretaker's line needs to say which tasks the caretaker does");
+    }
+
+    const allowed = kind.verdict === "recoverable"
+        ? line.billed
+        : kind.verdict === "caretaker" ? rounded(line.billed * caretakerShares[line.caretaker!], 100) : 0;
+
+    return { kind, billed: line.billed, allowed };
+}
