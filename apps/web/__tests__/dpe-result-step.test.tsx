@@ -77,3 +77,12 @@ test("no letter is offered when there is nothing to claim", () =>
 {
     expect(page({ ...g, dpe: { ...g.dpe, label: "D" } }, null, false)).not.toContain("Préparer la lettre");
 });
+
+// The ADEME numbers every valid diagnosis and lets anyone read the original by that number.
+test("the findings point to the ADEME observatory, where the original diagnosis can be read by its number", () =>
+{
+    const shown = page(g, null);
+
+    expect(shown).toMatch(/<a[^>]*href="https:\/\/observatoire-dpe-audit\.ademe\.fr\/"[^>]*>observatoire de l&#x27;ADEME<\/a>/);
+    expect(shown).toContain("2375E0345814N");
+});
