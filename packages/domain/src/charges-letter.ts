@@ -28,8 +28,10 @@ export function chargesLetter({ regularised, check, address, on }: ChargesLetter
         {
             ground: "proofs",
             paragraphs: [
-                "Je vous demande également de tenir à ma disposition les pièces justificatives de ces charges, que l'article 23 de "
-                    + `${law} me permet de consulter jusqu'au ${frenchDay(check.proofsUntil)}.`,
+                on <= check.proofsUntil
+                    ? "Je vous demande également de tenir à ma disposition les pièces justificatives de ces charges, que l'article 23 "
+                        + `de ${law} me permet de consulter jusqu'au ${frenchDay(check.proofsUntil)}.`
+                    : "Je vous demande également de me communiquer les pièces justificatives de ces charges.",
             ],
         },
     ];

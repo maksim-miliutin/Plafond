@@ -65,3 +65,13 @@ test("the letter is dated from the town of the flat and names the year it contes
     expect(sent.dated).toBe("Lyon, le 1er mars 2026");
     expect(sent.subject).toContain("régularisation des charges de 2024");
 });
+
+// The bug this guards: written after the six months had run out, the letter asked the landlord to keep the proofs open
+// until a day already past.
+test("once the six months are over the letter asks for copies of the proofs instead of a past deadline", () =>
+{
+    const late = said(written({}, "2026-10-04") as Letter, "proofs");
+
+    expect(late).toContain("de me communiquer les pièces justificatives");
+    expect(late).not.toContain("jusqu'au");
+});

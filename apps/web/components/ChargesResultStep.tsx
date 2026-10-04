@@ -1,17 +1,18 @@
 import { caretakerShares, euros, frenchDay } from "@plafond/domain";
-import type { ChargesCheck, CheckedLine, Regularisation } from "@plafond/domain";
+import type { ChargesCheck, CheckedLine, Day, Regularisation } from "@plafond/domain";
 
 export interface ChargesResultProps
 {
     regularised: Regularisation;
     check: ChargesCheck;
+    on: Day;
     writable: boolean;
     onWrite?: () => void;
     onHelp?: () => void;
     onBack?: () => void;
 }
 
-export function ChargesResultStep({ regularised, check, writable, onWrite, onHelp, onBack }: ChargesResultProps)
+export function ChargesResultStep({ regularised, check, on, writable, onWrite, onHelp, onBack }: ChargesResultProps)
 {
     const balance = check.balance < 0 ? ["À vous rembourser", -check.balance] : ["Reste à payer", check.balance];
 
@@ -54,7 +55,9 @@ export function ChargesResultStep({ regularised, check, writable, onWrite, onHel
                         douze mensualités.
                     </p>
                 )}
-                <p>Vous pouvez consulter les justificatifs de ces charges jusqu'au {frenchDay(check.proofsUntil)}.</p>
+                {on <= check.proofsUntil
+                    ? <p>Vous pouvez consulter les justificatifs de ces charges jusqu'au {frenchDay(check.proofsUntil)}.</p>
+                    : <p>Le délai de six mois pour consulter les justificatifs a pris fin le {frenchDay(check.proofsUntil)}. Vous pouvez toujours en demander une copie.</p>}
                 <p>
                     Un poste de votre décompte manque ici&nbsp;? La <a href="https://www.economie.gouv.fr/node/37790">liste des charges
                     récupérables</a> le dit. Chaque décompte porte sur une année&nbsp;: refaites le calcul pour les précédentes, dans la
