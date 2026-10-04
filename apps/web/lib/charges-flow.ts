@@ -6,6 +6,7 @@ export type ChargesErrors = Record<string, string>;
 
 interface Reckoned
 {
+    on: Day;
     fields: ChargesFields;
     regularised: Regularisation;
     check: ChargesCheck;
@@ -108,7 +109,7 @@ function answered(fields: ChargesFields, on: Day): ChargesStep
     const check = charges(regularised);
     const written = chargesLetter({ regularised, check, address: fields.address!.trim(), on });
 
-    return { at: "result", fields, regularised, check, letter: written.kind === "letter" ? written : null };
+    return { at: "result", on, fields, regularised, check, letter: written.kind === "letter" ? written : null };
 }
 
 function back(step: ChargesStep): ChargesStep

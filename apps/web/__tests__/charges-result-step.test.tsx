@@ -23,7 +23,7 @@ function page(change: Partial<Regularisation> = {}, writable = false): string
 {
     const statement = { ...regularised, ...change };
 
-    return renderToStaticMarkup(<ChargesResultStep regularised={statement} check={charges(statement)} writable={writable} onHelp={() => undefined} />);
+    return renderToStaticMarkup(<ChargesResultStep regularised={statement} check={charges(statement)} on="2026-03-01" writable={writable} onHelp={() => undefined} />);
 }
 
 test("what was charged wrongly heads the screen, then the totals and what the landlord owes back", () =>
@@ -66,4 +66,13 @@ test("the screen points to the full list and says one statement covers one year"
 {
     expect(page()).toMatch(/href="https:\/\/www\.economie\.gouv\.fr\/node\/37790"/);
     expect(page()).toContain("trois ans");
+});
+
+test("after the six months the screen says the window has closed, and that the proofs can still be asked for", () =>
+{
+    const statement = { ...regularised };
+    const late = renderToStaticMarkup(<ChargesResultStep regularised={statement} check={charges(statement)} on="2026-10-04" writable={false} />);
+
+    expect(late).toContain("a pris fin le 10 août 2026");
+    expect(late).not.toContain("Vous pouvez consulter");
 });

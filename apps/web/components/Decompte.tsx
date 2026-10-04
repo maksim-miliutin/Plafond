@@ -43,6 +43,7 @@ export function Decompte({ needs = live }: { needs?: ChargesNeeds })
                 <ChargesResultStep
                     regularised={step.regularised}
                     check={step.check}
+                    on={step.on}
                     writable={step.letter !== null}
                     onWrite={() => go({ type: "wrote" })}
                     onHelp={() => go({ type: "helped" })}

@@ -62,7 +62,7 @@ const screens: Record<string, ReactElement> = {
     "deposit form": <DepositFormStep fields={Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields} errors={{ keysOn: "Indiquez la date de remise des clés." }} />,
     "deposit result": <DepositResultStep held={held} check={deposit(held)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "charges form": <ChargesFormStep fields={chargesStart.at === "form" ? chargesStart.fields : {}} errors={{ lines: "Reportez au moins un poste de votre décompte." }} />,
-    "charges result": <ChargesResultStep regularised={statement} check={charges(statement)} writable onHelp={() => undefined} onBack={() => undefined} />,
+    "charges result": <ChargesResultStep regularised={statement} check={charges(statement)} on="2026-03-01" writable onHelp={() => undefined} onBack={() => undefined} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
