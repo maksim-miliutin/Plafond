@@ -18,6 +18,7 @@ export interface DepositCheck
 {
     kind: "deposit";
     deadline: Day;
+    conforming: boolean;
     owed: number;
     late: number;
     penalty: number;
@@ -36,6 +37,7 @@ export function deposit(held: Deposit): DepositCheck
     return {
         kind: "deposit",
         deadline,
+        conforming: held.conforming,
         owed: Math.max(0, held.paid - held.returned),
         late,
         penalty: held.addressGiven ? late * rounded(held.rent, 10) : 0,
