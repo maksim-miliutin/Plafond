@@ -36,3 +36,9 @@ test("the first screen of the energy check leads back to all the checks", () =>
 {
     expect(page).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
 });
+
+test("an address without a diagnosis on file says where the number is and what a diagnosis without one is worth", () =>
+{
+    expect(dpeProblems["no-diagnosis"]).toContain("annexé à votre bail");
+    expect(dpeProblems["no-diagnosis"]).toContain("sans numéro ADEME n'est pas valable");
+});

@@ -32,7 +32,9 @@ export function DpeResultStep({ listing, raisedOn, decency, increase, writable, 
                 <span>Logement classé {dpe.label}</span>
             </h1>
             <p className="lead">
-                DPE n° {dpe.number}, établi le {frenchDay(dpe.establishedOn)}, valable jusqu'au {frenchDay(dpe.validUntil)}.
+                DPE n° {dpe.number}, établi le {frenchDay(dpe.establishedOn)}, valable jusqu'au {frenchDay(dpe.validUntil)}. Son
+                original se lit sur l'<a href="https://observatoire-dpe-audit.ademe.fr/">observatoire de l'ADEME</a> avec ce
+                numéro.
             </p>
             <section className="findings">
                 <h2>Ce que cela change pour vous</h2>

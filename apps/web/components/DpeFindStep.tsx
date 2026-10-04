@@ -20,7 +20,8 @@ export const dpeProblems: Record<DpeProblem, string> = {
     "overseas": "Cette adresse est outre-mer, où ces règles s'appliquent à d'autres dates. Plafond ne les couvre pas encore.",
     "unreachable": "Le service public ne répond pas. Réessayez dans un instant.",
     "malformed": "Ce numéro de DPE n'a pas le bon format\u00A0: 13 caractères, chiffres et lettres.",
-    "no-diagnosis": "Aucun DPE n'est enregistré ici depuis juillet 2021. Cherchez le numéro sur le DPE annexé à votre bail.",
+    "no-diagnosis": "Aucun DPE n'est enregistré ici depuis juillet 2021. Cherchez son numéro sur le DPE annexé à votre bail\u00A0: "
+        + "un DPE sans numéro ADEME n'est pas valable.",
 };
 
 export function DpeFindStep({ typed = "", problem = null, busy = false, onSearch }: DpeFindProps)
