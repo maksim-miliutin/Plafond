@@ -7,8 +7,9 @@ import { decency, increase, type Dpe, type Tenancy } from "../src/dpe.js";
 const g: Dpe = { number: "2275E0000001A", label: "G", establishedOn: "2022-01-15", validUntil: "2032-01-14" };
 const e: Dpe = { ...g, label: "E" };
 
-const empty = (signedOn: string): Tenancy => ({ signedOn, furnished: false, on: "2026-10-03" });
-const furnished = (signedOn: string): Tenancy => ({ signedOn, furnished: true, on: "2026-10-03" });
+const empty = (signedOn: string): Tenancy => ({ signedOn, furnished: false, company: false, on: "2026-10-03" });
+const company = (signedOn: string): Tenancy => ({ signedOn, furnished: false, company: true, on: "2026-10-03" });
+const furnished = (signedOn: string): Tenancy => ({ signedOn, furnished: true, company: false, on: "2026-10-03" });
 
 test("a rise on an F or G flat is forbidden once the lease was signed after the freeze began", () =>
 {
@@ -67,5 +68,13 @@ test("a lease signed or renewed on the very day the rule starts falls under it",
     expect(decency(g, empty("2025-01-01"))).toEqual({ kind: "not-decent", since: "2025-01-01" });
     expect(decency(g, empty("2022-01-01"))).toEqual({ kind: "not-decent", since: "2025-01-01" });
     expect(decency({ ...g, label: "F" }, empty("2025-01-01"))).toEqual({ kind: "from", on: "2028-01-01" });
+});
+
+// Loi du 6 juillet 1989, article 10: an empty flat let by a company runs for 6 years, not 3, and renews for 6.
+test("a lease from a company renews every 6 years, so both rules reach it later", () =>
+{
+    expect(increase(g, company("2021-01-01"), "2024-01-01")).toEqual({ kind: "allowed", reason: "term-before-freeze" });
+    expect(increase(g, company("2021-01-01"), "2027-01-01")).toEqual({ kind: "forbidden", since: "2027-01-01" });
+    expect(decency(g, company("2023-03-01"))).toEqual({ kind: "from", on: "2029-03-01" });
 });
 

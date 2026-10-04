@@ -71,6 +71,7 @@ test("an address leads to its diagnoses, the lease, the findings and the letter"
 
     host.querySelector<HTMLInputElement>("#signedOn")!.value = "2023-03-01";
     host.querySelector<HTMLInputElement>('input[name="furnished"][value="no"]')!.checked = true;
+    host.querySelector<HTMLInputElement>('input[name="landlord"][value="person"]')!.checked = true;
     host.querySelector<HTMLInputElement>('input[name="raised"][value="yes"]')!.checked = true;
     host.querySelector<HTMLInputElement>("#raisedOn")!.value = "2024-03-01";
     await act_(() => host.querySelector("form")!.requestSubmit());

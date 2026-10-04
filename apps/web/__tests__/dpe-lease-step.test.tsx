@@ -4,7 +4,7 @@ import { expect, test } from "vitest";
 import { DpeLeaseStep } from "../components/DpeLeaseStep";
 import type { DpeFields } from "../lib/dpe-flow";
 
-const blank: DpeFields = { signedOn: "", furnished: "", raised: "", raisedOn: "" };
+const blank: DpeFields = { signedOn: "", furnished: "", landlord: "", raised: "", raisedOn: "" };
 
 function page(fields: Partial<DpeFields> = {}, errors: Partial<Record<keyof DpeFields, string>> = {}): string
 {
@@ -21,7 +21,8 @@ test("the two dates are labelled fields, and the choices are named groups of two
 
     expect(page().match(/name="furnished"/g)).toHaveLength(2);
     expect(page().match(/name="raised"/g)).toHaveLength(2);
-    expect(page().match(/<legend/g)).toHaveLength(2);
+    expect(page().match(/name="landlord"/g)).toHaveLength(2);
+    expect(page().match(/<legend/g)).toHaveLength(3);
 });
 
 test("a filled date is spelled out under its field", () =>
@@ -37,9 +38,10 @@ test("an error sits under its own field and is tied to it", () =>
     expect(wrong).toMatch(/id="raisedOn-error"[^>]*>Indiquez la date de l&#x27;augmentation\.</);
 });
 
-test("the screen says the reckoning assumes a landlord who is a person, not a company", () =>
+test("the form asks who lets the flat, since a company's lease runs twice as long", () =>
 {
-    expect(page()).toContain("société");
+    expect(page()).toMatch(/<legend[^>]*>Qui vous loue le logement/);
+    expect(page()).toContain("une société");
 });
 
 test("the form sends nothing anywhere, even before the page wakes up", () =>

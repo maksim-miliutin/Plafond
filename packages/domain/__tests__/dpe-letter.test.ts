@@ -5,7 +5,7 @@ import { dpeLetter } from "../src/dpe-letter.js";
 import { letterText, type Letter } from "../src/letter.js";
 
 const g: Dpe = { number: "2375E0345814N", label: "G", establishedOn: "2023-02-02", validUntil: "2033-02-01" };
-const lease: Tenancy = { signedOn: "2023-03-01", furnished: false, on: "2026-10-03" };
+const lease: Tenancy = { signedOn: "2023-03-01", furnished: false, company: false, on: "2026-10-03" };
 const address = "7 Place du Panthéon 75005 Paris";
 
 function written(dpe: Dpe, tenancy: Tenancy, raisedOn: string | null): ReturnType<typeof dpeLetter>
