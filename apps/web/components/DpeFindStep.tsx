@@ -36,6 +36,7 @@ export function DpeFindStep({ typed = "", problem = null, busy = false, onSearch
 
     return (
         <main className="screen">
+            <a className="back" href="../">Toutes les vérifications</a>
             <p className="wordmark">Plafond</p>
             <h1 className="title">Mon logement est-il une passoire thermique ?</h1>
             <p className="lead">

@@ -79,3 +79,9 @@ test("while the search runs the button says so and cannot be pressed twice", () 
     expect(button).toContain('disabled=""');
     expect(button).toContain("Recherche du quartier");
 });
+
+// An app on the home screen has no back button of its own; the first screen of each check needs its own way back.
+test("the first screen of the rent check leads back to all the checks", () =>
+{
+    expect(page).toMatch(/<a[^>]*class="back"[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>|<a[^>]*href="\.\.\/"[^>]*class="back"[^>]*>Toutes les vérifications<\/a>/);
+});

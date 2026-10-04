@@ -34,6 +34,7 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
 
     return (
         <main className="screen">
+            <a className="back" href="../">Toutes les vérifications</a>
             <p className="wordmark">Plafond</p>
             <h1 className="title">Votre loyer dépasse-t-il le plafond légal ?</h1>
             <p className="lead">
