@@ -153,3 +153,18 @@ test("the check is made on the day it is in Paris by the clock given", async () 
 
     expect(host.textContent).toContain("Paris, le 29 septembre 2026");
 });
+
+test("free help opens from the result and leads back to it", async () =>
+{
+    const host = await open(needs());
+
+    await search(host, "4 place du louvre");
+    await press(host, "C'est bien ça");
+    await answer(host);
+    await press(host, "Trouver une aide gratuite");
+    expect(heading(host)).toBe("Trouver une aide gratuite");
+    expect(host.textContent).toContain("01 42 79 50 49");
+
+    await press(host, "Retour au résultat");
+    expect(heading(host)).toContain("220,00");
+});

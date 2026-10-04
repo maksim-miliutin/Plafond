@@ -91,3 +91,13 @@ test("who lets the flat is asked, and a company's lease is reckoned in spans of 
     expect(walk(...chosen, { type: "answered", fields: { ...filled, landlord: "company" } })).toMatchObject({ at: "result", decency: { kind: "from", on: "2029-03-01" } });
 });
 
+
+test("free help opens from the findings and going back returns to them", () =>
+{
+    const judged = walk({ type: "searched", typed, outcome: { kind: "listed", listings: [g] } }, { type: "chose", index: 0 }, { type: "answered", fields: filled });
+    const help = nextDpe(judged, { type: "helped" }, world);
+
+    expect(help).toEqual({ at: "help", from: judged });
+    expect(nextDpe(help, { type: "back" }, world)).toBe(judged);
+    expect(nextDpe(dpeStart, { type: "helped" }, world)).toBe(dpeStart);
+});

@@ -12,13 +12,14 @@ export interface DpeResultProps
     increase: IncreaseFinding | null;
     writable: boolean;
     onWrite?: () => void;
+    onHelp?: () => void;
     onBack?: () => void;
 }
 
 // The formula of 1 January 2026 counts electricity lower; an F or G rated before it may come out better once updated.
 const reform: Day = "2026-01-01";
 
-export function DpeResultStep({ listing, raisedOn, decency, increase, writable, onWrite, onBack }: DpeResultProps)
+export function DpeResultStep({ listing, raisedOn, decency, increase, writable, onWrite, onHelp, onBack }: DpeResultProps)
 {
     const { dpe } = listing;
     const updatable = listing.electric && dpe.establishedOn < reform && (dpe.label === "F" || dpe.label === "G");
@@ -47,6 +48,7 @@ export function DpeResultStep({ listing, raisedOn, decency, increase, writable, 
             <div className="grow" />
             <div className="stack">
                 {writable && <button type="button" className="primary" onClick={onWrite}>Préparer la lettre au propriétaire</button>}
+                {onHelp !== undefined && <button type="button" className="secondary" onClick={onHelp}>Trouver une aide gratuite</button>}
             </div>
             <p className="fine">Une estimation, pas un conseil juridique.</p>
         </main>

@@ -48,13 +48,15 @@ export type Step =
     | ({ at: "quartier" } & Found)
     | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; noRate: boolean } & Found)
     | ({ at: "result"; letter: Letter | null } & Checked)
-    | ({ at: "letter"; letter: Letter } & Checked);
+    | ({ at: "letter"; letter: Letter } & Checked)
+    | { at: "help"; from: Extract<Step, { at: "result" }> };
 
 export type Event =
     | { type: "located"; typed: string; lookup: Lookup }
     | { type: "confirmed" }
     | { type: "answered"; fields: LeaseFields }
     | { type: "wrote" }
+    | { type: "helped" }
     | { type: "back" };
 
 export const start: Step = { at: "address", typed: "", problem: null };
@@ -76,6 +78,9 @@ export function next(step: Step, event: Event, world: World): Step
 
         case "wrote":
             return step.at === "result" && step.letter !== null ? { ...step, at: "letter", letter: step.letter } : step;
+
+        case "helped":
+            return step.at === "result" ? { at: "help", from: step } : step;
 
         case "back":
             return back(step);
@@ -162,5 +167,8 @@ function back(step: Step): Step
 
         case "letter":
             return { ...step, at: "result" };
+
+        case "help":
+            return step.from;
     }
 }

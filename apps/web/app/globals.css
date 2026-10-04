@@ -488,6 +488,7 @@ a:hover
     background: none;
     color: var(--blue);
     font: 700 16px var(--text);
+    text-decoration: none;
     cursor: pointer;
 }
 
@@ -737,4 +738,41 @@ a:hover
 {
     font-size: 15px;
     color: var(--muted);
+}
+
+.helpers
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.helpers h2
+{
+    margin: 0 0 4px;
+    font: 600 22px/1.15 var(--display);
+}
+
+.helpers p
+{
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.helpers .ways
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-top: 6px;
+}
+
+.helpers a
+{
+    color: var(--blue);
+    font-weight: 700;
 }

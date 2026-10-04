@@ -149,3 +149,14 @@ test("an event that does not belong to the step changes nothing", () =>
     const asked = walk({ type: "located", typed, lookup: found });
     expect(next(asked, { type: "located", typed: "ailleurs", lookup: found }, world)).toBe(asked);
 });
+
+test("free help opens from the result and going back returns to the very same result", () =>
+{
+    const checked = walk({ type: "located", typed: "4 place du Louvre", lookup: found }, { type: "confirmed" }, { type: "answered", fields: filled });
+    const help = next(checked, { type: "helped" }, world);
+
+    expect(checked.at).toBe("result");
+    expect(help).toEqual({ at: "help", from: checked });
+    expect(next(help, { type: "back" }, world)).toBe(checked);
+    expect(next(start, { type: "helped" }, world)).toBe(start);
+});
