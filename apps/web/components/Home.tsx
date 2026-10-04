@@ -4,7 +4,7 @@ export function Home()
         <main className="screen">
             <p className="wordmark">Plafond</p>
             <h1 className="title">Que voulez-vous vérifier ?</h1>
-            <p className="lead">Deux vérifications gratuites pour les locataires, faites sur votre appareil, sans compte.</p>
+            <p className="lead">Des vérifications gratuites pour les locataires, faites sur votre appareil, sans compte.</p>
             <nav className="checks" aria-label="Vérifications">
                 <a href="loyer/" className="check">
                     <strong>Mon loyer dépasse-t-il le plafond légal ?</strong>
@@ -13,6 +13,10 @@ export function Home()
                 <a href="dpe/" className="check">
                     <strong>Mon logement est-il une passoire thermique ?</strong>
                     <span>En France métropolitaine, d'après le DPE.</span>
+                </a>
+                <a href="depot/" className="check">
+                    <strong>Mon dépôt de garantie m'a-t-il été rendu à temps ?</strong>
+                    <span>Partout en France, d'après la loi du 6 juillet 1989.</span>
                 </a>
             </nav>
             <div className="grow" />
