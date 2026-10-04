@@ -31,3 +31,8 @@ test("every reason a search can fail is explained under the field and tied to it
         expect(field, problem).toContain('value="7 place du Panthéon"');
     }
 });
+
+test("the first screen of the energy check leads back to all the checks", () =>
+{
+    expect(page).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
+});
