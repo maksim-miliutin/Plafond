@@ -16,7 +16,7 @@ export function Home()
                 </a>
             </nav>
             <div className="grow" />
-            <p className="fine">Une estimation, pas un conseil juridique.</p>
+            <p className="fine">Une estimation, pas un conseil juridique. <a href="mentions/">Mentions légales</a></p>
         </main>
     );
 }

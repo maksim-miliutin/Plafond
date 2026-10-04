@@ -68,7 +68,7 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
                     n'est jamais enregistrée. Pas de compte, pas de publicité.
                 </p>
             </aside>
-            <p className="fine">Une estimation, pas un conseil juridique.</p>
+            <p className="fine">Une estimation, pas un conseil juridique. <a href="../mentions/">Mentions légales</a></p>
         </main>
     );
 }

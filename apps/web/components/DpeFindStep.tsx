@@ -69,7 +69,7 @@ export function DpeFindStep({ typed = "", problem = null, busy = false, onSearch
                     l'ADEME, qui publie les DPE. Rien n'est enregistré.
                 </p>
             </aside>
-            <p className="fine">Une estimation, pas un conseil juridique.</p>
+            <p className="fine">Une estimation, pas un conseil juridique. <a href="../mentions/">Mentions légales</a></p>
         </main>
     );
 }
