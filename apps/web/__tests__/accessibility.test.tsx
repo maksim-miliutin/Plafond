@@ -16,6 +16,8 @@ import { DpeResultStep } from "../components/DpeResultStep";
 import { HelpStep } from "../components/HelpStep";
 import { DepositFormStep } from "../components/DepositFormStep";
 import { DepositResultStep } from "../components/DepositResultStep";
+import { ChargesFormStep } from "../components/ChargesFormStep";
+import { chargesStart } from "../lib/charges-flow";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 import { Mentions } from "../components/Mentions";
 import { helpers, parisRent } from "../lib/help";
@@ -56,6 +58,7 @@ const screens: Record<string, ReactElement> = {
     "legal notice": <Mentions />,
     "deposit form": <DepositFormStep fields={Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields} errors={{ keysOn: "Indiquez la date de remise des clés." }} />,
     "deposit result": <DepositResultStep held={held} check={deposit(held)} writable onHelp={() => undefined} onBack={() => undefined} />,
+    "charges form": <ChargesFormStep fields={chargesStart.at === "form" ? chargesStart.fields : {}} errors={{ lines: "Reportez au moins un poste de votre décompte." }} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
