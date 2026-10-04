@@ -132,7 +132,7 @@ function listingOf(line: unknown): Listing | null
         dpe: { number, label: label as Label, establishedOn, validUntil },
         address,
         surface: typeof surface === "number" && surface > 0 ? Math.round(surface * 100) : null,
-        floor: Number.isInteger(floor) ? (floor as number) : null,
+        floor: Number.isInteger(floor) && (floor as number) >= 1 ? (floor as number) : null,
         detail: typeof detail === "string" && detail.trim() !== "" ? detail : null,
         electric: field(line, "type_energie_principale_chauffage") === "Électricité",
     };

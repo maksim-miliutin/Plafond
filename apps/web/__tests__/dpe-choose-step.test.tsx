@@ -13,7 +13,7 @@ const recent: Listing = {
     detail: null,
     electric: false,
 };
-const ground: Listing = { ...recent, dpe: { ...recent.dpe, number: "2375E1759742J", label: "G" }, surface: 17260, floor: 0, detail: "Bat. 1; Etage 3; Porte Face" };
+const ground: Listing = { ...recent, dpe: { ...recent.dpe, number: "2375E1759742J", label: "G" }, surface: 17260, floor: null, detail: "Bat. 1; Etage 3; Porte Face" };
 const bare: Listing = { ...recent, dpe: { ...recent.dpe, number: "2475E0959198G" }, surface: null, floor: null };
 
 const page = renderToStaticMarkup(<DpeChooseStep listings={[recent, ground, bare]} />);
@@ -32,8 +32,8 @@ test("a diagnosis shows what tells one flat from another: class, date, surface, 
     expect(buttons[0]).toContain("DPE du 10 septembre 2026");
     expect(buttons[0]).toContain("146,8\u00A0m²");
     expect(buttons[0]).toContain("4e étage");
-    expect(buttons[1]).toContain("rez-de-chaussée");
     expect(buttons[1]).toContain("Bat. 1; Etage 3; Porte Face");
+    expect(page).not.toContain("rez-de-chaussée");
 });
 
 test("what a diagnosis does not say is left out rather than shown empty", () =>
