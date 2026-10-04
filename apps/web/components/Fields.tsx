@@ -36,7 +36,7 @@ export interface TypedProps
     id: string;
     label: string;
     hint?: string;
-    type?: "text" | "date";
+    type?: "text" | "date" | "address";
     value: string;
     error: string | undefined;
 }
@@ -58,8 +58,9 @@ export function Typed({ id, label, hint, type = "text", value, error }: TypedPro
             <input
                 id={id}
                 name={id}
-                type={type}
+                type={type === "address" ? "text" : type}
                 inputMode={type === "text" ? "decimal" : undefined}
+                autoComplete={type === "address" ? "street-address" : undefined}
                 defaultValue={value}
                 onChange={(event) => setTyped(event.currentTarget.value)}
                 className="field"

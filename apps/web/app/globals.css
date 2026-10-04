@@ -776,3 +776,9 @@ a:hover
     color: var(--blue);
     font-weight: 700;
 }
+
+.section
+{
+    margin: 8px 0 0;
+    font: 600 22px var(--display);
+}
