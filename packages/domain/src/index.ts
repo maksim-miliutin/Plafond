@@ -12,3 +12,5 @@ export { decency, freezeFrom, increase, noComplementFrom, undecentFrom, type Dec
 export { dpeLetter } from "./dpe-letter.js";
 export { deposit, type Deposit, type DepositCheck } from "./deposit.js";
 export { depositLetter } from "./deposit-letter.js";
+export { chargeKinds, charges, type CaretakerCase, type ChargeKind, type ChargeLine, type ChargesCheck, type Regularisation } from "./charges.js";
+export { chargesLetter } from "./charges-letter.js";
