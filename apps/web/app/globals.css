@@ -270,12 +270,6 @@ a:hover
     line-height: 1.45;
 }
 
-.note
-{
-    background: #FFFFFF;
-    border: 1px solid var(--line);
-}
-
 .notice
 {
     background: #FFF4EC;
@@ -421,14 +415,6 @@ a:hover
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-/* A legend that is not floated is drawn across the top border of its fieldset; a long one, wrapped on a narrow
-   phone, then lies over the choices above it and takes their taps. Floated, it is an ordinary item of the column. */
-.choice > legend
-{
-    float: left;
-    padding: 0;
 }
 
 .options
@@ -635,7 +621,7 @@ a:hover
     color: var(--muted);
 }
 
-.label
+.grade
 {
     flex: none;
     width: 48px;
@@ -648,38 +634,38 @@ a:hover
     color: #000000;
 }
 
-.label-A
+.grade-A
 {
     background: #009C6D;
     color: #FFFFFF;
 }
 
-.label-B
+.grade-B
 {
     background: #52B153;
 }
 
-.label-C
+.grade-C
 {
     background: #A5CC74;
 }
 
-.label-D
+.grade-D
 {
     background: #F4E70F;
 }
 
-.label-E
+.grade-E
 {
     background: #F0B50F;
 }
 
-.label-F
+.grade-F
 {
     background: #EB8235;
 }
 
-.label-G
+.grade-G
 {
     background: #D7221F;
     color: #FFFFFF;
@@ -694,7 +680,7 @@ a:hover
     font: 600 40px/1.05 var(--display);
 }
 
-.headline-dpe .label
+.headline-dpe .grade
 {
     width: 72px;
     height: 72px;

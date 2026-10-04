@@ -28,7 +28,7 @@ test("each diagnosis found is one button to choose, in the order given", () =>
 
 test("a diagnosis shows what tells one flat from another: class, date, surface, floor and lot", () =>
 {
-    expect(buttons[0]).toMatch(/class="label label-E"[^>]*>E</);
+    expect(buttons[0]).toMatch(/class="grade grade-E"[^>]*>E</);
     expect(buttons[0]).toContain("DPE du 10 septembre 2026");
     expect(buttons[0]).toContain("146,8\u00A0m²");
     expect(buttons[0]).toContain("4e étage");
