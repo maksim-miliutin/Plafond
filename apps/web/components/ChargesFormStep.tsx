@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 
-import { chargeKinds } from "@plafond/domain";
+import { chargeKinds, type ChargeKind } from "@plafond/domain";
 
 import { amountKey, chargesKeys, type ChargesErrors, type ChargesFields } from "../lib/charges-flow";
 import { readForm } from "../lib/forms";
@@ -16,6 +16,9 @@ export interface ChargesFormProps
     errors: ChargesErrors;
     onAnswer?: (fields: ChargesFields) => void;
 }
+
+// The lines most yearly statements carry stay in sight; these six are rarer and fold away until one is needed.
+const rare: ReadonlySet<string> = new Set(["outdoors", "hygiene", "equipment", "works", "replacement", "legal-fees"]);
 
 const tasks: [string, string][] = [
     ["both", "l'entretien des parties communes et les ordures"],
@@ -32,6 +35,33 @@ export function ChargesFormStep({ fields, errors, onAnswer }: ChargesFormProps)
     }
 
     const value = (key: string) => fields[key] ?? "";
+    const opened = [...rare].some((id) => value(amountKey(id)).trim() !== "" || errors[amountKey(id)] !== undefined);
+
+    function line(kind: ChargeKind)
+    {
+        const id = amountKey(kind.id);
+        const error = errors[id];
+
+        return (
+            <div key={kind.id} className="amount-row">
+                <label htmlFor={id}>{kind.name}</label>
+                <span className="amount-input">
+                    <input
+                        id={id}
+                        name={id}
+                        type="text"
+                        inputMode="decimal"
+                        defaultValue={value(id)}
+                        className="field"
+                        aria-invalid={error === undefined ? undefined : true}
+                        aria-describedby={error === undefined ? undefined : `${id}-error`}
+                    />
+                    <span aria-hidden="true">€</span>
+                </span>
+                {error !== undefined && <p id={`${id}-error`} className="error">{error}</p>}
+            </div>
+        );
+    }
 
     return (
         <main className="screen">
@@ -55,22 +85,24 @@ export function ChargesFormStep({ fields, errors, onAnswer }: ChargesFormProps)
                     value={value("provisions")}
                     error={errors.provisions}
                 />
-                <h2 className="section">Les postes du décompte</h2>
-                <p className="hint">Reportez le montant de chaque poste, et laissez vides ceux qui n'y figurent pas.</p>
-                {chargeKinds.map((kind) => (
-                    <div key={kind.id} className="stack">
-                        <Typed id={amountKey(kind.id)} label={kind.name} value={value(amountKey(kind.id))} error={errors[amountKey(kind.id)]} />
-                        {kind.verdict === "caretaker" && (
-                            <Choice
-                                name="caretaker"
-                                legend={"Que fait le gardien\u00A0?"}
-                                options={tasks}
-                                value={value("caretaker")}
-                                error={errors.caretaker}
-                            />
-                        )}
-                    </div>
-                ))}
+                <section className="lines">
+                    <h2 className="section">Les postes du décompte</h2>
+                    <p className="hint">Reportez le montant de chaque poste, et laissez vides ceux qui n'y figurent pas.</p>
+                    {chargeKinds.filter((kind) => !rare.has(kind.id)).map(line)}
+                    <details className="more" open={opened || undefined}>
+                        <summary>Autres postes&nbsp;: espaces verts, interphone, travaux, avocat</summary>
+                        {chargeKinds.filter((kind) => rare.has(kind.id)).map(line)}
+                    </details>
+                </section>
+                <div className="question">
+                    <Choice
+                        name="caretaker"
+                        legend={"Que fait le gardien, s'il y en a un\u00A0?"}
+                        options={tasks}
+                        value={value("caretaker")}
+                        error={errors.caretaker}
+                    />
+                </div>
                 {errors.lines !== undefined && <p className="error" role="alert">{errors.lines}</p>}
                 <button type="submit" className="primary">Vérifier ma régularisation</button>
             </LocalForm>
