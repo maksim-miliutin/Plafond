@@ -73,3 +73,17 @@ test("every quartier's title and description fit what search engines show", asyn
         expect(String(described.description).length, page.name).toBeLessThanOrEqual(160);
     }
 });
+
+test("every arrondissement's title and description fit what search engines show", async () =>
+{
+    const { districtMetadata } = await import("../lib/site");
+    const rates = parisRates({ table, annex, sectors, decrees: decreesOf(decrees) });
+
+    for (const district of arrondissementPages(placePages(rates, quartiersOf(outlines))))
+    {
+        const described = districtMetadata(district);
+
+        expect(String(described.title).length, district.slug).toBeLessThanOrEqual(60);
+        expect(String(described.description).length, district.slug).toBeLessThanOrEqual(160);
+    }
+});

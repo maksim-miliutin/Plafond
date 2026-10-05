@@ -1,7 +1,7 @@
 import { dayBefore, euros, frenchDay, ordinal, periods, rooms } from "@plafond/domain";
 import type { Period, Rooms } from "@plafond/domain";
 
-import type { PlacePage, Rent } from "../lib/places";
+import { districtSlug, type PlacePage, type Rent } from "../lib/places";
 import { Brand } from "./Brand";
 
 const sizes: readonly Rooms[] = [1, 2, 3, 4];
@@ -24,6 +24,7 @@ export function QuartierPage({ place }: { place: PlacePage })
                 charges&nbsp;: ce sont les loyers de référence majorés de l'arrêté préfectoral.
             </p>
             <a className="primary link-button" href="../../loyer/">Vérifier mon loyer</a>
+            <a className="rule" href={`../../arrondissements/${districtSlug(place.arrondissement)}/`}>Les autres quartiers du {district}</a>
             <Grid caption="Logement loué vide" rents={place.rents} pick={(rent) => rent.empty} />
             <Grid caption="Logement loué meublé" rents={place.rents} pick={(rent) => rent.furnished} />
             {example !== undefined && (
