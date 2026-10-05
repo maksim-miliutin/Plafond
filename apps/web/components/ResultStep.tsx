@@ -24,6 +24,12 @@ export function ResultStep({ check, claim, quartier, writable, onWrite, onBack, 
             {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Modifier le bail</button>}
             <Progress at={4} of={4} label="le résultat" />
             <Headline check={check} />
+            {over && (
+                <p className="lead">
+                    Votre loyer dépasse le plafond légal de ce quartier. Vous pouvez demander au propriétaire de le ramener au
+                    plafond et de vous rembourser le trop-perçu.
+                </p>
+            )}
             <dl className="figures">
                 <div className="figure">
                     <dt>Votre loyer de base</dt>
