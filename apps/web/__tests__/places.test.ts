@@ -59,3 +59,17 @@ test("each arrondissement gathers its four quartiers, with the lowest and highes
         expect(district.lowest, district.slug).toBeLessThan(district.highest);
     }
 });
+
+test("every quartier's title and description fit what search engines show", async () =>
+{
+    const { placeMetadata } = await import("../lib/site");
+    const rates = parisRates({ table, annex, sectors, decrees: decreesOf(decrees) });
+
+    for (const page of placePages(rates, quartiersOf(outlines)))
+    {
+        const described = placeMetadata(page);
+
+        expect(String(described.title).length, page.name).toBeLessThanOrEqual(60);
+        expect(String(described.description).length, page.name).toBeLessThanOrEqual(160);
+    }
+});

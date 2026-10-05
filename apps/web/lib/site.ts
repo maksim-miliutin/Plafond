@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
+import { frenchDay, ordinal } from "@plafond/domain";
+
 import { guides } from "./guides";
+import type { PlacePage } from "./places";
 
 export interface Page
 {
@@ -62,6 +65,18 @@ export const pages: readonly Page[] = [
     ...guides.map((guide) => ({ path: `guides/${guide.slug}/`, title: guide.title, description: guide.description })),
 ];
 
+export function placeMetadata(place: PlacePage): Metadata
+{
+    const district = place.arrondissement === 1 ? "1er" : `${ordinal(place.arrondissement)}`;
+    const title = `Loyer de référence ${place.name} (${district})`;
+
+    return described({
+        path: `quartiers/${place.slug}/`,
+        title: title.length <= 50 ? `${title} | Plafond` : title,
+        description: `Loyers maximum au m² à ${place.name}, Paris ${district}, selon les pièces, l'époque et la location, pour les baux signés depuis le ${frenchDay(place.decree.from)}.`,
+    });
+}
+
 export function pageMetadata(path: string): Metadata
 {
     const page = pages.find((known) => known.path === path);
@@ -70,7 +85,12 @@ export function pageMetadata(path: string): Metadata
         throw new SiteError(`no page is described at "${path}"`);
     }
 
-    const url = `${siteUrl}/${path}`;
+    return described(page);
+}
+
+function described(page: Page): Metadata
+{
+    const url = `${siteUrl}/${page.path}`;
     const image = { url: `${siteUrl}/og.png`, width: 1200, height: 630, alt: "Plafond\u00A0: vérifiez vos droits de locataire" };
 
     return {
