@@ -15,7 +15,7 @@ test("a tenant goes from the first screen to the charges letter, and nothing lea
 
     await page.clock.setFixedTime(new Date("2026-03-01T10:00:00+01:00"));
     await page.goto("/");
-    await page.getByRole("link", { name: /régularisation de charges/ }).click();
+    await page.getByRole("link", { name: /^Ma régularisation de charges/ }).click();
 
     await page.locator("#address").fill("12 Rue des Lilas 69003 Lyon");
     await page.locator("#year").fill("2024");
