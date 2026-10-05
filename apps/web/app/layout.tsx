@@ -29,12 +29,6 @@ export default function RootLayout({ children }: { children: ReactNode })
     return (
         <html lang="fr">
             <body>
-                <header className="beta">
-                    <p role="note">
-                        Version d'essai&nbsp;: les montants sont en cours de vérification avec le simulateur officiel. Ne
-                        vous en servez pas encore pour une démarche.
-                    </p>
-                </header>
                 {children}
             </body>
         </html>
