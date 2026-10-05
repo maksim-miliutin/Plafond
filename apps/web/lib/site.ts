@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import { frenchDay, ordinal } from "@plafond/domain";
+import { euros, frenchDay, ordinal } from "@plafond/domain";
 
 import { guides } from "./guides";
-import type { PlacePage } from "./places";
+import { districtSlug, type DistrictPage, type PlacePage } from "./places";
 
 export interface Page
 {
@@ -74,6 +74,17 @@ export function placeMetadata(place: PlacePage): Metadata
         path: `quartiers/${place.slug}/`,
         title: title.length <= 50 ? `${title} | Plafond` : title,
         description: `Loyers maximum au m² à ${place.name}, Paris ${district}, selon les pièces, l'époque et la location, pour les baux signés depuis le ${frenchDay(place.decree.from)}.`,
+    });
+}
+
+export function districtMetadata(district: DistrictPage): Metadata
+{
+    const name = `${ordinal(district.number)} arrondissement`;
+
+    return described({
+        path: `arrondissements/${districtSlug(district.number)}/`,
+        title: `Encadrement des loyers dans le ${name} | Plafond`,
+        description: `Plafonds de loyer au m² dans les quatre quartiers du ${name} de Paris, de ${euros(district.lowest)} à ${euros(district.highest)}, et vérification gratuite de votre loyer.`,
     });
 }
 

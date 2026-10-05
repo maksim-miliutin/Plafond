@@ -79,6 +79,12 @@ export function arrondissementPages(places: readonly PlacePage[]): DistrictPage[
         const quartiers = places.filter((place) => place.arrondissement === number);
         const caps = quartiers.flatMap((place) => place.rents.flatMap((rent) => [rent.empty, rent.furnished]));
 
-        return { slug: `paris-${number === 1 ? "1er" : `${number}e`}`, number, quartiers, lowest: Math.min(...caps), highest: Math.max(...caps) };
+        return { slug: districtSlug(number), number, quartiers, lowest: Math.min(...caps), highest: Math.max(...caps) };
     });
 }
+
+export function districtSlug(arrondissement: number): string
+{
+    return `paris-${arrondissement === 1 ? "1er" : `${arrondissement}e`}`;
+}
+
