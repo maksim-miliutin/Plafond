@@ -6,6 +6,7 @@ import type { DpeProblem } from "../lib/dpe-search";
 import { LocalForm } from "./LocalForm";
 import { Brand } from "./Brand";
 import { Progress } from "./Progress";
+import { guideFor } from "../lib/guides";
 
 export interface DpeFindProps
 {
@@ -47,6 +48,7 @@ export function DpeFindStep({ typed = "", problem = null, busy = false, onSearch
                 Le diagnostic de performance énergétique classe chaque logement de A à G. Le loyer d'un logement classé F ou G
                 ne peut plus augmenter, et un logement classé G n'est plus décent dans un bail signé ou renouvelé depuis 2025.
             </p>
+            <a className="rule" href={`../guides/${guideFor("dpe/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack" onSubmit={find}>
                 <label htmlFor="dpe-search" className="label">Numéro du DPE ou adresse du logement</label>
                 <p id="dpe-search-hint" className="hint">

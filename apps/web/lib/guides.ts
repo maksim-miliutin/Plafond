@@ -13,6 +13,7 @@ export interface Section
 export interface GuideText
 {
     slug: string;
+    label: string;
     title: string;
     description: string;
     heading: string;
@@ -28,6 +29,7 @@ const conciliation: Link = { text: "Saisir la commission départementale de conc
 export const guides: readonly GuideText[] = [
     {
         slug: "depot-de-garantie",
+        label: "Le dépôt de garantie",
         title: "Restitution du dépôt de garantie\u00A0: les règles | Plafond",
         description: "Un ou deux mois après la remise des clés, retenues justifiées, majoration de 10\u00A0% du loyer par mois de retard\u00A0: ce que dit la loi sur le dépôt de garantie.",
         heading: "Restitution du dépôt de garantie\u00A0: ce que dit la loi",
@@ -68,6 +70,7 @@ export const guides: readonly GuideText[] = [
     },
     {
         slug: "charges-recuperables",
+        label: "Les charges récupérables",
         title: "Charges récupérables\u00A0: la liste et les erreurs | Plafond",
         description: "Ce que le propriétaire peut facturer au locataire selon le décret de 1987, ce qu'il ne peut pas, et comment contester une régularisation de charges.",
         heading: "Charges récupérables\u00A0: ce que le propriétaire peut vous facturer",
@@ -110,6 +113,7 @@ export const guides: readonly GuideText[] = [
     },
     {
         slug: "encadrement-des-loyers-paris",
+        label: "L'encadrement des loyers à Paris",
         title: "Encadrement des loyers à Paris\u00A0: les règles | Plafond",
         description: "Loyer de référence, plafond majoré, complément de loyer, trop-perçu\u00A0: comment fonctionne l'encadrement des loyers à Paris et comment vérifier le vôtre.",
         heading: "Encadrement des loyers à Paris\u00A0: comment vérifier votre loyer",
@@ -141,6 +145,7 @@ export const guides: readonly GuideText[] = [
     },
     {
         slug: "dpe-passoire-thermique",
+        label: "Le DPE et les passoires thermiques",
         title: "Passoire thermique\u00A0: ce que change le DPE | Plafond",
         description: "Gel des loyers des logements F et G, logements G indécents depuis 2025, complément de loyer interdit\u00A0: ce que le DPE change pour les locataires.",
         heading: "Passoire thermique\u00A0: ce que le DPE change pour votre loyer",
@@ -170,3 +175,24 @@ export const guides: readonly GuideText[] = [
         sources: [{ text: "Observatoire des DPE (ADEME)", href: "https://observatoire-dpe-audit.ademe.fr/" }, adil],
     },
 ];
+
+export function guideFor(check: string): GuideText
+{
+    const found = guides.find((guide) => guide.check.href === check);
+    if (found === undefined)
+    {
+        throw new GuideError(`no guide explains the check at "${check}"`);
+    }
+
+    return found;
+}
+
+export class GuideError extends Error
+{
+    constructor(problem: string)
+    {
+        super(`guides: ${problem}`);
+        this.name = "GuideError";
+    }
+}
+

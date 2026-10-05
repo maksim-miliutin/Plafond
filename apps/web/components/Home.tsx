@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { guides } from "../lib/guides";
 import { Brand } from "./Brand";
 
 interface Check
@@ -104,6 +105,12 @@ export function Home()
                     </a>
                 ))}
             </nav>
+            <section className="findings">
+                <h2>Comprendre vos droits</h2>
+                <ul className="references">
+                    {guides.map((guide) => <li key={guide.slug}><a href={`guides/${guide.slug}/`}>{guide.label}</a></li>)}
+                </ul>
+            </section>
             <div className="grow" />
             <p className="fine">
                 Le calcul se fait sur votre appareil, sans compte. Une estimation, pas un conseil juridique.{" "}

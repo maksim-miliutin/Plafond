@@ -6,6 +6,7 @@ import type { Problem } from "../lib/flow";
 import { LocalForm } from "./LocalForm";
 import { Brand } from "./Brand";
 import { Progress } from "./Progress";
+import { guideFor } from "../lib/guides";
 
 export interface AddressProps
 {
@@ -44,6 +45,7 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
                 À Paris, le loyer au mètre carré est plafonné depuis le 1er juillet 2019. Le plafond dépend du quartier :
                 commencez par l'adresse du logement.
             </p>
+            <a className="rule" href={`../guides/${guideFor("loyer/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack" onSubmit={find}>
                 <label htmlFor="address" className="label">Adresse du logement</label>
                 <input

@@ -9,6 +9,7 @@ import { readForm } from "../lib/forms";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
 import { Brand } from "./Brand";
+import { guideFor } from "../lib/guides";
 
 export interface ChargesFormProps
 {
@@ -72,6 +73,7 @@ export function ChargesFormStep({ fields, errors, onAnswer }: ChargesFormProps)
                 Le propriétaire ne peut vous facturer que les charges énumérées par le décret du 26 août 1987. Reportez les postes de
                 votre décompte annuel : Plafond met à part ceux qu'il n'a pas le droit de vous faire payer.
             </p>
+            <a className="rule" href={`../guides/${guideFor("charges/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <h2 className="section">Le logement</h2>
                 <Typed id="address" label="Adresse du logement" type="address" value={value("address")} error={errors.address} />
