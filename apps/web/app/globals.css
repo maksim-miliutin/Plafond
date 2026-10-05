@@ -951,3 +951,41 @@ a:hover
     font-weight: 700;
     font-size: 15px;
 }
+
+.grid-wrap
+{
+    overflow-x: auto;
+}
+
+.caps
+{
+    width: 100%;
+    border-collapse: collapse;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    font-size: 14px;
+}
+
+.caps caption
+{
+    padding: 0 0 8px;
+    text-align: left;
+    font: 600 20px var(--display);
+}
+
+.caps th,
+.caps td
+{
+    padding: 10px 8px;
+    border-top: 1px solid var(--line);
+    text-align: right;
+}
+
+.caps th[scope="row"],
+.caps th[scope="col"]:first-child
+{
+    text-align: left;
+    color: var(--muted);
+    font-weight: 400;
+}
