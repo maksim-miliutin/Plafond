@@ -42,3 +42,9 @@ test("an address without a diagnosis on file says where the number is and what a
     expect(dpeProblems["no-diagnosis"]).toContain("annexé à votre bail");
     expect(dpeProblems["no-diagnosis"]).toContain("sans numéro ADEME n'est pas valable");
 });
+
+test("the screen says which of the four steps it is", () =>
+{
+    expect(page).toContain("Étape 1 sur 4\u00A0: le diagnostic");
+    expect(page.match(/class="segment done"/g)).toHaveLength(1);
+});

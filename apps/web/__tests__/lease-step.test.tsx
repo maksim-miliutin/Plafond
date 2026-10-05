@@ -106,3 +106,9 @@ test("a date already filled is spelled out under its field, so day and month can
     expect(field).toMatch(/aria-describedby="[^"]*signedOn-read/);
     expect(page()).not.toContain("Soit le");
 });
+
+test("the screen says which of the four steps it is", () =>
+{
+    expect(page()).toContain("Étape 3 sur 4\u00A0: votre bail");
+    expect(page().match(/class="segment done"/g)).toHaveLength(3);
+});

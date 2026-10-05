@@ -8,6 +8,7 @@ import type { Gap } from "../lib/flow";
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
+import { Progress } from "./Progress";
 
 export interface LeaseProps
 {
@@ -39,7 +40,7 @@ export function LeaseStep({ fields, errors, noRate = null, onAnswer, onBack }: L
     return (
         <main className="screen">
             {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Retour au quartier</button>}
-            <p className="step">Votre bail</p>
+            <Progress at={3} of={4} label="votre bail" />
             <h1 className="title">Ce que dit votre bail</h1>
             <p className="lead">Tout figure dans le contrat de location, le plus souvent sur la première page.</p>
             <LocalForm className="stack form" noValidate onSubmit={answer}>

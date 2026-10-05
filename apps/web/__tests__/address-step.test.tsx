@@ -85,3 +85,9 @@ test("the first screen of the rent check leads back to all the checks", () =>
 {
     expect(page).toMatch(/<a[^>]*class="back"[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>|<a[^>]*href="\.\.\/"[^>]*class="back"[^>]*>Toutes les vérifications<\/a>/);
 });
+
+test("the screen says which of the four steps it is", () =>
+{
+    expect(page).toContain("Étape 1 sur 4\u00A0: votre adresse");
+    expect(page.match(/class="segment done"/g)).toHaveLength(1);
+});

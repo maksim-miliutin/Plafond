@@ -41,3 +41,9 @@ test("what a diagnosis does not say is left out rather than shown empty", () =>
     expect(buttons[2]).not.toContain("m²");
     expect(buttons[2]).not.toContain("étage");
 });
+
+test("the screen says which of the four steps it is", () =>
+{
+    expect(page).toContain("Étape 2 sur 4\u00A0: votre logement");
+    expect(page.match(/class="segment done"/g)).toHaveLength(2);
+});

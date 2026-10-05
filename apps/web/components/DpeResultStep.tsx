@@ -3,6 +3,7 @@ import type { Day, DecencyFinding, IncreaseFinding, Label } from "@plafond/domai
 import type { Listing } from "@plafond/ademe";
 
 import { LabelBadge } from "./LabelBadge";
+import { Progress } from "./Progress";
 
 export interface DpeResultProps
 {
@@ -27,6 +28,7 @@ export function DpeResultStep({ listing, raisedOn, decency, increase, writable, 
     return (
         <main className="screen result">
             {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Modifier le bail</button>}
+            <Progress at={4} of={4} label="le résultat" />
             <h1 className="headline-dpe">
                 <LabelBadge label={dpe.label} />
                 <span>Logement classé {dpe.label}</span>

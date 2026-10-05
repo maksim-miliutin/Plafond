@@ -6,6 +6,7 @@ import { dpeQuestions, type DpeErrors, type DpeFields } from "../lib/dpe-flow";
 import { readForm } from "../lib/forms";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
+import { Progress } from "./Progress";
 
 export interface DpeLeaseProps
 {
@@ -30,7 +31,7 @@ export function DpeLeaseStep({ fields, errors, onAnswer, onBack }: DpeLeaseProps
     return (
         <main className="screen">
             {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Changer de logement</button>}
-            <p className="step">Votre bail</p>
+            <Progress at={3} of={4} label="votre bail" />
             <h1 className="title">Ce que dit votre bail</h1>
             <p className="lead">
                 Les règles dépendent de la date du bail et de ses renouvellements, qui reviennent plus ou moins souvent selon
