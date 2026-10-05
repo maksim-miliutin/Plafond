@@ -118,3 +118,9 @@ test("the screen says which of the four steps it is", () =>
     expect(page()).toContain("Étape 4 sur 4\u00A0: le résultat");
     expect(page().match(/class="segment done"/g)).toHaveLength(4);
 });
+
+test("a rent over the cap is explained in one sentence: what it means and what can be asked", () =>
+{
+    expect(page()).toContain("Vous pouvez demander au propriétaire de le ramener au plafond et de vous rembourser le trop-perçu.");
+    expect(page({ rent: 100000 })).not.toContain("Vous pouvez demander au propriétaire");
+});
