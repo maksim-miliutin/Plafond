@@ -11,10 +11,10 @@ import "@fontsource/source-serif-4/600.css";
 import "./globals.css";
 
 import { navy } from "../lib/brand";
+import { pageMetadata } from "../lib/site";
 
 export const metadata: Metadata = {
-    title: "Plafond",
-    description: "Vérifiez si votre loyer à Paris dépasse le plafond légal.",
+    ...pageMetadata(""),
     appleWebApp: { capable: true, title: "Plafond", statusBarStyle: "default" },
 };
 
