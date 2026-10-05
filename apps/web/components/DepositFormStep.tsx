@@ -6,6 +6,7 @@ import { depositQuestions, type DepositErrors, type DepositFields } from "../lib
 import { readForm } from "../lib/forms";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
+import { Brand } from "./Brand";
 
 export interface DepositFormProps
 {
@@ -28,7 +29,7 @@ export function DepositFormStep({ fields, errors, onAnswer }: DepositFormProps)
     return (
         <main className="screen">
             <a className="back" href="../">Toutes les vérifications</a>
-            <p className="wordmark">Plafond</p>
+            <Brand />
             <h1 className="title">Mon dépôt de garantie m'a-t-il été rendu à temps ?</h1>
             <p className="lead">
                 Le propriétaire doit rendre le dépôt un mois après la remise des clés, deux mois si l'état des lieux de sortie

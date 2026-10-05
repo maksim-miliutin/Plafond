@@ -14,6 +14,7 @@ import { LeaseStep } from "./LeaseStep";
 import { LetterStep } from "./LetterStep";
 import { QuartierStep } from "./QuartierStep";
 import { ResultStep } from "./ResultStep";
+import { Brand } from "./Brand";
 
 export interface Needs
 {
@@ -142,7 +143,7 @@ function Unavailable()
 {
     return (
         <main className="screen">
-            <p className="wordmark">Plafond</p>
+            <Brand />
             <h1 className="title">Plafond est momentanément indisponible</h1>
             <p className="lead">
                 Les loyers de référence et le plan des quartiers n'ont pas pu être chargés. Vérifiez votre connexion,

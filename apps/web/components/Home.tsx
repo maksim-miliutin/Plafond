@@ -1,8 +1,10 @@
+import { Brand } from "./Brand";
+
 export function Home()
 {
     return (
         <main className="screen">
-            <p className="wordmark">Plafond</p>
+            <Brand />
             <h1 className="title">Que voulez-vous vérifier ?</h1>
             <p className="lead">Des vérifications gratuites pour les locataires, faites sur votre appareil, sans compte.</p>
             <nav className="checks" aria-label="Vérifications">
