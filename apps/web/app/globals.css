@@ -703,14 +703,41 @@ a:hover
 .check
 {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 18px;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 18px 18px 18px 16px;
     background: #FFFFFF;
     border: 1.5px solid var(--line);
-    border-radius: 12px;
+    border-radius: 16px;
     color: var(--ink);
     text-decoration: none;
+}
+
+.check:hover
+{
+    border-color: var(--blue);
+}
+
+.check .drawing
+{
+    flex: none;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--sky-soft);
+    color: var(--blue);
+}
+
+.check .words
+{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 15px;
+    color: var(--muted);
 }
 
 .check strong
@@ -719,10 +746,9 @@ a:hover
     color: var(--blue);
 }
 
-.check span
+.check .needs
 {
-    font-size: 15px;
-    color: var(--muted);
+    font-size: 14px;
 }
 
 .helpers
