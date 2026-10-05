@@ -989,3 +989,9 @@ a:hover
     color: var(--muted);
     font-weight: 400;
 }
+
+.districts
+{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
