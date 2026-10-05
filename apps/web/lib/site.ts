@@ -18,8 +18,15 @@ export class SiteError extends Error
     }
 }
 
+export function siteFrom(given: string | undefined): string
+{
+    const address = (given ?? "http://localhost:3000").replace(/\/$/, "");
+
+    return address.startsWith("http://localhost") ? address : address.replace(/^http:\/\//, "https://");
+}
+
 // Search engines and link previews want absolute addresses; the deploy passes the site's own, a local run its port.
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+export const siteUrl = siteFrom(process.env.NEXT_PUBLIC_SITE_URL);
 
 export const pages: readonly Page[] = [
     {
