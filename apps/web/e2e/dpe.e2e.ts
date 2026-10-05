@@ -34,11 +34,11 @@ test("the first screen offers both checks and leads to each", async ({ page }) =
     await page.goto("/");
     await scanned(page, "home");
 
-    await page.getByRole("link", { name: /Mon loyer/ }).click();
+    await page.getByRole("link", { name: /^Mon loyer/ }).click();
     await expect(page.getByLabel("Adresse du logement")).toBeVisible();
 
     await page.goto("/");
-    await page.getByRole("link", { name: /passoire thermique/ }).click();
+    await page.getByRole("link", { name: /^Mon logement est-il une passoire/ }).click();
     await expect(page.getByLabel("Numéro du DPE ou adresse du logement")).toBeVisible();
 });
 

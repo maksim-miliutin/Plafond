@@ -15,7 +15,7 @@ test("a tenant goes from the first screen to the deposit letter, and nothing lea
 
     await page.clock.setFixedTime(new Date("2026-10-03T10:00:00+02:00"));
     await page.goto("/");
-    await page.getByRole("link", { name: /dépôt de garantie/ }).click();
+    await page.getByRole("link", { name: /^Mon dépôt de garantie/ }).click();
 
     await page.getByLabel("Adresse du logement quitté").fill("12 Rue des Lilas 69003 Lyon");
     await page.getByLabel("Loyer mensuel hors charges").fill("1 200");
