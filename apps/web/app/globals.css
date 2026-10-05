@@ -111,7 +111,7 @@ a:hover
     height: 52px;
     padding: 0 16px;
     border: 1.5px solid var(--field-line);
-    border-radius: 10px;
+    border-radius: 12px;
     background: #FFFFFF;
     color: var(--ink);
     font: 17px var(--text);
@@ -120,8 +120,8 @@ a:hover
 .primary,
 .secondary
 {
-    height: 52px;
-    border-radius: 10px;
+    height: 54px;
+    border-radius: 14px;
     font: 700 17px var(--text);
     cursor: pointer;
 }
@@ -208,7 +208,7 @@ a:hover
     margin: 0;
     background: #FFFFFF;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 16px;
 }
 
 .figure
