@@ -58,13 +58,22 @@ a:hover
     gap: 28px;
 }
 
-.wordmark
+.brand
 {
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-family: var(--display);
     font-weight: 700;
-    font-size: 24px;
+    font-size: 26px;
     color: var(--blue);
+}
+
+.brand img
+{
+    flex: none;
+    border-radius: 9px;
 }
 
 .title

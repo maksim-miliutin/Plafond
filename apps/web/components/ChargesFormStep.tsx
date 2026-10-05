@@ -8,6 +8,7 @@ import { amountKey, chargesKeys, type ChargesErrors, type ChargesFields } from "
 import { readForm } from "../lib/forms";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
+import { Brand } from "./Brand";
 
 export interface ChargesFormProps
 {
@@ -35,7 +36,7 @@ export function ChargesFormStep({ fields, errors, onAnswer }: ChargesFormProps)
     return (
         <main className="screen">
             <a className="back" href="../">Toutes les vérifications</a>
-            <p className="wordmark">Plafond</p>
+            <Brand />
             <h1 className="title">Ma régularisation de charges est-elle juste ?</h1>
             <p className="lead">
                 Le propriétaire ne peut vous facturer que les charges énumérées par le décret du 26 août 1987. Reportez les postes de

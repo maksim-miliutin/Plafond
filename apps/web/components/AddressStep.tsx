@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 
 import type { Problem } from "../lib/flow";
 import { LocalForm } from "./LocalForm";
+import { Brand } from "./Brand";
 
 export interface AddressProps
 {
@@ -35,7 +36,7 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
     return (
         <main className="screen">
             <a className="back" href="../">Toutes les vérifications</a>
-            <p className="wordmark">Plafond</p>
+            <Brand />
             <h1 className="title">Votre loyer dépasse-t-il le plafond légal ?</h1>
             <p className="lead">
                 À Paris, le loyer au mètre carré est plafonné depuis le 1er juillet 2019. Le plafond dépend du quartier :
