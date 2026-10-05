@@ -45,3 +45,36 @@ test("the screen says nothing leaves the phone, sends nothing anywhere and leads
     expect(page()).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
     expect(page()).toMatch(/<a[^>]*href="\.\.\/mentions\/"[^>]*>Mentions légales<\/a>/);
 });
+
+const rare = ["outdoors", "hygiene", "equipment", "works", "replacement", "legal-fees"];
+
+test("the six rarer lines fold away under one summary, so the form opens on the ten most statements carry", () =>
+{
+    const folded = page().match(/<details[^>]*>.*<\/details>/s)?.[0] ?? "";
+
+    expect(folded).toMatch(/<summary[^>]*>Autres postes/);
+    for (const id of rare)
+    {
+        expect(folded, id).toContain(`id="amount-${id}"`);
+    }
+
+    expect(folded).not.toContain('id="amount-water"');
+    expect(folded).not.toContain('id="amount-property-tax"');
+    expect(page()).not.toMatch(/<details[^>]*open/);
+});
+
+test("the fold opens by itself when one of its lines is filled or wrong, so nothing typed is hidden", () =>
+{
+    const filled = renderToStaticMarkup(<ChargesFormStep fields={{ ...blank, "amount-works": "500" }} errors={{}} />);
+    const wrong = page({ "amount-hygiene": "Indiquez un montant en euros." });
+
+    expect(filled).toMatch(/<details[^>]*open/);
+    expect(wrong).toMatch(/<details[^>]*open/);
+});
+
+test("each line is one row, its name beside a short amount, the euro sign shown but not read out", () =>
+{
+    expect(page().match(/class="amount-row"/g)).toHaveLength(chargeKinds.length);
+    expect(page().match(/<span aria-hidden="true">€<\/span>/g)).toHaveLength(chargeKinds.length);
+    expect(page()).toMatch(/<div class="question"><fieldset/);
+});
