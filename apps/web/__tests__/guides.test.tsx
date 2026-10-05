@@ -90,3 +90,11 @@ test("the rent guide lists every arrondissement, so search engines and readers r
     expect(page).toContain(">1er arrondissement<");
     expect(page.indexOf("arrondissements/paris-1er")).toBeLessThan(page.indexOf("<h2>Sources</h2>"));
 });
+
+test("the three newer guides cover notice, yearly revision and the rent supplement, each with a page", () =>
+{
+    const slugs = guides.map((guide) => guide.slug);
+
+    expect(slugs).toEqual(expect.arrayContaining(["preavis-de-depart", "revision-du-loyer", "complement-de-loyer"]));
+    expect(guides.find((guide) => guide.slug === "preavis-de-depart")!.sections.flatMap((section) => section.paragraphs).join(" ")).toContain("zone tendue");
+});

@@ -174,6 +174,109 @@ export const guides: readonly GuideText[] = [
         ],
         sources: [{ text: "Observatoire des DPE (ADEME)", href: "https://observatoire-dpe-audit.ademe.fr/" }, adil],
     },
+    {
+        slug: "preavis-de-depart",
+        label: "Le préavis de départ",
+        title: "Préavis de départ du locataire\u00A0: 1 ou 3 mois | Plafond",
+        description: "Trois mois pour un logement vide, un mois en zone tendue, pour un meublé ou dans certains cas\u00A0: comment donner son préavis et quand il commence.",
+        heading: "Préavis de départ\u00A0: combien de temps avant de quitter le logement\u00A0?",
+        intro: "Le locataire peut quitter son logement à tout moment, à condition de prévenir le propriétaire et de respecter un délai de préavis.",
+        check: { text: "Vérifier mon dépôt de garantie", href: "depot/" },
+        sections: [
+            {
+                heading: "La durée du préavis",
+                paragraphs: [
+                    "Pour un logement vide, le préavis est de trois mois. Il est réduit à un mois si le logement se trouve en zone tendue, comme Paris et les grandes agglomérations, ou en cas de mutation, de perte d'emploi, de nouvel emploi après une perte d'emploi, de raison de santé ou d'attribution d'un logement social.",
+                    "Pour un logement meublé, le préavis est toujours d'un mois.",
+                ],
+            },
+            {
+                heading: "Comment le donner",
+                paragraphs: [
+                    "Par lettre recommandée avec accusé de réception, par acte de commissaire de justice ou par remise en main propre contre récépissé. Si vous demandez un préavis réduit, indiquez-en le motif et joignez le justificatif.",
+                ],
+            },
+            {
+                heading: "Quand il commence",
+                paragraphs: [
+                    "Le préavis court à partir du jour où le propriétaire reçoit la lettre, pas du jour où vous l'envoyez. Le loyer et les charges restent dus jusqu'à la fin du préavis, sauf si un nouveau locataire entre plus tôt avec l'accord du propriétaire.",
+                ],
+            },
+            {
+                heading: "Après le départ",
+                paragraphs: [
+                    "Le propriétaire doit vous rendre le dépôt de garantie dans un mois après la remise des clés si l'état des lieux de sortie est conforme à celui d'entrée, deux mois sinon. Pensez à lui donner votre nouvelle adresse.",
+                ],
+            },
+        ],
+        sources: [adil],
+    },
+    {
+        slug: "revision-du-loyer",
+        label: "La révision annuelle du loyer",
+        title: "Révision annuelle du loyer\u00A0: les règles | Plafond",
+        description: "Quand le propriétaire peut augmenter le loyer chaque année, comment l'indice de référence des loyers limite la hausse, et quand elle est interdite.",
+        heading: "Révision annuelle du loyer\u00A0: ce que le propriétaire peut demander",
+        intro: "En cours de bail, le loyer ne peut augmenter qu'une fois par an, et seulement si le bail le prévoit.",
+        check: { text: "Vérifier si une hausse était permise", href: "dpe/" },
+        sections: [
+            {
+                heading: "Une clause est nécessaire",
+                paragraphs: [
+                    "Le propriétaire ne peut réviser le loyer que si le bail contient une clause de révision. Sans cette clause, le loyer reste le même jusqu'au renouvellement du bail.",
+                ],
+            },
+            {
+                heading: "Une hausse plafonnée par l'indice",
+                paragraphs: [
+                    "La hausse ne peut pas dépasser la variation de l'indice de référence des loyers publié par l'Insee, entre le trimestre indiqué au bail et le même trimestre de l'année suivante.",
+                ],
+            },
+            {
+                heading: "Une demande dans l'année",
+                paragraphs: [
+                    "Le propriétaire dispose d'un an à partir de la date de révision prévue au bail pour la demander. Passé ce délai, il perd la hausse de l'année. Elle ne vaut que pour l'avenir, à partir de sa demande.",
+                ],
+            },
+            {
+                heading: "Une hausse interdite pour les logements F et G",
+                paragraphs: [
+                    "Depuis le 24 août 2022, le loyer d'un logement classé F ou G au DPE ne peut plus augmenter, ni en cours de bail ni lors d'un renouvellement, pour les baux signés ou renouvelés depuis cette date.",
+                ],
+            },
+        ],
+        sources: [adil],
+    },
+    {
+        slug: "complement-de-loyer",
+        label: "Le complément de loyer",
+        title: "Complément de loyer à Paris\u00A0: le contester | Plafond",
+        description: "Quand un complément de loyer peut s'ajouter au plafond à Paris, quand il est interdit, et comment le contester dans les trois mois après la signature.",
+        heading: "Complément de loyer\u00A0: quand il est permis, comment le contester",
+        intro: "Dans les villes où les loyers sont encadrés, le propriétaire peut ajouter au loyer de base un complément, à des conditions strictes.",
+        check: { text: "Vérifier mon loyer", href: "loyer/" },
+        sections: [
+            {
+                heading: "Les conditions",
+                paragraphs: [
+                    "Le complément doit correspondre à des caractéristiques de localisation ou de confort exceptionnelles par rapport aux logements du même quartier, et il doit être mentionné au bail avec son montant et ses raisons.",
+                ],
+            },
+            {
+                heading: "Les interdictions",
+                paragraphs: [
+                    "Depuis le 18 août 2022, aucun complément ne peut s'appliquer à un logement classé F ou G au DPE, ni à un logement qui présente certains défauts, comme des sanitaires sur le palier, des signes d'humidité ou des infiltrations.",
+                ],
+            },
+            {
+                heading: "Le contester",
+                paragraphs: [
+                    "Vous disposez de trois mois après la signature du bail pour contester le complément devant la commission départementale de conciliation. C'est gratuit, et c'est au propriétaire de démontrer les caractéristiques exceptionnelles du logement.",
+                ],
+            },
+        ],
+        sources: [conciliation, adil],
+    },
 ];
 
 export function guideFor(check: string): GuideText
