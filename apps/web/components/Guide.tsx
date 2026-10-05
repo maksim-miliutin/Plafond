@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
+
 import type { GuideText } from "../lib/guides";
 import { Brand } from "./Brand";
 
-export function Guide({ guide }: { guide: GuideText })
+export function Guide({ guide, more }: { guide: GuideText; more?: ReactNode })
 {
     const check = <a className="primary link-button" href={`../../${guide.check.href}`}>{guide.check.text}</a>;
 
@@ -19,6 +21,7 @@ export function Guide({ guide }: { guide: GuideText })
                 </section>
             ))}
             {check}
+            {more}
             <section className="findings">
                 <h2>Sources</h2>
                 <ul className="references">

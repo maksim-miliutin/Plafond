@@ -78,3 +78,15 @@ test("the first screen lists the four guides, and each check's first screen link
         expect(page, slug).toMatch(new RegExp(`<a[^>]*href="\\.\\./guides/${slug}/"[^>]*>Comprendre la règle</a>`));
     }
 });
+
+test("the rent guide lists every arrondissement, so search engines and readers reach each quartier from it", async () =>
+{
+    const { DistrictLinks } = await import("../components/DistrictLinks");
+    const rent = guides.find((guide) => guide.slug === "encadrement-des-loyers-paris")!;
+    const districts = Array.from({ length: 20 }, (_, index) => ({ slug: index === 0 ? "paris-1er" : `paris-${index + 1}e`, number: index + 1 }));
+    const page = renderToStaticMarkup(<Guide guide={rent} more={<DistrictLinks districts={districts} />} />);
+
+    expect(page.match(/href="\.\.\/\.\.\/arrondissements\/paris-[0-9]+(er|e)\/"/g)).toHaveLength(20);
+    expect(page).toContain(">1er arrondissement<");
+    expect(page.indexOf("arrondissements/paris-1er")).toBeLessThan(page.indexOf("<h2>Sources</h2>"));
+});
