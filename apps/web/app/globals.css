@@ -925,3 +925,20 @@ a:hover
     background: var(--sky-soft);
     border-radius: 16px;
 }
+
+.link-button
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.references
+{
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

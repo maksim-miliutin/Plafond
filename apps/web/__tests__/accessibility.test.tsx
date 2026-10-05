@@ -21,6 +21,8 @@ import { ChargesResultStep } from "../components/ChargesResultStep";
 import { chargesStart } from "../lib/charges-flow";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 import { Mentions } from "../components/Mentions";
+import { Guide } from "../components/Guide";
+import { guides } from "../lib/guides";
 import { helpers, parisRent } from "../lib/help";
 import { LeaseStep } from "../components/LeaseStep";
 import { LetterStep } from "../components/LetterStep";
@@ -59,6 +61,7 @@ const screens: Record<string, ReactElement> = {
     "dpe result": <DpeResultStep listing={listing} raisedOn="2024-03-01" decency={{ kind: "not-decent", since: "2026-03-01" }} increase={{ kind: "forbidden", since: "2023-03-01" }} writable />,
     "help": <HelpStep helpers={[parisRent, ...helpers]} onBack={() => undefined} />,
     "legal notice": <Mentions />,
+    "guide": <Guide guide={guides[0]!} />,
     "deposit form": <DepositFormStep fields={Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields} errors={{ keysOn: "Indiquez la date de remise des clés." }} />,
     "deposit result": <DepositResultStep held={held} check={deposit(held)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "charges form": <ChargesFormStep fields={chargesStart.at === "form" ? chargesStart.fields : {}} errors={{ lines: "Reportez au moins un poste de votre décompte." }} />,

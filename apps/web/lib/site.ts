@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { guides } from "./guides";
+
 export interface Page
 {
     path: string;
@@ -50,6 +52,7 @@ export const pages: readonly Page[] = [
         title: "Mentions légales et données | Plafond",
         description: "Qui publie Plafond, qui l'héberge, et ce que deviennent vos données\u00A0: rien n'est enregistré, le calcul se fait sur votre appareil.",
     },
+    ...guides.map((guide) => ({ path: `guides/${guide.slug}/`, title: guide.title, description: guide.description })),
 ];
 
 export function pageMetadata(path: string): Metadata
