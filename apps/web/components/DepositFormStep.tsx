@@ -7,6 +7,7 @@ import { readForm } from "../lib/forms";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
 import { Brand } from "./Brand";
+import { guideFor } from "../lib/guides";
 
 export interface DepositFormProps
 {
@@ -35,6 +36,7 @@ export function DepositFormStep({ fields, errors, onAnswer }: DepositFormProps)
                 Le propriétaire doit rendre le dépôt un mois après la remise des clés, deux mois si l'état des lieux de sortie
                 diffère de celui d'entrée. Chaque mois de retard commencé lui coûte 10&nbsp;% du loyer hors charges.
             </p>
+            <a className="rule" href={`../guides/${guideFor("depot/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <h2 className="section">Le logement</h2>
                 <Typed id="address" label="Adresse du logement quitté" type="address" value={fields.address} error={errors.address} />

@@ -942,3 +942,12 @@ a:hover
     flex-direction: column;
     gap: 6px;
 }
+
+.rule
+{
+    align-self: flex-start;
+    margin-top: -12px;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 15px;
+}

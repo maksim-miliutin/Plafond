@@ -52,3 +52,29 @@ test("the deposit guide's worked example matches the rule it explains", () =>
     expect(said).toContain("2 septembre");
     expect(said).toContain("deux périodes, soit 240\u00A0€");
 });
+
+test("the first screen lists the four guides, and each check's first screen links to its own", async () =>
+{
+    const { Home } = await import("../components/Home");
+    const { AddressStep } = await import("../components/AddressStep");
+    const { DpeFindStep } = await import("../components/DpeFindStep");
+    const { DepositFormStep } = await import("../components/DepositFormStep");
+    const { ChargesFormStep } = await import("../components/ChargesFormStep");
+    const home = renderToStaticMarkup(<Home />);
+
+    for (const guide of guides)
+    {
+        expect(home, guide.slug).toContain(`href="guides/${guide.slug}/"`);
+    }
+
+    const firsts: [string, string][] = [
+        [renderToStaticMarkup(<AddressStep />), "encadrement-des-loyers-paris"],
+        [renderToStaticMarkup(<DpeFindStep />), "dpe-passoire-thermique"],
+        [renderToStaticMarkup(<DepositFormStep fields={{} as never} errors={{}} />), "depot-de-garantie"],
+        [renderToStaticMarkup(<ChargesFormStep fields={{}} errors={{}} />), "charges-recuperables"],
+    ];
+    for (const [page, slug] of firsts)
+    {
+        expect(page, slug).toMatch(new RegExp(`<a[^>]*href="\\.\\./guides/${slug}/"[^>]*>Comprendre la règle</a>`));
+    }
+});
