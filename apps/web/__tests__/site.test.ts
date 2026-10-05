@@ -8,7 +8,7 @@ import * as energy from "../app/dpe/page";
 import * as deposit from "../app/depot/page";
 import * as charges from "../app/charges/page";
 import * as notice from "../app/mentions/page";
-import { SiteError, pageMetadata, pages, siteUrl } from "../lib/site";
+import { SiteError, pageMetadata, pages, siteFrom, siteUrl } from "../lib/site";
 
 test("every page has a title search engines show whole and a description they do not cut", () =>
 {
@@ -50,4 +50,14 @@ test("the preview card is 1200 by 630", () =>
     const bytes = Buffer.from(og.split(",")[1]!, "base64");
 
     expect([bytes.readUInt32BE(16), bytes.readUInt32BE(20)]).toEqual([1200, 630]);
+});
+
+// Seen live: the deploy handed over http://maksim-miliutin.com/Plafond, and a sitemap of http addresses tells search
+// engines about a second, insecure copy of every page.
+test("the site's address is always https once deployed, while a local run keeps its own", () =>
+{
+    expect(siteFrom("http://maksim-miliutin.com/Plafond")).toBe("https://maksim-miliutin.com/Plafond");
+    expect(siteFrom("https://maksim-miliutin.com/Plafond/")).toBe("https://maksim-miliutin.com/Plafond");
+    expect(siteFrom("http://localhost:3000")).toBe("http://localhost:3000");
+    expect(siteFrom(undefined)).toBe("http://localhost:3000");
 });
