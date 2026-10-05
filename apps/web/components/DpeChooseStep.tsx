@@ -2,6 +2,7 @@ import { frenchDay, ordinal, squareMetres } from "@plafond/domain";
 import type { Listing } from "@plafond/ademe";
 
 import { LabelBadge } from "./LabelBadge";
+import { Progress } from "./Progress";
 
 export interface DpeChooseProps
 {
@@ -15,6 +16,7 @@ export function DpeChooseStep({ listings, onChoose, onBack }: DpeChooseProps)
     return (
         <main className="screen">
             {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Changer de recherche</button>}
+            <Progress at={2} of={4} label="votre logement" />
             <h1 className="title">Lequel est votre logement ?</h1>
             <p className="lead">
                 Un même immeuble peut avoir plusieurs diagnostics. Choisissez celui de votre logement d'après la surface et l'étage.

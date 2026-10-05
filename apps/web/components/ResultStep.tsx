@@ -2,6 +2,7 @@ import { dayBefore, euros, frenchDay, letting, noComplementFrom, percent, period
 import type { Check, Claim, Complement, Day } from "@plafond/domain";
 
 import { ContestNote } from "./ContestNote";
+import { Progress } from "./Progress";
 
 export interface ResultProps
 {
@@ -21,6 +22,7 @@ export function ResultStep({ check, claim, quartier, writable, onWrite, onBack, 
     return (
         <main className="screen result">
             {onBack !== undefined && <button type="button" className="back" onClick={onBack}>Modifier le bail</button>}
+            <Progress at={4} of={4} label="le résultat" />
             <Headline check={check} />
             <dl className="figures">
                 <div className="figure">

@@ -2,6 +2,7 @@ import { arrondissementOf, ordinal } from "@plafond/domain";
 import type { Point, Quartier } from "@plafond/domain";
 
 import { drawing, planIgn } from "../lib/map";
+import { Progress } from "./Progress";
 
 export interface QuartierProps
 {
@@ -21,6 +22,7 @@ export function QuartierStep({ quartier, around, address, point, onConfirm, onBa
 
     return (
         <main className="screen">
+            <Progress at={2} of={4} label="votre quartier" />
             <p className="step">Votre logement se trouve dans le quartier</p>
             <h1 className="plaque">
                 <span className="plaque-arr">{ordinal(arrondissementOf(quartier.number))} arrondissement</span>

@@ -47,3 +47,9 @@ test("the map credits IGN, as its open licence asks", () =>
 {
     expect(page(1)).toMatch(/© <a href="https:\/\/www\.ign\.fr\/">IGN<\/a>/);
 });
+
+test("the screen says which of the four steps it is", () =>
+{
+    expect(page(1)).toContain("Étape 2 sur 4\u00A0: votre quartier");
+    expect(page(1).match(/class="segment done"/g)).toHaveLength(2);
+});

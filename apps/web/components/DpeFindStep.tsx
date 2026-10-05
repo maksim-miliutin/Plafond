@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import type { DpeProblem } from "../lib/dpe-search";
 import { LocalForm } from "./LocalForm";
 import { Brand } from "./Brand";
+import { Progress } from "./Progress";
 
 export interface DpeFindProps
 {
@@ -40,6 +41,7 @@ export function DpeFindStep({ typed = "", problem = null, busy = false, onSearch
         <main className="screen">
             <a className="back" href="../">Toutes les vérifications</a>
             <Brand />
+            <Progress at={1} of={4} label="le diagnostic" />
             <h1 className="title">Mon logement est-il une passoire thermique ?</h1>
             <p className="lead">
                 Le diagnostic de performance énergétique classe chaque logement de A à G. Le loyer d'un logement classé F ou G

@@ -112,3 +112,9 @@ test("a complement in a lease signed since 18 August 2022 comes with the rule fo
     expect(older).not.toContain("classé F ou G");
     expect(page()).not.toContain("classé F ou G");
 });
+
+test("the screen says which of the four steps it is", () =>
+{
+    expect(page()).toContain("Étape 4 sur 4\u00A0: le résultat");
+    expect(page().match(/class="segment done"/g)).toHaveLength(4);
+});

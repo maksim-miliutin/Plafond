@@ -86,3 +86,9 @@ test("the findings point to the ADEME observatory, where the original diagnosis 
     expect(shown).toMatch(/<a[^>]*href="https:\/\/observatoire-dpe-audit\.ademe\.fr\/"[^>]*>observatoire de l&#x27;ADEME<\/a>/);
     expect(shown).toContain("2375E0345814N");
 });
+
+test("the screen says which of the four steps it is", () =>
+{
+    expect(page(g, null)).toContain("Étape 4 sur 4\u00A0: le résultat");
+    expect(page(g, null).match(/class="segment done"/g)).toHaveLength(4);
+});

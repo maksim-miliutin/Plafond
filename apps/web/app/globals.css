@@ -333,6 +333,39 @@ a:hover
     color: var(--muted);
 }
 
+.progress
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progress p
+{
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.segments
+{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.segment
+{
+    height: 5px;
+    border-radius: 3px;
+    background: var(--line);
+}
+
+.segment.done
+{
+    background: var(--blue);
+}
+
 .plaque
 {
     margin: 0;
