@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 
-import { frenchDay, periods, rooms } from "@plafond/domain";
+import { frenchDay, periods, periodsOf, rooms } from "@plafond/domain";
 
 import type { Gap } from "../lib/flow";
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
@@ -45,7 +45,7 @@ export function LeaseStep({ fields, errors, noRate = null, onAnswer, onBack }: L
             <p className="lead">Tout figure dans le contrat de location, le plus souvent sur la première page.</p>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <Choice name="rooms" legend="Pièces principales" options={Object.entries(rooms)} value={fields.rooms} error={errors.rooms} />
-                <Choice name="period" legend="Construction de l'immeuble" options={Object.entries(periods)} value={fields.period} error={errors.period} />
+                <Choice name="period" legend="Construction de l'immeuble" options={periodsOf.paris.map((period) => [period, periods[period]])} value={fields.period} error={errors.period} />
                 <Choice name="furnished" legend="Location" options={lettings} value={fields.furnished} error={errors.furnished} />
                 <Typed id="surface" label="Surface habitable" hint="En m², telle qu'indiquée au bail." value={fields.surface} error={errors.surface} />
                 <Typed id="rent" label="Loyer de base" hint="Par mois, hors charges, tel qu'il figure au bail." value={fields.rent} error={errors.rent} />

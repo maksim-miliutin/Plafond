@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
 
 import { DayError } from "../src/day.js";
-import { RatesError, rateOn, type Flat, type Rate } from "../src/rates.js";
+import { RatesError, periodsOf, rateOn, type Flat, type Rate } from "../src/rates.js";
 
-const flat: Flat = { quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
+const flat: Flat = { city: "paris", quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
 
 function rate(from: string, until: string, majored: number): Rate
 {
@@ -66,4 +66,19 @@ test("two rates covering the same day are broken data, not a choice", () =>
 test("looking up a rate on something that is not a day is a breakage", () =>
 {
     expect(() => rateOn(rates, flat, "2025-02-30")).toThrow(DayError);
+});
+
+test("each city builds with its own periods: Paris stops at 1990, Lyon goes on to 2005", () =>
+{
+    expect(periodsOf.paris).toEqual(["before-1946", "1946-1970", "1971-1990", "after-1990"]);
+    expect(periodsOf.lyon).toEqual(["before-1946", "1946-1970", "1971-1990", "1991-2005", "after-2005"]);
+});
+
+test("a rate belongs to its city, so Paris quartier 1 and Lyon zone 1 never answer for each other", () =>
+{
+    const paris = rate("2025-07-01", "2026-07-01", 3180);
+    const lyon: Rate = { ...paris, flat: { ...paris.flat, city: "lyon" }, majored: 2100 };
+
+    expect(rateOn([paris, lyon], lyon.flat, "2025-09-01")).toBe(lyon);
+    expect(rateOn([paris, lyon], paris.flat, "2025-09-01")).toBe(paris);
 });

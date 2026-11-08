@@ -27,9 +27,9 @@ const standing: Decree = {
 };
 
 const rates: Rate[] = [
-    { flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true }, reference: 2670, majored: 3200, minored: 1870, decree: standing },
-    { flat: { quartier: 80, rooms: 4, period: "after-1990", furnished: false }, reference: 2210, majored: 2650, minored: 1550, decree: standing },
-    { flat: { quartier: 12, rooms: 1, period: "before-1946", furnished: false }, reference: 2890, majored: 3470, minored: 2020, decree: annulled },
+    { flat: { city: "paris", quartier: 1, rooms: 3, period: "1946-1970", furnished: true }, reference: 2670, majored: 3200, minored: 1870, decree: standing },
+    { flat: { city: "paris", quartier: 80, rooms: 4, period: "after-1990", furnished: false }, reference: 2210, majored: 2650, minored: 1550, decree: standing },
+    { flat: { city: "paris", quartier: 12, rooms: 1, period: "before-1946", furnished: false }, reference: 2890, majored: 3470, minored: 2020, decree: annulled },
 ];
 
 test("a packed table unpacks to the very rates it was made from, through json as well", () =>
@@ -43,9 +43,11 @@ test("a decree shared by many rows is written once", () =>
     expect(pack(rates).decrees).toEqual([standing, annulled]);
 });
 
+// Version 2 put the city first in each row; a version 1 table cached from before would read every field one place off.
 test("a table of another version is a breakage", () =>
 {
-    expect(() => unpack({ ...pack(rates), version: 2 })).toThrow(PackedError);
+    expect(() => unpack({ ...pack(rates), version: 1 })).toThrow(PackedError);
+    expect(() => unpack({ ...pack(rates), version: 3 })).toThrow(PackedError);
     expect(() => unpack(null)).toThrow(PackedError);
     expect(() => unpack("rates")).toThrow(PackedError);
 });
@@ -86,3 +88,12 @@ test("outlines that cannot be read back are a breakage", () =>
     expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: "rings" }] })).toThrow(PackedError);
     expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: [[[2.3, 48.8, 35]]] }] })).toThrow(PackedError);
 });
+
+test("a row keeps its city through packing", () =>
+{
+    const lyon = { ...rates[0]!, flat: { ...rates[0]!.flat, city: "lyon" as const } };
+
+    expect(unpack(pack([lyon]))[0]!.flat.city).toBe("lyon");
+    expect(() => unpack({ ...pack([lyon]), rows: [["marseille", ...pack([lyon]).rows[0]!.slice(1)]] })).toThrow(PackedError);
+});
+

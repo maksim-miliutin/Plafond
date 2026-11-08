@@ -9,7 +9,7 @@ const hard = "\u00A0";
 
 // The 2025 rate for St-Germain-l'Auxerrois, three rooms, 1946-1970, furnished, from the published table.
 const rate: Rate = {
-    flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
+    flat: { city: "paris", quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
     reference: 2670,
     majored: 3200,
     minored: 1870,

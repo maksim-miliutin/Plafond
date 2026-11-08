@@ -3,10 +3,19 @@ import { DayError, isDay, type Day } from "./day.js";
 // 4 stands for four rooms or more: the published tables group them that way.
 export type Rooms = 1 | 2 | 3 | 4;
 
-export type Period = "before-1946" | "1946-1970" | "1971-1990" | "after-1990";
+export type City = "paris" | "lyon";
+
+export type Period = "before-1946" | "1946-1970" | "1971-1990" | "after-1990" | "1991-2005" | "after-2005";
+
+// Each prefecture cuts construction years its own way: Paris stops at 1990, Lyon splits on to 2005.
+export const periodsOf: Record<City, readonly Period[]> = {
+    paris: ["before-1946", "1946-1970", "1971-1990", "after-1990"],
+    lyon: ["before-1946", "1946-1970", "1971-1990", "1991-2005", "after-2005"],
+};
 
 export interface Flat
 {
+    city: City;
     quartier: number;
     rooms: Rooms;
     period: Period;
@@ -51,7 +60,7 @@ export class RatesError extends Error
     constructor(flat: Flat, on: Day, count: number)
     {
         const letting = flat.furnished ? "furnished" : "unfurnished";
-        super(`rates: ${count} rates cover quartier ${flat.quartier}, ${flat.rooms} rooms, ${flat.period}, ${letting} on ${on}`);
+        super(`rates: ${count} rates cover ${flat.city} area ${flat.quartier}, ${flat.rooms} rooms, ${flat.period}, ${letting} on ${on}`);
         this.name = "RatesError";
     }
 }
@@ -74,7 +83,8 @@ export function rateOn(rates: readonly Rate[], flat: Flat, on: Day): Rate | NoRa
 
 function sameFlat(a: Flat, b: Flat): boolean
 {
-    return a.quartier === b.quartier
+    return a.city === b.city
+        && a.quartier === b.quartier
         && a.rooms === b.rooms
         && a.period === b.period
         && a.furnished === b.furnished;

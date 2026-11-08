@@ -1,4 +1,4 @@
-import { centsFrom, hundredthsFrom, isDay, periods, rooms } from "@plafond/domain";
+import { centsFrom, hundredthsFrom, isDay, periodsOf, rooms } from "@plafond/domain";
 import type { Claim, Day, Period, Rooms, Unreadable } from "@plafond/domain";
 
 import { readForm } from "./forms";
@@ -59,7 +59,7 @@ export function leaseFrom(fields: LeaseFields, context: Context): Lease | Unansw
 {
     const read = {
         rooms: Object.hasOwn(rooms, fields.rooms) ? (Number(fields.rooms) as Rooms) : null,
-        period: Object.hasOwn(periods, fields.period) ? (fields.period as Period) : null,
+        period: (periodsOf.paris as readonly string[]).includes(fields.period) ? (fields.period as Period) : null,
         furnished: yesOrNo(fields.furnished),
         surface: positive(hundredthsFrom(fields.surface)),
         rent: positive(centsFrom(fields.rent)),
@@ -77,7 +77,7 @@ export function leaseFrom(fields: LeaseFields, context: Context): Lease | Unansw
     }
 
     const claim = {
-        flat: { quartier: context.quartier, rooms: read.rooms, period: read.period, furnished: read.furnished },
+        flat: { city: "paris" as const, quartier: context.quartier, rooms: read.rooms, period: read.period, furnished: read.furnished },
         surface: read.surface,
         signedOn: read.signedOn,
         startsOn: read.startsOn,

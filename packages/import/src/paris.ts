@@ -104,6 +104,7 @@ function rateOf(fields: Fields, row: number, decrees: ReadonlyMap<number, Decree
 
     return {
         flat: {
+            city: "paris",
             quartier: quartierOf(fields.quartier, row),
             rooms: labelled(rooms, fields.rooms, row),
             period: labelled(periods, fields.period, row),
