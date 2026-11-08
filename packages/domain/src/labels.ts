@@ -12,6 +12,8 @@ export const periods: Record<Period, string> = {
     "1946-1970": "entre 1946 et 1970",
     "1971-1990": "entre 1971 et 1990",
     "after-1990": "après 1990",
+    "1991-2005": "entre 1991 et 2005",
+    "after-2005": "après 2005",
 };
 
 export function letting(furnished: boolean): string

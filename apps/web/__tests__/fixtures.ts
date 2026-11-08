@@ -2,7 +2,7 @@ import type { Claim, Rate } from "@plafond/domain";
 
 // The 2025 rate for St-Germain-l'Auxerrois, three rooms, 1946-1970, furnished, as the City's table publishes it.
 export const rate: Rate = {
-    flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
+    flat: { city: "paris", quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
     reference: 2670,
     majored: 3200,
     minored: 1870,

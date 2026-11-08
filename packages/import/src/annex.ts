@@ -53,8 +53,8 @@ export function annexRates(annex: string, sectors: string, decree: Decree): Rate
         }
 
         return own.flatMap(({ rooms: count, period, empty, furnished }) => [
-            { flat: { quartier, rooms: count, period, furnished: false }, ...empty, decree },
-            { flat: { quartier, rooms: count, period, furnished: true }, ...furnished, decree },
+            { flat: { city: "paris", quartier, rooms: count, period, furnished: false }, ...empty, decree },
+            { flat: { city: "paris", quartier, rooms: count, period, furnished: true }, ...furnished, decree },
         ]);
     });
 }

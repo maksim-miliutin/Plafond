@@ -1,6 +1,6 @@
 import { periods, rooms } from "./labels.js";
 import type { Quartier } from "./quartier.js";
-import type { Decree, Period, Rate, Rooms } from "./rates.js";
+import { periodsOf, type City, type Decree, type Period, type Rate, type Rooms } from "./rates.js";
 
 export class PackedError extends Error
 {
@@ -11,12 +11,12 @@ export class PackedError extends Error
     }
 }
 
-// quartier, rooms, period, furnished as 1 or 0, the three rents in cents per m², the index of the decree.
-type Row = [number, Rooms, Period, 0 | 1, number, number, number, number];
+// city, area, rooms, period, furnished as 1 or 0, the three rents in cents per m², the index of the decree.
+type Row = [City, number, Rooms, Period, 0 | 1, number, number, number, number];
 
 export interface Packed
 {
-    version: 1;
+    version: 2;
     decrees: Decree[];
     rows: Row[];
 }
@@ -35,29 +35,29 @@ export function pack(rates: readonly Rate[]): Packed
             places.set(decree.from, at);
         }
 
-        return [flat.quartier, flat.rooms, flat.period, flat.furnished ? 1 : 0, reference, majored, minored, at];
+        return [flat.city, flat.quartier, flat.rooms, flat.period, flat.furnished ? 1 : 0, reference, majored, minored, at];
     });
 
-    return { version: 1, decrees, rows };
+    return { version: 2, decrees, rows };
 }
 
 export function unpack(source: unknown): Rate[]
 {
     if (!isTable(source))
     {
-        throw new PackedError("this is not a packed rates table of version 1");
+        throw new PackedError("this is not a packed rates table of version 2");
     }
 
     return source.rows.map((row, index) =>
     {
-        if (!isRow(row) || source.decrees[row[7]] === undefined)
+        if (!isRow(row) || source.decrees[row[8]] === undefined)
         {
             throw new PackedError(`row ${index} cannot be read back`);
         }
 
-        const [quartier, rooms, period, furnished, reference, majored, minored, at] = row;
+        const [city, quartier, rooms, period, furnished, reference, majored, minored, at] = row;
 
-        return { flat: { quartier, rooms, period, furnished: furnished === 1 }, reference, majored, minored, decree: source.decrees[at]! };
+        return { flat: { city, quartier, rooms, period, furnished: furnished === 1 }, reference, majored, minored, decree: source.decrees[at]! };
     });
 }
 
@@ -66,7 +66,7 @@ function isTable(source: unknown): source is { decrees: Decree[]; rows: unknown[
     return typeof source === "object"
         && source !== null
         && "version" in source
-        && source.version === 1
+        && source.version === 2
         && "decrees" in source
         && Array.isArray(source.decrees)
         && "rows" in source
@@ -75,14 +75,16 @@ function isTable(source: unknown): source is { decrees: Decree[]; rows: unknown[
 
 function isRow(row: unknown): row is Row
 {
-    if (!Array.isArray(row) || row.length !== 8)
+    if (!Array.isArray(row) || row.length !== 9)
     {
         return false;
     }
 
-    const [quartier, room, period, furnished, ...rest] = row;
+    const [city, quartier, room, period, furnished, ...rest] = row;
 
-    return Number.isInteger(quartier)
+    return typeof city === "string"
+        && Object.hasOwn(periodsOf, city)
+        && Number.isInteger(quartier)
         && typeof room === "number"
         && Object.hasOwn(rooms, String(room))
         && typeof period === "string"

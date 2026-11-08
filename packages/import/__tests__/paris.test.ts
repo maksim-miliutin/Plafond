@@ -68,7 +68,7 @@ function text(rows: Row[], columns = header): string
 }
 
 const first = { "Numéro du quartier": "1", "Nombre de pièces principales": "3", "Epoque de construction": "1946-1970", "Type de location": "meublé" };
-const firstFlat: Flat = { quartier: 1, rooms: 3, period: "1946-1970", furnished: true };
+const firstFlat: Flat = { city: "paris", quartier: 1, rooms: 3, period: "1946-1970", furnished: true };
 
 function patched(rows: Row[], change: Row): Row[]
 {
@@ -115,8 +115,8 @@ test("a year gives exactly one rate for every flat the domain knows", () =>
     {
         for (const [, period] of labels)
         {
-            expect(rateFor(rates, { quartier, rooms: 4, period, furnished: false })).toBeDefined();
-            expect(rateFor(rates, { quartier, rooms: 1, period, furnished: true })).toBeDefined();
+            expect(rateFor(rates, { city: "paris", quartier, rooms: 4, period, furnished: false })).toBeDefined();
+            expect(rateFor(rates, { city: "paris", quartier, rooms: 1, period, furnished: true })).toBeDefined();
         }
     }
 });

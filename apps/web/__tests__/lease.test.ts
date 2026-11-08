@@ -20,7 +20,7 @@ test("a filled form becomes the lease the check expects, and says whether it sta
 {
     expect(leaseFrom(filled, context)).toEqual({
         claim: {
-            flat: { quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
+            flat: { city: "paris", quartier: 1, rooms: 3, period: "1946-1970", furnished: true },
             surface: 4000,
             signedOn: "2025-08-20",
             startsOn: "2025-09-01",
