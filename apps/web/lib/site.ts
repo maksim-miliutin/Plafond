@@ -35,12 +35,12 @@ export const pages: readonly Page[] = [
     {
         path: "",
         title: "Plafond\u00A0: vérifiez vos droits de locataire",
-        description: "Quatre vérifications gratuites pour les locataires en France\u00A0: loyer encadré à Paris, DPE, dépôt de garantie et charges, avec la lettre au propriétaire.",
+        description: "Quatre vérifications gratuites pour les locataires en France\u00A0: loyer encadré à Paris et Lyon, DPE, dépôt de garantie et charges, avec la lettre.",
     },
     {
         path: "loyer/",
-        title: "Votre loyer dépasse-t-il le plafond à Paris\u00A0? | Plafond",
-        description: "Vérifiez si votre loyer respecte l'encadrement des loyers à Paris, calculez le trop-perçu depuis le début du bail et préparez la lettre au propriétaire.",
+        title: "Loyer plafonné à Paris et Lyon\u00A0: vérifiez le vôtre | Plafond",
+        description: "Vérifiez si votre loyer respecte l'encadrement des loyers à Paris, Lyon et Villeurbanne, calculez le trop-perçu et préparez la lettre au propriétaire.",
     },
     {
         path: "dpe/",

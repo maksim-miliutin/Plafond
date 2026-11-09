@@ -136,7 +136,7 @@ export function Plafond({ needs = live }: { needs?: Needs })
             );
 
         case "letter":
-            return <LetterStep letter={step.letter} onBack={back} />;
+            return <LetterStep letter={step.letter} city={step.place.city} onBack={back} />;
 
         case "help":
             return <HelpStep helpers={city === "paris" ? [parisRent, ...helpers] : helpers} onBack={back} />;

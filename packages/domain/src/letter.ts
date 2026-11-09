@@ -2,7 +2,7 @@ import type { Check, Claim } from "./cap.js";
 import { addMonths, type Day } from "./day.js";
 import { euros, frenchDay, squareMetres } from "./format.js";
 import { letting, periods, rooms } from "./labels.js";
-import type { Contest } from "./rates.js";
+import type { City, Contest } from "./rates.js";
 
 export type Ground = "excess" | "unstated" | "complement" | "freeze" | "decency" | "deposit" | "charges" | "twelfths" | "proofs";
 
@@ -45,9 +45,13 @@ export interface LetterInput
 
 const law = "l'article 140 de la loi n° 2018-1021 du 23 novembre 2018";
 
-// Paris handed the fines of article 140, VII to its mayor in December 2018; they punish a rent above the cap.
-const fine = "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
-    + "par la Ville de Paris, en application de l'article 140, VII de la même loi.";
+// Paris handed the fines of article 140, VII to its mayor in December 2018; in Lyon the prefect of the Rhône pronounces them.
+const fines: Record<City, string> = {
+    paris: "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
+        + "par la Ville de Paris, en application de l'article 140, VII de la même loi.",
+    lyon: "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
+        + "par le préfet du Rhône, en application de l'article 140, VII de la même loi.",
+};
 
 export function letter(input: LetterInput): Letter | NothingToClaim
 {
@@ -63,7 +67,7 @@ export function letter(input: LetterInput): Letter | NothingToClaim
         subject: "mise en demeure au sujet du loyer de mon logement",
         opening: opening(input),
         demands,
-        reminders: demands.some((demand) => demand.ground === "excess") ? [fine] : [],
+        reminders: demands.some((demand) => demand.ground === "excess") ? [fines[input.claim.flat.city]] : [],
         caution: input.check.rate.decree.contest,
     });
 }
@@ -141,7 +145,7 @@ function opening({ check, claim, address, quartier }: LetterInput): string[]
     const effect = claim.startsOn === claim.signedOn ? "le même jour" : `le ${frenchDay(claim.startsOn)}`;
 
     return [
-        `Vous me louez le logement situé ${at}${postal(address)}, dans le quartier ${quartier}. Il s'agit d'un logement de `
+        `Vous me louez le logement situé ${at}${postal(address)}${claim.flat.city === "paris" ? `, dans le quartier ${quartier}` : ""}. Il s'agit d'un logement de `
             + `${rooms[flat.rooms]}, ${letting(flat.furnished)}, dans un immeuble construit ${periods[flat.period]}, `
             + `d'une surface habitable de ${squareMetres(claim.surface)}. Le bail a été signé le ${frenchDay(claim.signedOn)} `
             + `et a pris effet ${effect}.`,

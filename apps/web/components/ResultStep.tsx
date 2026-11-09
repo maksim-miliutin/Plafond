@@ -42,7 +42,7 @@ export function ResultStep({ check, claim, quartier, writable, onWrite, onBack, 
             </dl>
             {over && <Recovery check={check} claim={claim} />}
             {check.complement !== null && <ComplementNote complement={check.complement} on={claim.on} signedOn={claim.signedOn} />}
-            {check.rate.decree.contest !== null && <ContestNote contest={check.rate.decree.contest} />}
+            {check.rate.decree.contest !== null && <ContestNote contest={check.rate.decree.contest} city={claim.flat.city} />}
             <Sources check={check} claim={claim} quartier={quartier} />
             <div className="grow" />
             <div className="stack">

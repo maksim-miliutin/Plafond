@@ -124,3 +124,12 @@ test("a rent over the cap is explained in one sentence: what it means and what c
     expect(page()).toContain("Vous pouvez demander au propriétaire de le ramener au plafond et de vous rembourser le trop-perçu.");
     expect(page({ rent: 100000 })).not.toContain("Vous pouvez demander au propriétaire");
 });
+
+test("a contested decree sends the reader to the ADIL of the flat's own city", async () =>
+{
+    const { ContestNote } = await import("../components/ContestNote");
+    const contest = { outcome: "annulled" as const, court: "tribunal administratif de Lyon", decidedOn: "2025-10-14", claimsBy: null, source: "https://example.org" };
+
+    expect(renderToStaticMarkup(<ContestNote contest={contest} city="lyon" />)).toContain("ADIL du Rhône");
+    expect(renderToStaticMarkup(<ContestNote contest={contest} city="paris" />)).toContain("ADIL de Paris");
+});

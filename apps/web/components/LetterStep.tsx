@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import type { Letter } from "@plafond/domain";
+import type { City, Letter } from "@plafond/domain";
 
 import { ContestNote } from "./ContestNote";
 import { LetterActions } from "./LetterActions";
@@ -8,10 +8,11 @@ import { LetterActions } from "./LetterActions";
 export interface LetterProps
 {
     letter: Letter;
+    city?: City;
     onBack?: () => void;
 }
 
-export function LetterStep({ letter, onBack }: LetterProps)
+export function LetterStep({ letter, city, onBack }: LetterProps)
 {
     return (
         <main className="screen">
@@ -20,7 +21,7 @@ export function LetterStep({ letter, onBack }: LetterProps)
             <p className="lead">
                 Complétez les noms entre crochets, relisez, puis envoyez-la en recommandé avec accusé de réception.
             </p>
-            {letter.caution !== null && <ContestNote contest={letter.caution} />}
+            {letter.caution !== null && <ContestNote contest={letter.caution} city={city} />}
             <article className="letter" aria-label="Lettre au propriétaire">
                 <Lines className="from" lines={letter.sender} />
                 <Lines className="to" lines={letter.recipient} />
