@@ -1,11 +1,9 @@
-import { dayBefore, euros, frenchDay, ordinal, periods, rooms } from "@plafond/domain";
-import type { Period, Rooms } from "@plafond/domain";
+import { dayBefore, euros, frenchDay, ordinal, periods, periodsOf, rooms } from "@plafond/domain";
 
-import { districtSlug, type PlacePage, type Rent } from "../lib/places";
+import { districtSlug, type PlacePage } from "../lib/places";
 import { Brand } from "./Brand";
+import { RentGrid } from "./RentGrid";
 
-const sizes: readonly Rooms[] = [1, 2, 3, 4];
-const ages: readonly Period[] = ["before-1946", "1946-1970", "1971-1990", "after-1990"];
 const surface = 40;
 
 export function QuartierPage({ place }: { place: PlacePage })
@@ -25,8 +23,8 @@ export function QuartierPage({ place }: { place: PlacePage })
             </p>
             <a className="primary link-button" href="../../loyer/">Vérifier mon loyer</a>
             <a className="rule" href={`../../arrondissements/${districtSlug(place.arrondissement)}/`}>Les autres quartiers du {district}</a>
-            <Grid caption="Logement loué vide" rents={place.rents} pick={(rent) => rent.empty} />
-            <Grid caption="Logement loué meublé" rents={place.rents} pick={(rent) => rent.furnished} />
+            <RentGrid caption="Logement loué vide" rents={place.rents} periods={periodsOf.paris} pick={(rent) => rent.empty} />
+            <RentGrid caption="Logement loué meublé" rents={place.rents} periods={periodsOf.paris} pick={(rent) => rent.furnished} />
             {example !== undefined && (
                 <section className="findings">
                     <h2>Exemple</h2>
@@ -45,37 +43,5 @@ export function QuartierPage({ place }: { place: PlacePage })
             </section>
             <p className="fine">Une information générale, pas un conseil juridique. <a href="../../mentions/">Mentions légales</a></p>
         </main>
-    );
-}
-
-function Grid({ caption, rents, pick }: { caption: string; rents: readonly Rent[]; pick: (rent: Rent) => number })
-{
-    const cell = (size: Rooms, age: Period) => rents.find((rent) => rent.rooms === size && rent.period === age);
-
-    return (
-        <div className="grid-wrap">
-            <table className="caps">
-                <caption>{caption}, par m²</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Construit</th>
-                        {sizes.map((size) => <th key={size} scope="col">{rooms[size]}</th>)}
-                    </tr>
-                </thead>
-                <tbody>
-                    {ages.map((age) => (
-                        <tr key={age}>
-                            <th scope="row">{periods[age]}</th>
-                            {sizes.map((size) =>
-                            {
-                                const rent = cell(size, age);
-
-                                return <td key={size}>{rent === undefined ? "" : euros(pick(rent))}</td>;
-                            })}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
     );
 }

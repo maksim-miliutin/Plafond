@@ -1,14 +1,15 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { decreesOf, parisRates, quartiersOf } from "@plafond/import";
+import { decreesOf, lyonSeed, parisRates, quartiersOf } from "@plafond/import";
 
-import { arrondissementPages, placePages, type DistrictPage, type PlacePage } from "./places";
+import { arrondissementPages, communePages, placePages, type CommunePage, type DistrictPage, type PlacePage } from "./places";
 
 export interface Places
 {
     places: PlacePage[];
     districts: DistrictPage[];
+    communes: CommunePage[];
 }
 
 // Read at build time only: the build runs in apps/web, two floors above the seed.
@@ -28,7 +29,11 @@ export function fromDisk(): Places
             decrees: decreesOf(JSON.parse(file("paris-decrees.json"))),
         });
         const places = placePages(rates, quartiersOf(JSON.parse(file("paris-quartiers.json"))));
-        read = { places, districts: arrondissementPages(places) };
+        const lyon = lyonSeed({
+            tables: new Map([[2022, file("lyon-2022-2023.csv")], [2024, file("lyon-2024-2025.geojson")], [2025, file("lyon-2025-2026.csv")]]),
+            decrees: decreesOf(JSON.parse(file("lyon-decrees.json"))),
+        });
+        read = { places, districts: arrondissementPages(places), communes: communePages(lyon.rates, lyon.outlines, lyon.zoning) };
     }
 
     return read;

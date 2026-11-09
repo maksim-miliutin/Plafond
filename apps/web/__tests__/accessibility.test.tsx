@@ -24,6 +24,7 @@ import { Mentions } from "../components/Mentions";
 import { Guide } from "../components/Guide";
 import { QuartierPage } from "../components/QuartierPage";
 import { DistrictPage } from "../components/DistrictPage";
+import { LyonPage } from "../components/LyonPage";
 import { guides } from "../lib/guides";
 import { helpers, parisRent } from "../lib/help";
 import { LeaseStep } from "../components/LeaseStep";
@@ -64,6 +65,7 @@ const screens: Record<string, ReactElement> = {
     "help": <HelpStep helpers={[parisRent, ...helpers]} onBack={() => undefined} />,
     "legal notice": <Mentions />,
     "guide": <Guide guide={guides[0]!} />,
+    "lyon page": <LyonPage commune={{ slug: "villeurbanne", name: "Villeurbanne", decree: rate.decree, zones: [{ zone: 4, rents: [{ rooms: 2, period: "after-2005", empty: 1500, furnished: 1700 }] }] }} />,
     "district page": <DistrictPage district={{ slug: "paris-5e", number: 5, quartiers: [], lowest: 2810, highest: 4860 }} />,
     "quartier page": <QuartierPage place={{ slug: "sorbonne", number: 20, name: "Sorbonne", arrondissement: 5, decree: rate.decree, rents: [{ rooms: 2, period: "before-1946", empty: 3730, furnished: 4210 }] }} />,
     "deposit form": <DepositFormStep fields={Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields} errors={{ keysOn: "Indiquez la date de remise des clés." }} />,
