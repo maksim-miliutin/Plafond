@@ -112,3 +112,13 @@ test("the screen says which of the four steps it is", () =>
     expect(page()).toContain("Étape 3 sur 4\u00A0: votre bail");
     expect(page().match(/class="segment done"/g)).toHaveLength(3);
 });
+
+test("the construction periods offered are the city's own", () =>
+{
+    const lyon = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} city="lyon" />);
+
+    expect(lyon.match(/name="period"/g)).toHaveLength(5);
+    expect(lyon).toContain("après 2005");
+    expect(page().match(/name="period"/g)).toHaveLength(4);
+});
+

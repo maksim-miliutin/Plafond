@@ -118,7 +118,7 @@ function located(typed: string, lookup: Lookup, world: World): Step
 
 function answered(step: Extract<Step, { at: "lease" }>, fields: LeaseFields, world: World): Step
 {
-    const lease = leaseFrom(fields, { quartier: step.place.quartier.number, on: world.on });
+    const lease = leaseFrom(fields, { city: "paris", quartier: step.place.quartier.number, on: world.on });
     if ("kind" in lease)
     {
         return { ...step, fields, errors: lease.fields, noRate: null };
