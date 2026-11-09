@@ -14,7 +14,7 @@ const filled: LeaseFields = {
     stated: "no",
 };
 
-const context = { quartier: 1, on: "2026-09-29" };
+const context = { city: "paris" as const, quartier: 1, on: "2026-09-29" };
 
 test("a filled form becomes the lease the check expects, and says whether it states the reference rents", () =>
 {
@@ -83,3 +83,13 @@ test("a sent form reads back as every field, the unanswered ones empty", () =>
 
     expect(fieldsFrom(sent)).toEqual({ ...Object.fromEntries(Object.keys(filled).map((key) => [key, ""])), rooms: "3", rent: "1 500", stated: "no" });
 });
+
+test("each city takes its own construction periods: after 2005 exists in Lyon, not in Paris", () =>
+{
+    const lyon = { ...context, city: "lyon" as const, quartier: 693830101 };
+
+    expect(leaseFrom({ ...filled, period: "after-2005" }, lyon)).toMatchObject({ claim: { flat: { city: "lyon", quartier: 693830101, period: "after-2005" } } });
+    expect(leaseFrom({ ...filled, period: "after-2005" }, context)).toMatchObject({ kind: "unanswered", fields: { period: expect.any(String) } });
+    expect(leaseFrom({ ...filled, period: "after-1990" }, lyon)).toMatchObject({ kind: "unanswered", fields: { period: expect.any(String) } });
+});
+
