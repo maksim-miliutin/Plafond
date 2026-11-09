@@ -3,7 +3,7 @@ import { expect, test } from "vitest";
 import { PackedError, pack, packQuartiers, type Quartier, type Rate } from "@plafond/domain";
 import type { Fetcher } from "@plafond/address";
 
-import { loadQuartiers, loadRates, loadTables } from "../lib/load";
+import { loadCity, loadQuartiers, loadRates, loadTables, tableFiles } from "../lib/load";
 import { rate } from "./fixtures";
 
 const rates: Rate[] = [rate];
@@ -58,4 +58,22 @@ test("the app gets both tables or neither", async () =>
 
     expect(await loadTables(both)).toEqual({ rates, quartiers });
     expect(await loadTables(halfway)).toEqual({ kind: "unreachable" });
+});
+
+// A city's table tells the server which city is being checked, never which street or flat.
+test("each city's tables come from their own two files, and Lyon's do not burden a check in Paris", async () =>
+{
+    const asked: string[] = [];
+    const lyon: Rate[] = [{ ...rate, flat: { ...rate.flat, city: "lyon" } }];
+    const areas: Quartier[] = [{ number: 693830101, name: "Lyon 3e Arrondissement", rings: [[[4.85, 45.76], [4.86, 45.76], [4.86, 45.77], [4.85, 45.76]]] }];
+    const fetcher: Fetcher = async (url) =>
+    {
+        asked.push(url);
+
+        return { ok: true, status: 200, json: async () => (url.includes("rates") ? pack(lyon) : packQuartiers(areas)) };
+    };
+
+    expect(await loadCity(fetcher, "lyon")).toEqual({ rates: lyon, quartiers: areas });
+    expect(asked.sort()).toEqual(["lyon-areas.json", "lyon-rates.json"]);
+    expect(tableFiles.paris).toEqual({ rates: "rates.json", areas: "quartiers.json" });
 });

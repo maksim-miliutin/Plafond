@@ -1,9 +1,14 @@
 import { unpack, unpackQuartiers } from "@plafond/domain";
-import type { Quartier, Rate } from "@plafond/domain";
+import type { City, Quartier, Rate } from "@plafond/domain";
 import type { Fetcher } from "@plafond/address";
 
-export const ratesFile = "rates.json";
-export const quartiersFile = "quartiers.json";
+export const tableFiles: Record<City, { rates: string; areas: string }> = {
+    paris: { rates: "rates.json", areas: "quartiers.json" },
+    lyon: { rates: "lyon-rates.json", areas: "lyon-areas.json" },
+};
+
+export const ratesFile = tableFiles.paris.rates;
+export const quartiersFile = tableFiles.paris.areas;
 
 export interface Unreachable
 {
@@ -19,6 +24,18 @@ export interface Tables
 export async function loadTables(fetcher: Fetcher): Promise<Tables | Unreachable>
 {
     const [rates, quartiers] = await Promise.all([loadRates(fetcher), loadQuartiers(fetcher)]);
+    if ("kind" in rates || "kind" in quartiers)
+    {
+        return { kind: "unreachable" };
+    }
+
+    return { rates, quartiers };
+}
+
+export async function loadCity(fetcher: Fetcher, city: City): Promise<Tables | Unreachable>
+{
+    const files = tableFiles[city];
+    const [rates, quartiers] = await Promise.all([load(fetcher, files.rates, unpack), load(fetcher, files.areas, unpackQuartiers)]);
     if ("kind" in rates || "kind" in quartiers)
     {
         return { kind: "unreachable" };

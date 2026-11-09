@@ -7,6 +7,8 @@ next-env.d.ts
 
 apps/web/public/rates.json
 apps/web/public/quartiers.json
+apps/web/public/lyon-rates.json
+apps/web/public/lyon-areas.json
 
 test-results/
 playwright-report/

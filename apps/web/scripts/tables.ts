@@ -1,9 +1,9 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 import { pack, packQuartiers } from "@plafond/domain";
-import { decreesOf, parisRates, quartiersOf } from "@plafond/import";
+import { decreesOf, lyonSeed, parisRates, quartiersOf } from "@plafond/import";
 
-import { quartiersFile, ratesFile } from "../lib/load.ts";
+import { quartiersFile, ratesFile, tableFiles } from "../lib/load.ts";
 
 const seed = new URL("../../../db/seed/", import.meta.url);
 const site = new URL("../public/", import.meta.url);
@@ -21,3 +21,11 @@ const quartiers = quartiersOf(JSON.parse(read("paris-quartiers.json")));
 mkdirSync(site, { recursive: true });
 writeFileSync(new URL(ratesFile, site), JSON.stringify(pack(rates)));
 writeFileSync(new URL(quartiersFile, site), JSON.stringify(packQuartiers(quartiers)));
+
+const lyon = lyonSeed({
+    tables: new Map([[2022, read("lyon-2022-2023.csv")], [2024, read("lyon-2024-2025.geojson")], [2025, read("lyon-2025-2026.csv")]]),
+    decrees: decreesOf(JSON.parse(read("lyon-decrees.json"))),
+});
+
+writeFileSync(new URL(tableFiles.lyon.rates, site), JSON.stringify(pack(lyon.rates)));
+writeFileSync(new URL(tableFiles.lyon.areas, site), JSON.stringify(packQuartiers(lyon.outlines)));
