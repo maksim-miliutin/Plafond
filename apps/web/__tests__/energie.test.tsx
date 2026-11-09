@@ -21,7 +21,7 @@ const g: Listing = {
 function needs(change: Partial<EnergyNeeds> = {}): EnergyNeeds
 {
     return {
-        geocoder: { locate: async () => ({ kind: "located", id: "75105_7034_00007", label: g.address, point: { lon: 2.346, lat: 48.846 } }) },
+        geocoder: { locate: async () => ({ kind: "located", id: "75105_7034_00007", citycode: "75105", label: g.address, point: { lon: 2.346, lat: 48.846 } }) },
         source: { byNumber: async () => [g], atAddress: async () => [g] },
         now: () => new Date("2026-10-03T10:00:00Z"),
         ...change,

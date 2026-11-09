@@ -14,7 +14,7 @@ const listing: Listing = {
     electric: true,
 };
 
-function needs(lookup: Lookup = { kind: "located", id: "75105_7034_00007", label: "7 Place du Panthéon 75005 Paris", point: { lon: 2.346, lat: 48.846 } }): { asked: string[]; geocoder: Geocoder; source: DpeSource }
+function needs(lookup: Lookup = { kind: "located", id: "75105_7034_00007", citycode: "75105", label: "7 Place du Panthéon 75005 Paris", point: { lon: 2.346, lat: 48.846 } }): { asked: string[]; geocoder: Geocoder; source: DpeSource }
 {
     const asked: string[] = [];
 
