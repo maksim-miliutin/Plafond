@@ -89,3 +89,27 @@ test("the decree of 2023 carries its annulment, so no cap from it is shown witho
 
     expect(decreesOf(lyonDecrees).get(2023)?.contest).toMatchObject({ outcome: "annulled", court: "tribunal administratif de Lyon", decidedOn: "2025-10-14" });
 });
+
+test("the seed joins each year's table to its decree and draws the outlines from the latest file that has them", async () =>
+{
+    const { decreesOf } = await import("../src/decrees.js");
+    const { lyonSeed } = await import("../src/seed.js");
+    const decrees = decreesOf(lyonDecrees);
+    const { rates, outlines } = lyonSeed({ tables: new Map([[2022, early], [2024, geojson], [2025, recent]]), decrees });
+    const iris = outlines[0]!.number;
+    const yearOn = (day: string) => rates.find((rate) => rate.flat.quartier === iris && rate.decree.from <= day && day < rate.decree.until)?.decree.from;
+
+    expect(rates).toHaveLength(233 * 40 * 3);
+    expect(outlines).toHaveLength(233);
+    expect(yearOn("2026-01-15")).toBe("2025-11-01");
+    expect(yearOn("2023-02-01")).toBe("2022-11-01");
+    expect(yearOn("2024-02-01")).toBeUndefined();
+});
+
+test("a table without its decree is a breakage", async () =>
+{
+    const { decreesOf } = await import("../src/decrees.js");
+    const { SeedError, lyonSeed } = await import("../src/seed.js");
+
+    expect(() => lyonSeed({ tables: new Map([[2019, recent]]), decrees: decreesOf(lyonDecrees) })).toThrow(SeedError);
+});
