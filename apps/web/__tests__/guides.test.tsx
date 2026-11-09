@@ -110,3 +110,15 @@ test("Lyon has its own guide, with the day its control began and the annulled de
     expect(said).toContain("préfet du Rhône");
 });
 
+
+test("the Lyon guide lists each commune's page, so readers and search engines reach every zone from it", async () =>
+{
+    const { CommuneLinks } = await import("../components/CommuneLinks");
+    const lyon = guides.find((guide) => guide.slug === "encadrement-des-loyers-lyon")!;
+    const communes = [{ slug: "lyon-1er-arrondissement", name: "Lyon 1er Arrondissement" }, { slug: "villeurbanne", name: "Villeurbanne" }];
+    const page = renderToStaticMarkup(<Guide guide={lyon} more={<CommuneLinks communes={communes} />} />);
+
+    expect(page).toContain('href="../../lyon/lyon-1er-arrondissement/"');
+    expect(page).toContain(">Lyon 1er<");
+    expect(page).toContain('href="../../lyon/villeurbanne/"');
+});
