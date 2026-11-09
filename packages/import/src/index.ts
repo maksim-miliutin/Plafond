@@ -3,5 +3,5 @@ export { DecreesError, decreesOf } from "./decrees.js";
 export { ParisError, parseParis } from "./paris.js";
 export { QuartiersError, quartiersOf } from "./quartiers.js";
 export { AnnexError, annexRates } from "./annex.js";
-export { SeedError, parisRates, type ParisSeed } from "./seed.js";
+export { SeedError, lyonSeed, parisRates, type LyonRates, type LyonSeed, type ParisSeed } from "./seed.js";
 export { LyonError, lyonOutlines, lyonRates, lyonTable, type LyonTable } from "./lyon.js";
