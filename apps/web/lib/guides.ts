@@ -277,6 +277,37 @@ export const guides: readonly GuideText[] = [
         ],
         sources: [conciliation, adil],
     },
+    {
+        slug: "encadrement-des-loyers-lyon",
+        label: "L'encadrement des loyers à Lyon et Villeurbanne",
+        title: "Encadrement des loyers à Lyon et Villeurbanne | Plafond",
+        description: "Depuis novembre 2021, le loyer est plafonné à Lyon et Villeurbanne selon la zone, les pièces et l'époque\u00A0: les règles, l'arrêté annulé de 2023 et le recours.",
+        heading: "Encadrement des loyers à Lyon et Villeurbanne\u00A0: comment vérifier votre loyer",
+        intro: "À Lyon et à Villeurbanne, le loyer des logements loués en résidence principale, vides ou meublés, est encadré pour les baux signés depuis le 1er novembre 2021.",
+        check: { text: "Vérifier mon loyer", href: "loyer/" },
+        sections: [
+            {
+                heading: "Le plafond",
+                paragraphs: [
+                    "Chaque année, un arrêté du préfet du Rhône fixe un loyer de référence par mètre carré selon la zone, le nombre de pièces, l'époque de construction et le type de location. Le loyer de base ne peut pas dépasser le loyer de référence majoré, soit le loyer de référence augmenté de 20\u00A0%. Les arrêtés s'appliquent du 1er novembre au 31 octobre.",
+                    "L'arrêté qui compte est celui en vigueur à la date de signature du bail. Les époques de construction vont jusqu'à «\u00A0après 2005\u00A0», et non «\u00A0après 1990\u00A0» comme à Paris.",
+                ],
+            },
+            {
+                heading: "L'arrêté de 2023 annulé",
+                paragraphs: [
+                    "Le 14 octobre 2025, le tribunal administratif de Lyon a annulé l'arrêté du 29 septembre 2023, qui s'appliquait aux baux signés entre le 1er novembre 2023 et le 31 octobre 2024, parce que sa carte ne permettait pas de situer précisément les zones. La préfecture a fait appel, et la portée de cette annulation pour les baux déjà signés n'est pas tranchée. Pour un bail de cette période, renseignez-vous auprès de l'ADIL du Rhône avant d'agir.",
+                ],
+            },
+            {
+                heading: "Si votre loyer dépasse le plafond",
+                paragraphs: [
+                    "Vous pouvez demander au propriétaire de ramener le loyer au plafond et de vous rembourser le trop-perçu, dans la limite des trois dernières années. Le préfet du Rhône peut aussi mettre le propriétaire en demeure et lui infliger une amende administrative.",
+                ],
+            },
+        ],
+        sources: [{ text: "Encadrement des loyers (préfecture du Rhône)", href: "https://www.rhone.gouv.fr/Actions-de-l-Etat/Amenagement-du-territoire-urbanisme-construction-logement/Logement/Encadrement-des-loyers" }, conciliation, adil],
+    },
 ];
 
 export function guideFor(check: string): GuideText
