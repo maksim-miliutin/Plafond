@@ -94,7 +94,8 @@ test("a lease signed on a day no rate covers says so on the form, and on which s
     const signed = (signedOn: string) => walk({ type: "located", typed, lookup: found }, { type: "confirmed" }, { type: "answered", fields: { ...filled, signedOn, startsOn: signedOn } });
 
     expect(signed("2026-08-01")).toMatchObject({ at: "lease", noRate: { side: "after", until: "2026-06-30" }, errors: {} });
-    expect(signed("2025-06-01")).toMatchObject({ at: "lease", noRate: { side: "before", from: "2025-07-01" }, errors: {} });
+    expect(signed("2025-06-01")).toMatchObject({ at: "lease", noRate: { side: "between" }, errors: {} });
+    expect(signed("2019-06-01")).toMatchObject({ at: "lease", noRate: { side: "before", from: "2019-07-01" }, errors: {} });
 });
 
 test("a lease over the cap shows the check and offers the letter", () =>
@@ -172,3 +173,14 @@ test("the city of the world that located the address goes with the place, and in
     expect(claimed).toMatchObject({ at: "result", claim: { flat: { city: "lyon" } } });
 });
 
+
+// Lyon's control began on 1 November 2021 but Plafond holds its tables only from November 2022; a lease in between must
+// not be told the law did not yet apply.
+test("a lease signed after the city's control began but before the first table Plafond holds is a gap in the data, not in the law", () =>
+{
+    const lyonWorld: World = { ...world, city: "lyon", rates: [{ ...rate, flat: { ...rate.flat, city: "lyon" }, decree: { ...rate.decree, from: "2022-11-01", until: "2023-11-01" } }] };
+    const signed = (signedOn: string) => next(next(next(start, { type: "located", typed, lookup: found }, lyonWorld), { type: "confirmed" }, lyonWorld), { type: "answered", fields: { ...filled, signedOn, startsOn: signedOn } }, lyonWorld);
+
+    expect(signed("2022-03-01")).toMatchObject({ at: "lease", noRate: { side: "between" } });
+    expect(signed("2021-06-01")).toMatchObject({ at: "lease", noRate: { side: "before", from: "2021-11-01" } });
+});

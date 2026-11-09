@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { DayError } from "../src/day.js";
-import { RatesError, periodsOf, rateOn, type Flat, type Rate } from "../src/rates.js";
+import { RatesError, controlledSince, periodsOf, rateOn, type Flat, type Rate } from "../src/rates.js";
 
 const flat: Flat = { city: "paris", quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
 
@@ -81,4 +81,9 @@ test("a rate belongs to its city, so Paris quartier 1 and Lyon zone 1 never answ
 
     expect(rateOn([paris, lyon], lyon.flat, "2025-09-01")).toBe(lyon);
     expect(rateOn([paris, lyon], paris.flat, "2025-09-01")).toBe(paris);
+});
+
+test("each city's rent control has the day it began: Paris in July 2019, Lyon in November 2021", () =>
+{
+    expect(controlledSince).toEqual({ paris: "2019-07-01", lyon: "2021-11-01" });
 });

@@ -83,7 +83,7 @@ function gapText(gap: Gap): string
             return `Plafond ne connaît pas encore d'arrêté pour cette date\u00A0: le plus récent s'applique jusqu'au ${frenchDay(gap.until)}.`;
 
         case "between":
-            return "Aucun arrêté ne couvre ce quartier à cette date.";
+            return "Plafond ne dispose pas encore des loyers de référence de cette période.";
     }
 }
 
