@@ -20,7 +20,7 @@ function square(number: number, name: string, west: number): Quartier
 const one = square(1, "Saint-Germain-l'Auxerrois", 2.34);
 const two = square(2, "Halles", 2.34 + side);
 
-const world: World = { rates: [rate], quartiers: [one, two], on: "2026-09-29" };
+const world: World = { city: "paris", rates: [rate], quartiers: [one, two], on: "2026-09-29" };
 
 const filled: LeaseFields = {
     rooms: "3",
@@ -161,3 +161,14 @@ test("free help opens from the result and going back returns to the very same re
     expect(next(help, { type: "back" }, world)).toBe(checked);
     expect(next(start, { type: "helped" }, world)).toBe(start);
 });
+
+test("the city of the world that located the address goes with the place, and into the claim", () =>
+{
+    const lyonWorld: World = { ...world, city: "lyon", rates: [{ ...rate, flat: { ...rate.flat, city: "lyon" } }] };
+    const placed = next(start, { type: "located", typed, lookup: found }, lyonWorld);
+    const claimed = next(next(placed, { type: "confirmed" }, lyonWorld), { type: "answered", fields: filled }, lyonWorld);
+
+    expect(placed).toMatchObject({ at: "quartier", place: { city: "lyon" } });
+    expect(claimed).toMatchObject({ at: "result", claim: { flat: { city: "lyon" } } });
+});
+
