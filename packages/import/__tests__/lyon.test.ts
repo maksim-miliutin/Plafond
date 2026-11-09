@@ -113,3 +113,13 @@ test("a table without its decree is a breakage", async () =>
 
     expect(() => lyonSeed({ tables: new Map([[2019, recent]]), decrees: decreesOf(lyonDecrees) })).toThrow(SeedError);
 });
+
+test("the seed also says which zone each IRIS falls in, in the latest year, for pages that explain the zones", async () =>
+{
+    const { decreesOf } = await import("../src/decrees.js");
+    const { lyonSeed } = await import("../src/seed.js");
+    const { zoning } = lyonSeed({ tables: new Map([[2022, early], [2025, recent]]), decrees: decreesOf(lyonDecrees) });
+
+    expect(zoning.size).toBe(233);
+    expect(new Set(zoning.values())).toEqual(new Set([1, 2, 3, 4, 5]));
+});

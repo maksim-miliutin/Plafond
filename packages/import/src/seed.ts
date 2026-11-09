@@ -45,6 +45,7 @@ export interface LyonRates
 {
     rates: Rate[];
     outlines: Quartier[];
+    zoning: ReadonlyMap<number, number>;  // IRIS to zone, in the latest year
 }
 
 export function lyonSeed({ tables, decrees }: LyonSeed): LyonRates
@@ -65,6 +66,10 @@ export function lyonSeed({ tables, decrees }: LyonSeed): LyonRates
         throw new SeedError("no Lyon table draws the outlines");
     }
 
-    return { rates: read.flatMap(({ table, decree }) => lyonRates(table, decree)), outlines: lyonOutlines(drawn.table) };
+    return {
+        rates: read.flatMap(({ table, decree }) => lyonRates(table, decree)),
+        outlines: lyonOutlines(drawn.table),
+        zoning: read.at(-1)!.table.zones,
+    };
 }
 
