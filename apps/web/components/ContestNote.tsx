@@ -1,7 +1,9 @@
 import { frenchDay } from "@plafond/domain";
-import type { Contest } from "@plafond/domain";
+import type { City, Contest } from "@plafond/domain";
 
-export function ContestNote({ contest }: { contest: Contest })
+const adil: Record<City, string> = { paris: "l'ADIL de Paris", lyon: "l'ADIL du Rhône" };
+
+export function ContestNote({ contest, city }: { contest: Contest; city?: City })
 {
     const decision = `${contest.court}, ${frenchDay(contest.decidedOn)}`;
 
@@ -13,7 +15,7 @@ export function ContestNote({ contest }: { contest: Contest })
             {contest.claimsBy !== null && (
                 <p>Le tribunal a limité les effets de cette annulation aux recours engagés au plus tard le {frenchDay(contest.claimsBy)}.</p>
             )}
-            <p>Renseignez-vous auprès de l'ADIL de Paris avant d'agir.</p>
+            <p>Renseignez-vous auprès de {city === undefined ? "l'ADIL de votre département" : adil[city]} avant d'agir.</p>
         </section>
     );
 }

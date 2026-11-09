@@ -91,3 +91,9 @@ test("the screen says which of the four steps it is", () =>
     expect(page).toContain("Étape 1 sur 4\u00A0: votre adresse");
     expect(page.match(/class="segment done"/g)).toHaveLength(1);
 });
+
+test("the rent check says it covers Paris, Lyon and Villeurbanne, and a refusal names all three", () =>
+{
+    expect(page).toContain("Lyon et Villeurbanne");
+    expect(problems["not-paris"]).toContain("Lyon");
+});

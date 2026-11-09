@@ -36,7 +36,8 @@ export function Mentions()
             <section className="findings">
                 <h2>Sources</h2>
                 <p>
-                    Loyers de référence de la Ville de Paris et arrêtés du préfet de la région Île-de-France, adresses et plan de
+                    Loyers de référence de la Ville de Paris et arrêtés du préfet de la région Île-de-France, loyers de référence de
+                    la Métropole de Lyon et arrêtés du préfet du Rhône, adresses et plan de
                     l'IGN, diagnostics de performance énergétique publiés par l'ADEME.
                 </p>
             </section>

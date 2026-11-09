@@ -16,7 +16,7 @@ const checks: Check[] = [
     {
         href: "loyer/",
         question: "Mon loyer dépasse-t-il le plafond légal ?",
-        reach: "À Paris, avec l'encadrement des loyers.",
+        reach: "À Paris, Lyon et Villeurbanne, avec l'encadrement des loyers.",
         needs: "Votre bail sous la main, environ 3 minutes.",
         drawing: (
             <>

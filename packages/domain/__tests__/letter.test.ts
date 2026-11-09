@@ -224,3 +224,17 @@ test("a rent over the cap is reminded of the fine the City can impose, and only 
     expect(unstatedOnly).not.toContain("amende");
     expect(complementOnly).not.toContain("amende");
 });
+
+// In Lyon the prefect of the Rhône, not a mayor, pronounces the fine of article 140, VII; and Lyon has no quartiers to name.
+test("a letter for a flat in Lyon names the prefect for the fine and leaves Paris quartiers out", () =>
+{
+    const lyonRate: Rate = { ...rate, flat: { ...rate.flat, city: "lyon", quartier: 693830101 } };
+    const lease = { ...claim, flat: lyonRate.flat };
+    const sent = letter({ check: check(lease, [lyonRate]) as Check, claim: lease, address: "10 Rue de la Part-Dieu 69003 Lyon", quartier: "Lyon 3e Arrondissement", stated: true }) as Letter;
+    const text = letterText(sent);
+
+    expect(text).toContain("préfet du Rhône");
+    expect(text).not.toContain("Ville de Paris");
+    expect(text).not.toContain("dans le quartier");
+    expect(sent.dated).toBe("Lyon, le 29 septembre 2026");
+});

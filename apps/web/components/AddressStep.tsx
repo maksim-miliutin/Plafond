@@ -18,12 +18,12 @@ export interface AddressProps
 
 export const problems: Record<Problem, string> = {
     "not-found": "Cette adresse n'a pas été trouvée. Vérifiez le numéro, la rue et l'arrondissement.",
-    "not-paris": "Cette adresse n'est pas à Paris. Plafond ne couvre pour l'instant que Paris.",
+    "not-paris": "Cette adresse n'est ni à Paris, ni à Lyon ou Villeurbanne, les villes que Plafond couvre pour l'instant.",
     "overseas": "Cette adresse est outre-mer, où ces règles s'appliquent à d'autres dates. Plafond ne les couvre pas encore.",
     "street-only": "Seule la rue a été trouvée. Ajoutez le numéro de l'immeuble.",
     "unreachable": "Le service public de géocodage ne répond pas. Réessayez dans un instant.",
-    "border": "Cette adresse tombe sur la limite entre deux quartiers. Précisez le numéro ou vérifiez sur le plan de la Ville de Paris.",
-    "outside": "Cette adresse n'a pas pu être placée dans un quartier de Paris.",
+    "border": "Cette adresse tombe sur la limite entre deux secteurs. Précisez le numéro de la rue.",
+    "outside": "Cette adresse n'a pas pu être placée dans un secteur couvert par l'encadrement.",
 };
 
 export function AddressStep({ typed = "", problem = null, busy = false, onFind }: AddressProps)
@@ -42,8 +42,8 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
             <Progress at={1} of={4} label="votre adresse" />
             <h1 className="title">Votre loyer dépasse-t-il le plafond légal ?</h1>
             <p className="lead">
-                À Paris, le loyer au mètre carré est plafonné depuis le 1er juillet 2019. Le plafond dépend du quartier :
-                commencez par l'adresse du logement.
+                Le loyer au mètre carré est plafonné à Paris depuis le 1er juillet 2019, à Lyon et Villeurbanne depuis le
+                1er novembre 2021. Le plafond dépend du secteur&nbsp;: commencez par l'adresse du logement.
             </p>
             <a className="rule" href={`../guides/${guideFor("loyer/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack" onSubmit={find}>
