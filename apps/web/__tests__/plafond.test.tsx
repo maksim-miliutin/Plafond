@@ -24,7 +24,9 @@ function needs(change: Partial<Needs> = {}, lookup: Lookup = found): Needs
 {
     return {
         geocoder: { locate: async () => lookup },
-        tables: async () => ({ rates: [rate], quartiers: [square(1, "Saint-Germain-l'Auxerrois", 2.34), square(2, "Halles", 2.345)] }),
+        tables: async (city) => (city === "paris"
+            ? { rates: [rate], quartiers: [square(1, "Saint-Germain-l'Auxerrois", 2.34), square(2, "Halles", 2.345)] }
+            : { rates: [{ ...rate, flat: { ...rate.flat, city: "lyon", quartier: 693830101 } }], quartiers: [square(693830101, "Lyon 3e Arrondissement", 2.34)] }),
         now: () => new Date("2026-09-29T10:00:00Z"),
         ...change,
     };
@@ -168,3 +170,30 @@ test("free help opens from the result and leads back to it", async () =>
     await press(host, "Retour au résultat");
     expect(heading(host)).toContain("220,00");
 });
+
+// Same square as the Paris fixture, so one point falls in both; the commune code alone must decide which city's table answers.
+test("an address in Lyon is checked against Lyon's table, and its commune is shown instead of a Paris quartier", async () =>
+{
+    const lyon: Lookup = { ...found, citycode: "69383", id: "69383_0001_00010", label: "10 Rue de la Part-Dieu 69003 Lyon" };
+    const asked: string[] = [];
+    const host = await open(needs({ tables: async (city) => (asked.push(city), needs().tables(city)) }, lyon));
+
+    await search(host, "10 rue de la Part-Dieu Lyon");
+    expect(host.textContent).toContain("Lyon 3e Arrondissement");
+    expect(host.textContent).not.toMatch(/\d{5,}e arrondissement/);
+
+    await press(host, "C'est bien ça");
+    await answer(host);
+    expect(heading(host)).toContain("220,00");
+    expect(asked).toContain("lyon");
+});
+
+test("Lyon's tables that cannot be reached leave the address screen with the reason, not a blank page", async () =>
+{
+    const lyon: Lookup = { ...found, citycode: "69383", label: "10 Rue de la Part-Dieu 69003 Lyon" };
+    const host = await open(needs({ tables: async (city) => (city === "lyon" ? { kind: "unreachable" } : needs().tables(city)) }, lyon));
+
+    await search(host, "10 rue de la Part-Dieu Lyon");
+    expect(host.querySelector("#address-error")?.textContent).toBeTruthy();
+});
+

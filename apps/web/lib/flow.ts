@@ -1,5 +1,5 @@
 import { check, dayBefore, letter, quartierAt } from "@plafond/domain";
-import type { Check, Claim, Day, Letter, Point, Quartier, Rate } from "@plafond/domain";
+import type { City, Check, Claim, Day, Letter, Point, Quartier, Rate } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
 import { leaseFrom, questions, type FieldErrors, type LeaseFields } from "./lease";
@@ -15,6 +15,7 @@ export class FlowError extends Error
 
 export interface World
 {
+    city: City;
     rates: readonly Rate[];
     quartiers: readonly Quartier[];
     on: Day;
@@ -22,6 +23,7 @@ export interface World
 
 export interface Place
 {
+    city: City;
     label: string;
     point: Point;
     quartier: Quartier;
@@ -113,12 +115,12 @@ function located(typed: string, lookup: Lookup, world: World): Step
 
     const around = world.quartiers.filter((candidate) => candidate !== quartier);
 
-    return { at: "quartier", typed, place: { label: lookup.label, point: lookup.point, quartier, around } };
+    return { at: "quartier", typed, place: { city: world.city, label: lookup.label, point: lookup.point, quartier, around } };
 }
 
 function answered(step: Extract<Step, { at: "lease" }>, fields: LeaseFields, world: World): Step
 {
-    const lease = leaseFrom(fields, { city: "paris", quartier: step.place.quartier.number, on: world.on });
+    const lease = leaseFrom(fields, { city: step.place.city, quartier: step.place.quartier.number, on: world.on });
     if ("kind" in lease)
     {
         return { ...step, fields, errors: lease.fields, noRate: null };

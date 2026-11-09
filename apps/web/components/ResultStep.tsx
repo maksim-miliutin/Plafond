@@ -126,7 +126,7 @@ function Sources({ check, claim, quartier }: Pick<ResultProps, "check" | "claim"
             <h2>D'où viennent ces chiffres</h2>
             <dl>
                 <div>
-                    <dt>Quartier</dt>
+                    <dt>{claim.flat.city === "paris" ? "Quartier" : "Commune"}</dt>
                     <dd>{quartier}</dd>
                 </div>
                 <div>
