@@ -1,4 +1,4 @@
-import { check, dayBefore, letter, quartierAt } from "@plafond/domain";
+import { check, controlledSince, dayBefore, letter, quartierAt } from "@plafond/domain";
 import type { City, Check, Claim, Day, Letter, Point, Quartier, Rate } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
@@ -129,7 +129,7 @@ function answered(step: Extract<Step, { at: "lease" }>, fields: LeaseFields, wor
     const result = check(lease.claim, world.rates);
     if (result.kind === "no-rate")
     {
-        return { ...step, fields, errors: {}, noRate: gapOf(lease.claim.signedOn, world.rates) };
+        return { ...step, fields, errors: {}, noRate: gapOf(lease.claim.signedOn, world.rates, controlledSince[world.city]) };
     }
 
     if (result.kind === "invalid")
@@ -180,17 +180,14 @@ function back(step: Step): Step
     }
 }
 
-function gapOf(signedOn: Day, rates: readonly Rate[]): Gap
+function gapOf(signedOn: Day, rates: readonly Rate[], since: Day): Gap
 {
-    const starts = rates.map((rate) => rate.decree.from).sort();
-    const ends = rates.map((rate) => rate.decree.until).sort();
-    const first = starts[0];
-    const last = ends.at(-1);
-    if (first !== undefined && signedOn < first)
+    if (signedOn < since)
     {
-        return { side: "before", from: first };
+        return { side: "before", from: since };
     }
 
+    const last = rates.map((rate) => rate.decree.until).sort().at(-1);
     if (last !== undefined && signedOn >= last)
     {
         return { side: "after", until: dayBefore(last) };

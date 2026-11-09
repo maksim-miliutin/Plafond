@@ -122,3 +122,11 @@ test("the construction periods offered are the city's own", () =>
     expect(page().match(/name="period"/g)).toHaveLength(4);
 });
 
+
+test("a gap in the tables says Plafond lacks that period, without blaming the decree", () =>
+{
+    const gap = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} noRate={{ side: "between" }} />);
+
+    expect(gap).toContain("Plafond ne dispose pas encore des loyers de référence de cette période");
+    expect(gap).not.toContain("Aucun arrêté");
+});

@@ -13,6 +13,9 @@ export const periodsOf: Record<City, readonly Period[]> = {
     lyon: ["before-1946", "1946-1970", "1971-1990", "1991-2005", "after-2005"],
 };
 
+// The first day a lease falls under each city's control: the décrets of 2019 for Paris and of 2 September 2021 for Lyon.
+export const controlledSince: Record<City, Day> = { paris: "2019-07-01", lyon: "2021-11-01" };
+
 export interface Flat
 {
     city: City;
