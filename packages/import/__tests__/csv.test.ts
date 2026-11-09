@@ -39,3 +39,9 @@ test("an unclosed quote is a breakage that names where it opened", () =>
     expect(() => readRows('a;b\nc;"d\ne;f\n')).toThrow(CsvError);
     expect(() => readRows('a;b\nc;"d\ne;f\n')).toThrow("opened on line 2 is never closed");
 });
+
+test("a file separated by commas reads the same once told so, and semicolons stay the default", () =>
+{
+    expect(readRows("a,\"b,c\"\n1,2\n", ",")).toEqual([["a", "b,c"], ["1", "2"]]);
+    expect(readRows("a;b\n")).toEqual([["a", "b"]]);
+});

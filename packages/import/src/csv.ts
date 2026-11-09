@@ -14,11 +14,10 @@ interface Field
     closesRow: boolean;
 }
 
-const delimiter = ";";
 const quote = "\"";
 const byteOrderMark = "\uFEFF";
 
-export function readRows(text: string): string[][]
+export function readRows(text: string, delimiter = ";"): string[][]
 {
     const source = text.startsWith(byteOrderMark) ? text.slice(1) : text;
     const rows: string[][] = [];
@@ -27,7 +26,7 @@ export function readRows(text: string): string[][]
 
     while (at < source.length)
     {
-        const field = source[at] === quote ? quotedField(source, at) : plainField(source, at);
+        const field = source[at] === quote ? quotedField(source, at, delimiter) : plainField(source, at, delimiter);
         row.push(field.value);
         at = field.next;
 
@@ -46,7 +45,7 @@ export function readRows(text: string): string[][]
     return rows;
 }
 
-function plainField(source: string, start: number): Field
+function plainField(source: string, start: number, delimiter: string): Field
 {
     let end = start;
     while (end < source.length && source[end] !== delimiter && source[end] !== "\n" && source[end] !== "\r")
@@ -54,10 +53,10 @@ function plainField(source: string, start: number): Field
         end++;
     }
 
-    return ending(source, source.slice(start, end), end);
+    return ending(source, source.slice(start, end), end, delimiter);
 }
 
-function quotedField(source: string, start: number): Field
+function quotedField(source: string, start: number, delimiter: string): Field
 {
     let value = "";
     let from = start + 1;
@@ -73,7 +72,7 @@ function quotedField(source: string, start: number): Field
         value += source.slice(from, close);
         if (source[close + 1] !== quote)
         {
-            return ending(source, value, close + 1);
+            return ending(source, value, close + 1, delimiter);
         }
 
         value += quote;
@@ -81,7 +80,7 @@ function quotedField(source: string, start: number): Field
     }
 }
 
-function ending(source: string, value: string, at: number): Field
+function ending(source: string, value: string, at: number, delimiter: string): Field
 {
     if (at >= source.length)
     {
