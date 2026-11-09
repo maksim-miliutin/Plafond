@@ -50,7 +50,7 @@ test("a house number in paris is located at its point", async () =>
 {
     const found = await geoplateforme(answering(reply([louvre]))).locate("4 place du Louvre");
 
-    expect(found).toEqual({ kind: "located", id: louvre.id, label: louvre.label, point: { lon: 2.341191, lat: 48.860081 } });
+    expect(found).toEqual({ kind: "located", id: louvre.id, citycode: louvre.citycode, label: louvre.label, point: { lon: 2.341191, lat: 48.860081 } });
 });
 
 // The BAN identifier is the key the ADEME files its energy diagnoses under; a text address would match the neighbours.
@@ -153,4 +153,17 @@ test("an overseas address is turned away from mainland rules, and says why", asy
     const reunion: Match = { id: "97411_0001_00001", type: "housenumber", citycode: "97411", label: "1 Rue de Paris 97400 Saint-Denis", coordinates: [55.45, -20.88] };
 
     expect(await geoplateforme(answering(reply([reunion])), "mainland").locate("1 rue de Paris Saint-Denis")).toEqual({ kind: "overseas", label: reunion.label });
+});
+
+test("asked for the rent check, an address in Lyon or Villeurbanne is located with its commune, and Marseille is not", async () =>
+{
+    const lyon: Match = { id: "69383_1234_00010", type: "housenumber", citycode: "69383", label: "10 Rue de la Part-Dieu 69003 Lyon", coordinates: [4.8579, 45.7606] };
+    const villeurbanne: Match = { ...lyon, id: "69266_0001_00001", citycode: "69266", label: "1 Cours Émile Zola 69100 Villeurbanne" };
+    const marseille: Match = { ...lyon, id: "13201_0001_00001", citycode: "13201", label: "1 La Canebière 13001 Marseille" };
+
+    expect(await geoplateforme(answering(reply([lyon])), "rent").locate("10 rue de la Part-Dieu Lyon")).toMatchObject({ kind: "located", citycode: "69383" });
+    expect(await geoplateforme(answering(reply([villeurbanne])), "rent").locate("1 cours Émile Zola Villeurbanne")).toMatchObject({ kind: "located", citycode: "69266" });
+    expect(await geoplateforme(answering(reply([louvre])), "rent").locate("4 place du Louvre")).toMatchObject({ kind: "located", citycode: "75101" });
+    expect(await geoplateforme(answering(reply([marseille])), "rent").locate("1 la Canebière")).toMatchObject({ kind: "not-paris" });
+    expect(await geoplateforme(answering(reply([lyon]))).locate("10 rue de la Part-Dieu Lyon")).toMatchObject({ kind: "not-paris" });
 });

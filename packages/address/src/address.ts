@@ -4,6 +4,7 @@ export interface Located
 {
     kind: "located";
     id: string;
+    citycode: string;
     label: string;
     point: Point;
 }
@@ -54,12 +55,16 @@ const endpoint = "https://data.geopf.fr/geocodage/search";
 const shortest = 3;
 const longest = 200;
 
-export type Area = "paris" | "mainland";
+export type Area = "paris" | "rent" | "mainland";
 
 const arrondissement = /^751(0[1-9]|1[0-9]|20)$/;
 
+// Lyon's nine arrondissements and Villeurbanne, the two communes its rent control covers.
+const lyon = /^(6938[1-9]|69266)$/;
+
 const areas: Record<Area, { holds: (citycode: string) => boolean; refusal: "not-paris" | "overseas" }> = {
     paris: { holds: (citycode) => arrondissement.test(citycode), refusal: "not-paris" },
+    rent: { holds: (citycode) => arrondissement.test(citycode) || lyon.test(citycode), refusal: "not-paris" },
     mainland: { holds: (citycode) => !citycode.startsWith("97"), refusal: "overseas" },
 };
 
@@ -97,7 +102,7 @@ async function locate(fetcher: Fetcher, text: string, area: Area): Promise<Looku
         return { kind: "street-only", label: match.label };
     }
 
-    return { kind: "located", id: match.id, label: match.label, point: match.point };
+    return { kind: "located", id: match.id, citycode: match.citycode, label: match.label, point: match.point };
 }
 
 async function ask(fetcher: Fetcher, url: string): Promise<unknown>
