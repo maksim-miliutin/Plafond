@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { euros, frenchDay, ordinal } from "@plafond/domain";
 
 import { guides } from "./guides";
-import { districtSlug, type DistrictPage, type PlacePage } from "./places";
+import { districtSlug, type CommunePage, type DistrictPage, type PlacePage } from "./places";
 
 export interface Page
 {
@@ -85,6 +85,17 @@ export function districtMetadata(district: DistrictPage): Metadata
         path: `arrondissements/${districtSlug(district.number)}/`,
         title: `Encadrement des loyers dans le ${name} | Plafond`,
         description: `Plafonds de loyer au m² dans les quatre quartiers du ${name} de Paris, de ${euros(district.lowest)} à ${euros(district.highest)}, et vérification gratuite de votre loyer.`,
+    });
+}
+
+export function communeMetadata(commune: CommunePage): Metadata
+{
+    const short = commune.name.replace(/ Arrondissement$/, "");
+
+    return described({
+        path: `lyon/${commune.slug}/`,
+        title: `Loyer de référence ${short} | Plafond`,
+        description: `Loyers maximum au m² à ${short}, selon la zone, les pièces, l'époque et la location, pour les baux signés depuis le ${frenchDay(commune.decree.from)}.`,
     });
 }
 

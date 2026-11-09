@@ -108,4 +108,11 @@ test("each of Lyon's ten communes gets a page with the zones it lies in, each zo
         expect(page.zones.length, page.slug).toBeGreaterThanOrEqual(1);
         expect(page.zones.every((zone) => zone.rents.length === 20 && zone.rents.every((rent) => rent.furnished > rent.empty)), page.slug).toBe(true);
     }
+
+    const { communeMetadata } = await import("../lib/site");
+    for (const page of pages)
+    {
+        expect(String(communeMetadata(page).title).length, page.slug).toBeLessThanOrEqual(60);
+        expect(String(communeMetadata(page).description).length, page.slug).toBeLessThanOrEqual(160);
+    }
 });
