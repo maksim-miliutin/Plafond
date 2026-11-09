@@ -87,3 +87,25 @@ test("every arrondissement's title and description fit what search engines show"
         expect(String(described.description).length, district.slug).toBeLessThanOrEqual(160);
     }
 });
+
+test("each of Lyon's ten communes gets a page with the zones it lies in, each zone with its 20 rents of the latest decree", async () =>
+{
+    const { lyonSeed } = await import("@plafond/import");
+    const { communePages } = await import("../lib/places");
+    const lyonEarly = (await import("../../../db/seed/lyon-2022-2023.csv?raw")).default;
+    const lyonRecent = (await import("../../../db/seed/lyon-2025-2026.csv?raw")).default;
+    const lyonDecrees = (await import("../../../db/seed/lyon-decrees.json")).default;
+    const seeded = lyonSeed({ tables: new Map([[2022, lyonEarly], [2025, lyonRecent]]), decrees: decreesOf(lyonDecrees) });
+    const pages = communePages(seeded.rates, seeded.outlines, seeded.zoning);
+
+    expect(pages.map((page) => page.slug)).toEqual([
+        ...Array.from({ length: 9 }, (_, index) => `lyon-${index === 0 ? "1er" : `${index + 1}e`}-arrondissement`),
+        "villeurbanne",
+    ]);
+    for (const page of pages)
+    {
+        expect(page.decree.from, page.slug).toBe("2025-11-01");
+        expect(page.zones.length, page.slug).toBeGreaterThanOrEqual(1);
+        expect(page.zones.every((zone) => zone.rents.length === 20 && zone.rents.every((rent) => rent.furnished > rent.empty)), page.slug).toBe(true);
+    }
+});
