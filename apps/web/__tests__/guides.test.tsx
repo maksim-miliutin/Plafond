@@ -98,3 +98,15 @@ test("the three newer guides cover notice, yearly revision and the rent suppleme
     expect(slugs).toEqual(expect.arrayContaining(["preavis-de-depart", "revision-du-loyer", "complement-de-loyer"]));
     expect(guides.find((guide) => guide.slug === "preavis-de-depart")!.sections.flatMap((section) => section.paragraphs).join(" ")).toContain("zone tendue");
 });
+
+test("Lyon has its own guide, with the day its control began and the annulled decree of 2023", () =>
+{
+    const lyon = guides.find((guide) => guide.slug === "encadrement-des-loyers-lyon");
+    const said = [lyon?.intro ?? "", ...(lyon?.sections.flatMap((section) => section.paragraphs) ?? [])].join(" ");
+
+    expect(lyon?.check.href).toBe("loyer/");
+    expect(said).toContain("1er novembre 2021");
+    expect(said).toContain("14 octobre 2025");
+    expect(said).toContain("préfet du Rhône");
+});
+
