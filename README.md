@@ -24,14 +24,16 @@ The City's table stops at 2025. The rents in force from 1 July 2026 are copied f
 
 `db/seed/paris-decrees.json` lists the prefect's decrees behind each year of rates, with the day each takes effect and ends, and the court decisions that concern them, each with its source. It is kept by hand from the pages of the DRIHL Île-de-France.
 
+Reference rents for Lyon and Villeurbanne come from the open data of the Métropole de Lyon on data.grandlyon.com, one dataset for each year of the prefect's decree (`car_care.carencadrmtloyer_2022_2023` and the years after it). `db/seed/lyon-2022-2023.csv`, `db/seed/lyon-2024-2025.geojson` and `db/seed/lyon-2025-2026.csv` are those files as the Métropole published them, each year in its own layout; the import reads all three. Each holds, for every small statistical area (IRIS), its zone and its rents; the latest file that carries the outlines of the areas is the one the app uses to find the zone of an address. `db/seed/lyon-decrees.json` lists the decrees of the prefect of the Rhône, kept by hand from the prefecture's page on rent control, with the judgment that annulled the 2023 decree.
+
 ## Status
 
-The app is live at https://maksim-miliutin.github.io/Plafond/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. Until its figures are checked against the official reference rent tool, it is a trial version.
+The app is live at https://maksim-miliutin.com/Plafond/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. The rents of Paris were checked against the official map of reference rents of the DRIHL Île-de-France; those of Lyon are still to be checked against the Métropole's own simulator.
 
 ## Layout
 
 - `packages/domain`: the calculation, the letter and the rules of law, in plain TypeScript with no framework, so that the web app and a later mobile app share them.
-- `packages/import`: reads the published tables (the City's rents, the annexes of the decrees, the outlines of the quartiers) and checks them line by line.
+- `packages/import`: reads the published tables (the rents of Paris and Lyon, the annexes of the decrees, the outlines of the quartiers and of Lyon's areas) and checks them line by line.
 - `packages/address`: the client of the Géoplateforme geocoder.
 - `packages/ademe`: the client of the ADEME open data on energy diagnoses.
 - `apps/web`: the Next.js app, exported as plain files and published on GitHub Pages; `e2e` holds the tests that run in real browsers, iPhones included.
