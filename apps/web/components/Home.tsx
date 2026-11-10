@@ -68,6 +68,19 @@ const checks: Check[] = [
             </>
         ),
     },
+    {
+        href: "preavis/",
+        question: "Combien de temps dure mon préavis ?",
+        reach: "Partout en France, d'après la loi du 6 juillet 1989.",
+        needs: "La date de réception de votre lettre, environ 2 minutes.",
+        drawing: (
+            <>
+                <rect x="4" y="7" width="18" height="20" rx="2" />
+                <path d="M9 4v5M17 4v5M4 13h18" />
+                <path d="M14 20h14M24 16l4 4-4 4" />
+            </>
+        ),
+    },
 ];
 
 export function Home()
@@ -77,7 +90,7 @@ export function Home()
             <Brand />
             <h1 className="title">Que voulez-vous vérifier ?</h1>
             <p className="lead">
-                Quatre vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
+                Cinq vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
             </p>
             <nav className="checks" aria-label="Vérifications">
                 {checks.map((check) => (

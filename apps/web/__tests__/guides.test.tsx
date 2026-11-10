@@ -60,6 +60,8 @@ test("the first screen lists the four guides, and each check's first screen link
     const { DpeFindStep } = await import("../components/DpeFindStep");
     const { DepositFormStep } = await import("../components/DepositFormStep");
     const { ChargesFormStep } = await import("../components/ChargesFormStep");
+    const { NoticeFormStep } = await import("../components/NoticeFormStep");
+    const { noticeStart } = await import("../lib/notice-flow");
     const home = renderToStaticMarkup(<Home />);
 
     for (const guide of guides)
@@ -72,6 +74,7 @@ test("the first screen lists the four guides, and each check's first screen link
         [renderToStaticMarkup(<DpeFindStep />), "dpe-passoire-thermique"],
         [renderToStaticMarkup(<DepositFormStep fields={{} as never} errors={{}} />), "depot-de-garantie"],
         [renderToStaticMarkup(<ChargesFormStep fields={{}} errors={{}} />), "charges-recuperables"],
+        [renderToStaticMarkup(<NoticeFormStep fields={noticeStart.fields} errors={{}} />), "preavis-de-depart"],
     ];
     for (const [page, slug] of firsts)
     {

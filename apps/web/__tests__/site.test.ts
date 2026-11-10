@@ -7,6 +7,7 @@ import * as rent from "../app/loyer/page";
 import * as energy from "../app/dpe/page";
 import * as deposit from "../app/depot/page";
 import * as charges from "../app/charges/page";
+import * as leaving from "../app/preavis/page";
 import * as notice from "../app/mentions/page";
 import { SiteError, pageMetadata, pages, siteFrom, siteUrl } from "../lib/site";
 
@@ -31,7 +32,7 @@ test("a shared link shows the large card, with the page's own words and its cano
 
 test("each page declares the words the table holds for it", () =>
 {
-    const declared = { "": home, "loyer/": rent, "dpe/": energy, "depot/": deposit, "charges/": charges, "mentions/": notice };
+    const declared = { "": home, "loyer/": rent, "dpe/": energy, "depot/": deposit, "charges/": charges, "preavis/": leaving, "mentions/": notice };
 
     for (const [path, page] of Object.entries(declared))
     {

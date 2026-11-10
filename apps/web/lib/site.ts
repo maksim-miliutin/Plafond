@@ -35,7 +35,7 @@ export const pages: readonly Page[] = [
     {
         path: "",
         title: "Plafond\u00A0: vérifiez vos droits de locataire",
-        description: "Quatre vérifications gratuites pour les locataires en France\u00A0: loyer encadré à Paris et Lyon, DPE, dépôt de garantie et charges, avec la lettre.",
+        description: "Cinq vérifications gratuites pour les locataires en France\u00A0: loyer encadré à Paris et Lyon, DPE, dépôt de garantie, charges et préavis, avec la lettre.",
     },
     {
         path: "loyer/",
@@ -56,6 +56,11 @@ export const pages: readonly Page[] = [
         path: "charges/",
         title: "Régularisation des charges\u00A0: est-elle juste\u00A0? | Plafond",
         description: "Vérifiez ligne par ligne si les charges réclamées sont récupérables selon le décret de 1987, et calculez ce que le propriétaire doit vous rembourser.",
+    },
+    {
+        path: "preavis/",
+        title: "Calculer la fin de mon préavis de départ | Plafond",
+        description: "Calculez quand finit votre préavis, un ou trois mois selon le logement et votre situation, le loyer du dernier mois, et préparez la lettre de congé.",
     },
     {
         path: "mentions/",

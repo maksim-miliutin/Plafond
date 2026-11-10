@@ -181,7 +181,7 @@ export const guides: readonly GuideText[] = [
         description: "Trois mois pour un logement vide, un mois en zone tendue, pour un meublé ou dans certains cas\u00A0: comment donner son préavis et quand il commence.",
         heading: "Préavis de départ\u00A0: combien de temps avant de quitter le logement\u00A0?",
         intro: "Le locataire peut quitter son logement à tout moment, à condition de prévenir le propriétaire et de respecter un délai de préavis.",
-        check: { text: "Vérifier mon dépôt de garantie", href: "depot/" },
+        check: { text: "Calculer mon préavis", href: "preavis/" },
         sections: [
             {
                 heading: "La durée du préavis",
