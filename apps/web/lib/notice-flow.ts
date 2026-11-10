@@ -44,7 +44,7 @@ export const noticeQuestions: Record<keyof NoticeFields, string> = {
 
 export const otherReasons = noticeReasons.filter((reason) => reason.id !== "tense");
 
-export const noticeStart: NoticeStep = {
+export const noticeStart: Extract<NoticeStep, { at: "form" }> = {
     at: "form",
     fields: { address: "", rent: "", furnished: "", tense: "", reason: "none", receivedOn: "" },
     errors: {},

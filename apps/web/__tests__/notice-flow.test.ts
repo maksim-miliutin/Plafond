@@ -14,13 +14,13 @@ const filled: NoticeFields = {
 
 function walk(...events: NoticeEvent[]): NoticeStep
 {
-    return events.reduce((step, event) => nextNotice(step, event, world), noticeStart);
+    return events.reduce<NoticeStep>((step, event) => nextNotice(step, event, world), noticeStart);
 }
 
 test("the check starts on an empty form with no reason picked", () =>
 {
     expect(noticeStart).toMatchObject({ at: "form", errors: {} });
-    expect(noticeStart.at === "form" && noticeStart.fields).toEqual({ address: "", rent: "", furnished: "", tense: "", reason: "none", receivedOn: "" });
+    expect(noticeStart.fields).toEqual({ address: "", rent: "", furnished: "", tense: "", reason: "none", receivedOn: "" });
 });
 
 test("each missing answer is asked for under its own field", () =>

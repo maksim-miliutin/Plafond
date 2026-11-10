@@ -18,8 +18,10 @@ import { DepositFormStep } from "../components/DepositFormStep";
 import { DepositResultStep } from "../components/DepositResultStep";
 import { ChargesFormStep } from "../components/ChargesFormStep";
 import { ChargesResultStep } from "../components/ChargesResultStep";
+import { NoticeFormStep } from "../components/NoticeFormStep";
 import { chargesStart } from "../lib/charges-flow";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
+import { noticeStart } from "../lib/notice-flow";
 import { Mentions } from "../components/Mentions";
 import { Guide } from "../components/Guide";
 import { QuartierPage } from "../components/QuartierPage";
@@ -72,6 +74,7 @@ const screens: Record<string, ReactElement> = {
     "deposit result": <DepositResultStep held={held} check={deposit(held)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "charges form": <ChargesFormStep fields={chargesStart.at === "form" ? chargesStart.fields : {}} errors={{ lines: "Reportez au moins un poste de votre décompte." }} />,
     "charges result": <ChargesResultStep regularised={statement} check={charges(statement)} on="2026-03-01" writable onHelp={() => undefined} onBack={() => undefined} />,
+    "notice form": <NoticeFormStep fields={noticeStart.fields} errors={{ tense: "Indiquez si le logement est en zone tendue." }} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
