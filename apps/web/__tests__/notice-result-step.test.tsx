@@ -36,6 +36,12 @@ test("a reason with a proof says what to join, and that without it the notice st
     expect(text).toContain("le préavis reste de trois mois");
 });
 
+test("a reason that holds only under a condition says so next to its proof", () =>
+{
+    expect(page({ reasons: ["transfer"] })).toContain("La mutation doit être proche de l&#x27;envoi du congé");
+    expect(page({ reasons: ["tense"] })).not.toContain("doit être proche");
+});
+
 test("the tense zone and a furnished flat need nothing joined", () =>
 {
     expect(page({ reasons: ["tense"] })).toContain("zone tendue");

@@ -46,6 +46,26 @@ test("only the tense zone needs no proof sent with the letter", () =>
     }
 });
 
+// Service-public, fiche F1168: who each case covers, and what makes it hold.
+test("each reason says who it covers and what makes it hold, as service-public words it", () =>
+{
+    const said = (id: string) => noticeReasons.find((reason) => reason.id === id)!;
+
+    expect(said("transfer").label).toContain("salarié ou fonctionnaire");
+    expect(said("transfer").condition).toContain("proche de l'envoi du congé");
+    expect(said("job-loss").label).toContain("rupture conventionnelle ou fin de CDD");
+    expect(said("job-loss").condition).toContain("précéder l'envoi du congé");
+    expect(said("new-job").condition).toContain("au cours de ce bail");
+    expect(said("first-job").condition).toContain("CDD transformé en CDI");
+    expect(said("first-job").proof).toContain("affiliation à la sécurité sociale");
+    expect(said("health").condition).toContain("compatible avec votre état de santé");
+    expect(said("benefits").condition).toContain("percevoir");
+    expect(said("protection").proof).toContain("juge aux affaires familiales");
+    expect(said("protection").proof).toContain("moins de six mois");
+    expect(said("protection").condition).toContain("recommandée avec accusé de réception");
+    expect(said("tense").condition).toBeNull();
+});
+
 test("of several reasons, the letter names the tense zone first, since it needs no proof", () =>
 {
     expect(notice({ ...leaving, reasons: ["health", "tense"] }).reason?.id).toBe("tense");
