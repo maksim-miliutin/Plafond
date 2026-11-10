@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 
 import { noticeQuestions, otherReasons, type NoticeErrors, type NoticeFields } from "../lib/notice-flow";
 import { readForm } from "../lib/forms";
+import { guideFor } from "../lib/guides";
 import { Brand } from "./Brand";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
@@ -36,6 +37,7 @@ export function NoticeFormStep({ fields, errors, onAnswer }: NoticeFormProps)
                 Trois mois pour un logement vide, un mois pour un meublé, en zone tendue ou pour certains motifs. Le préavis court à
                 partir du jour où le propriétaire reçoit votre lettre.
             </p>
+            <a className="rule" href={`../guides/${guideFor("preavis/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <h2 className="section">Le logement</h2>
                 <Typed id="address" label="Adresse du logement" type="address" value={fields.address} error={errors.address} />

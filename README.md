@@ -1,10 +1,11 @@
 # Plafond
 
-Plafond is a set of free checks for tenants in France, each ending with a formal notice (lettre de mise en demeure) the tenant can send to the landlord.
+Plafond is a set of free checks for tenants in France, each ending with a letter the tenant can send to the landlord, most often a formal notice (lettre de mise en demeure).
 
 - **Rent cap.** Whether a rent in a city under rent control (encadrement des loyers) is above the legal cap, and the overpayment since the lease began. Paris, Lyon and Villeurbanne for now; other cities follow as their data is published.
 - **Deposit.** Whether the deposit came back within the month, or two, that the law allows after the keys, and the penalty of a tenth of the rent for each month started late.
 - **Service charges.** Which lines of the yearly statement of charges the landlord may pass on under the decree of 26 August 1987, and what was charged wrongly.
+- **Notice to leave.** When the tenant's notice ends, one month or three by the letting and the reasons the law accepts, what the last month costs, and the letter giving notice (lettre de congé).
 - **Energy rating.** From the flat's energy diagnosis (DPE), whether a rent rise was allowed for an F or G flat and whether a G flat still counts as decent, across mainland France.
 
 ## What it stands on
