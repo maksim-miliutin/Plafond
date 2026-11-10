@@ -81,7 +81,12 @@ export interface Frame
     demands: Demand[];
     reminders: string[];
     caution: Contest | null;
+    answer?: string | null;  // left out, the request to the landlord with the conciliation board; null, a letter that asks nothing
 }
+
+const disputed = "Je vous remercie de me répondre dans un délai d'un mois à compter de la réception de cette lettre. À défaut "
+    + "de réponse ou d'accord, je me réserve la possibilité de saisir la commission départementale de "
+    + "conciliation ou le juge compétent.";
 
 export function framed(frame: Frame): Letter
 {
@@ -97,9 +102,7 @@ export function framed(frame: Frame): Letter
         demands: frame.demands,
         closing: [
             ...frame.reminders,
-            "Je vous remercie de me répondre dans un délai d'un mois à compter de la réception de cette lettre. À défaut "
-                + "de réponse ou d'accord, je me réserve la possibilité de saisir la commission départementale de "
-                + "conciliation ou le juge compétent.",
+            ...(frame.answer === null ? [] : [frame.answer ?? disputed]),
             "Je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.",
         ],
         signature: "[Signature]",
