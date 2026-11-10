@@ -42,7 +42,7 @@ test("a shorter notice states its reason and joins its proof", () =>
     const text = said({ reasons: ["health"] });
 
     expect(text).toContain("Je bénéficie d'un préavis réduit à un mois (article 15 de la loi n° 89-462 du 6 juillet 1989) pour le motif "
-        + "suivant : mon état de santé, qui justifie un changement de domicile. Vous trouverez ci-joint le certificat médical qui le constate.");
+        + "suivant : mon état de santé, qui justifie un changement de domicile. Vous trouverez ci-joint le certificat médical.");
     expect(text).toContain("au plus tard le 15 avril 2027");
 });
 

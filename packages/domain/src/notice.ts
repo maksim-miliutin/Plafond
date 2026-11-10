@@ -14,32 +14,32 @@ export interface NoticeReason
 // Loi n° 89-462 du 6 juillet 1989, article 15, 1° to 6°. The tense zone leads: it is the one reason sent without a proof.
 export const noticeReasons: readonly NoticeReason[] = [
     { id: "tense", label: "Logement en zone tendue", motive: "le logement est situé en zone tendue", proof: null },
-    { id: "first-job", label: "Premier emploi", motive: "l'obtention d'un premier emploi", proof: "la copie de mon contrat de travail" },
-    { id: "transfer", label: "Mutation", motive: "ma mutation professionnelle", proof: "l'attestation de mutation établie par mon employeur" },
-    { id: "job-loss", label: "Perte d'emploi", motive: "la perte de mon emploi", proof: "le justificatif de la fin de mon contrat de travail" },
+    { id: "first-job", label: "Premier emploi", motive: "l'obtention d'un premier emploi", proof: "la copie du contrat de travail" },
+    { id: "transfer", label: "Mutation", motive: "ma mutation professionnelle", proof: "l'attestation de mutation établie par l'employeur" },
+    { id: "job-loss", label: "Perte d'emploi", motive: "la perte de mon emploi", proof: "le justificatif de la fin du contrat de travail" },
     {
         id: "new-job",
         label: "Nouvel emploi après une perte d'emploi",
         motive: "un nouvel emploi consécutif à une perte d'emploi",
-        proof: "le justificatif de ma perte d'emploi et la copie de mon nouveau contrat de travail",
+        proof: "le justificatif de la perte d'emploi et la copie du nouveau contrat de travail",
     },
     {
         id: "health",
         label: "État de santé, constaté par un certificat médical",
         motive: "mon état de santé, qui justifie un changement de domicile",
-        proof: "le certificat médical qui le constate",
+        proof: "le certificat médical",
     },
     {
         id: "benefits",
         label: "Bénéficiaire du RSA ou de l'AAH",
         motive: "je bénéficie du revenu de solidarité active ou de l'allocation aux adultes handicapés",
-        proof: "l'attestation de l'organisme qui me verse cette prestation",
+        proof: "l'attestation de l'organisme qui verse la prestation",
     },
     {
         id: "social-housing",
         label: "Attribution d'un logement social",
         motive: "l'attribution d'un logement social",
-        proof: "la lettre d'attribution de ce logement",
+        proof: "la lettre d'attribution du logement social",
     },
     {
         id: "protection",
