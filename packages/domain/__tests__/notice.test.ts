@@ -60,6 +60,22 @@ test("a notice received on a date the last month lacks ends on that month's last
     expect(notice({ ...leaving, receivedOn: "2027-11-30" }).endsOn).toBe("2028-02-29");
 });
 
+// Service-public, fiche F1168, vérifiée le 16 avril 2026: its own examples. Received on 5 September, one month runs to
+// 5 October at midnight and three to 5 December; begun on 30 January, it ends on 28 February, or 29 in a leap year.
+test("the notice ends where service-public's own examples end", () =>
+{
+    expect(notice({ ...leaving, reasons: ["tense"], receivedOn: "2026-09-05" }).endsOn).toBe("2026-10-05");
+    expect(notice({ ...leaving, receivedOn: "2026-09-05" }).endsOn).toBe("2026-12-05");
+    expect(notice({ ...leaving, reasons: ["tense"], receivedOn: "2027-01-30" }).endsOn).toBe("2027-02-28");
+    expect(notice({ ...leaving, reasons: ["tense"], receivedOn: "2028-01-30" }).endsOn).toBe("2028-02-29");
+});
+
+// Same page: a notice ending on the 5th of a month of 30 days owes 5/30 of the monthly rent.
+test("a last month cut short is owed by its days, as service-public counts it", () =>
+{
+    expect(notice({ ...leaving, reasons: ["tense"], receivedOn: "2027-05-05" }).lastMonth).toEqual({ days: 5, of: 30, owed: 20000 });
+});
+
 test("rent and charges are owed until the end, the last month by its days", () =>
 {
     expect(notice(leaving).lastMonth).toEqual({ days: 15, of: 30, owed: 60000 });
