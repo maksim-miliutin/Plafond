@@ -80,7 +80,7 @@ function Why({ check }: { check: NoticeCheck })
     return (
         <p>
             Motif retenu&nbsp;: {check.reason.label}. Joignez à votre lettre {check.reason.proof}&nbsp;: sans justificatif envoyé
-            avec la lettre, le préavis reste de trois mois.
+            avec la lettre, le préavis reste de trois mois. {check.reason.condition}
         </p>
     );
 }
