@@ -62,3 +62,10 @@ test("the rent stays due until the end, and the deposit check is the next step",
     expect(page()).toMatch(/<a[^>]*href="\.\.\/depot\/"[^>]*>Vérifier mon dépôt de garantie<\/a>/);
     expect(page()).toMatch(/<button[^>]*>Préparer la lettre de congé<\/button>/);
 });
+
+// Service-public, fiche F1168: two mistakes tenants make once the letter is sent.
+test("the tenant is warned that the deposit cannot pay the last rents and that a notice cannot be taken back alone", () =>
+{
+    expect(page()).toContain("Le dépôt de garantie ne peut pas être déduit des derniers loyers.");
+    expect(page()).toContain("Une fois le congé donné, vous ne pouvez revenir dessus qu&#x27;avec l&#x27;accord du propriétaire.");
+});

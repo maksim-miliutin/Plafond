@@ -46,6 +46,10 @@ export function NoticeResultStep({ check, receivedOn, ifTense, onWrite, onHelp, 
                     entre plus tôt avec l'accord du propriétaire. Si la lettre arrive plus tard, le préavis se termine d'autant plus tard.
                 </p>
                 <p>
+                    Le dépôt de garantie ne peut pas être déduit des derniers loyers. Une fois le congé donné, vous ne pouvez revenir dessus
+                    qu'avec l'accord du propriétaire.
+                </p>
+                <p>
                     Après la remise des clés, le dépôt de garantie doit vous être rendu dans un délai d'un ou deux mois.{" "}
                     <a href="../depot/">Vérifier mon dépôt de garantie</a>
                 </p>
