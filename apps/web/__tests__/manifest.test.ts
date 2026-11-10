@@ -26,3 +26,11 @@ test("phones get the icon sizes they ask for, one of them safe to crop into a ci
     expect(icons.map((icon) => icon.sizes)).toEqual(expect.arrayContaining(["192x192", "512x512"]));
     expect(icons.some((icon) => icon.purpose === "maskable")).toBe(true);
 });
+
+test("an installed app describes every check, not only the rent in Paris", () =>
+{
+    for (const check of ["loyer", "DPE", "dépôt de garantie", "charges", "préavis"])
+    {
+        expect(app.description, check).toContain(check);
+    }
+});

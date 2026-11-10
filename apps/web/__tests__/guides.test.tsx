@@ -53,7 +53,7 @@ test("the deposit guide's worked example matches the rule it explains", () =>
     expect(said).toContain("deux périodes, soit 240\u00A0€");
 });
 
-test("the first screen lists the four guides, and each check's first screen links to its own", async () =>
+test("the first screen lists every guide, and each check's first screen links to its own", async () =>
 {
     const { Home } = await import("../components/Home");
     const { AddressStep } = await import("../components/AddressStep");

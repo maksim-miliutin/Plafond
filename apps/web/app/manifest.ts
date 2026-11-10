@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest
     return {
         name: "Plafond",
         short_name: "Plafond",
-        description: "Vérifiez si votre loyer à Paris dépasse le plafond légal.",
+        description: "Vérifications gratuites pour les locataires\u00A0: loyer encadré, DPE, dépôt de garantie, charges et préavis.",
         lang: "fr",
         start_url: "./",
         scope: "./",
