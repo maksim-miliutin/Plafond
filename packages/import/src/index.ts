@@ -5,3 +5,4 @@ export { QuartiersError, quartiersOf } from "./quartiers.js";
 export { AnnexError, annexRates } from "./annex.js";
 export { SeedError, lyonSeed, parisRates, type LyonRates, type LyonSeed, type ParisSeed } from "./seed.js";
 export { LyonError, lyonOutlines, lyonRates, lyonTable, type LyonTable } from "./lyon.js";
+export { FeeCapsError, feeCapsOf } from "./fees.js";
