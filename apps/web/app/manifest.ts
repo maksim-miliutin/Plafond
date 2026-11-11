@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest
     return {
         name: "Plafond",
         short_name: "Plafond",
-        description: "Vérifications gratuites pour les locataires\u00A0: loyer encadré, DPE, dépôt de garantie, charges, préavis et frais d'agence.",
+        description: "Vérifications gratuites pour les locataires\u00A0: loyer encadré, révision annuelle, DPE, dépôt de garantie, charges, préavis et frais d'agence.",
         lang: "fr",
         start_url: "./",
         scope: "./",

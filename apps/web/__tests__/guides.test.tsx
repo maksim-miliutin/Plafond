@@ -72,6 +72,8 @@ test("the first screen lists every guide, and each check's first screen links to
     const { noticeStart } = await import("../lib/notice-flow");
     const { FeesFormStep } = await import("../components/FeesFormStep");
     const { feesStart } = await import("../lib/fees-flow");
+    const { RevisionFormStep } = await import("../components/RevisionFormStep");
+    const { revisionStart } = await import("../lib/revision-flow");
     const home = renderToStaticMarkup(<Home />);
 
     for (const guide of guides)
@@ -86,6 +88,7 @@ test("the first screen lists every guide, and each check's first screen links to
         [renderToStaticMarkup(<ChargesFormStep fields={{}} errors={{}} />), "charges-recuperables"],
         [renderToStaticMarkup(<NoticeFormStep fields={noticeStart.fields} errors={{}} />), "preavis-de-depart"],
         [renderToStaticMarkup(<FeesFormStep fields={feesStart.fields} errors={{}} />), "frais-d-agence"],
+        [renderToStaticMarkup(<RevisionFormStep fields={revisionStart.fields} errors={{}} />), "revision-du-loyer"],
     ];
     for (const [page, slug] of firsts)
     {
