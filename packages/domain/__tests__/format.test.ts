@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { DayError } from "../src/day.js";
-import { FormatError, euros, frenchDay, ordinal, percent, squareMetres } from "../src/format.js";
+import { FormatError, euros, frenchDay, indexPoints, ordinal, percent, squareMetres } from "../src/format.js";
 
 // French typography: a narrow no-break space between thousands, a no-break space before the sign.
 const thin = "\u202F";
@@ -54,4 +54,12 @@ test("an ordinal reads 1er for the first and takes an e after the rest", () =>
     expect(ordinal(1)).toBe("1er");
     expect(ordinal(2)).toBe("2e");
     expect(ordinal(20)).toBe("20e");
+});
+
+test("an index value keeps the two decimals INSEE publishes, even when they are zeros", () =>
+{
+    expect(indexPoints(14837)).toBe("148,37");
+    expect(indexPoints(14660)).toBe("146,60");
+    expect(indexPoints(13000)).toBe("130,00");
+    expect(() => indexPoints(148.37)).toThrow(FormatError);
 });

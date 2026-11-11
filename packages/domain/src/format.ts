@@ -40,6 +40,13 @@ export function squareMetres(hundredths: number): string
     return `${trimmed(hundredths)}${hard}m²`;
 }
 
+export function indexPoints(hundredths: number): string
+{
+    const [whole, rest] = split(hundredths);
+
+    return `${grouped(whole)},${String(rest).padStart(2, "0")}`;
+}
+
 export function percent(hundredths: number): string
 {
     return `${trimmed(hundredths)}${hard}%`;

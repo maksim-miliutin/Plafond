@@ -4,7 +4,7 @@ import { euros, frenchDay, squareMetres } from "./format.js";
 import { letting, periods, rooms } from "./labels.js";
 import type { City, Contest } from "./rates.js";
 
-export type Ground = "excess" | "unstated" | "complement" | "freeze" | "decency" | "deposit" | "charges" | "twelfths" | "proofs" | "fees";
+export type Ground = "excess" | "unstated" | "complement" | "freeze" | "decency" | "deposit" | "charges" | "twelfths" | "proofs" | "fees" | "revision";
 
 export interface Demand
 {
