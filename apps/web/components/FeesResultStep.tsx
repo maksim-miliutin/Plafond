@@ -49,15 +49,15 @@ function Capped({ paid, check }: { paid: AgencyFees; check: FeesCheck })
                 ? <h1 className="headline"><span className="amount">{euros(check.excess)}</span> au-delà du plafond</h1>
                 : <h1 className="title">Les honoraires respectent le plafond</h1>}
             <dl className="figures">
-                <div>
+                <div className="figure">
                     <dt>Facturé par l'agence</dt>
                     <dd>{euros(paid.letting + paid.inspection)}</dd>
                 </div>
-                <div>
+                <div className="figure">
                     <dt>Plafond visite, dossier et bail</dt>
                     <dd>{euros(check.lettingCap)}</dd>
                 </div>
-                <div>
+                <div className="figure">
                     <dt>Plafond état des lieux</dt>
                     <dd>{euros(check.inspectionCap)}</dd>
                 </div>

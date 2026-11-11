@@ -23,19 +23,19 @@ export function ChargesResultStep({ regularised, check, on, writable, onWrite, o
                 ? <h1 className="headline"><span className="amount">{euros(check.wrong)}</span> facturés à tort</h1>
                 : <h1 className="title">Ces charges sont récupérables</h1>}
             <dl className="figures">
-                <div>
+                <div className="figure">
                     <dt>Total du décompte {regularised.year}</dt>
                     <dd>{euros(check.billed)}</dd>
                 </div>
-                <div>
+                <div className="figure">
                     <dt>Récupérable</dt>
                     <dd>{euros(check.allowed)}</dd>
                 </div>
-                <div>
+                <div className="figure">
                     <dt>Provisions versées</dt>
                     <dd>{euros(check.provisions)}</dd>
                 </div>
-                <div>
+                <div className="figure">
                     <dt>{balance[0]}</dt>
                     <dd>{euros(balance[1] as number)}</dd>
                 </div>
