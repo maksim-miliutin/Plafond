@@ -81,6 +81,19 @@ const checks: Check[] = [
             </>
         ),
     },
+    {
+        href: "frais-agence/",
+        question: "Mes frais d'agence dépassent-ils le plafond ?",
+        reach: "Partout en France, d'après la loi du 6 juillet 1989.",
+        needs: "Le bail et la facture de l'agence, environ 2 minutes.",
+        drawing: (
+            <>
+                <path d="M4 6.5V15l13 13 11-11L15 4H6.5A2.5 2.5 0 0 0 4 6.5z" />
+                <circle cx="9.5" cy="9.5" r="1.8" />
+                <path d="M19.8 15.6a3.4 3.4 0 1 0 0 4.8M14.6 17.2h3.6M14.6 19h3.6" />
+            </>
+        ),
+    },
 ];
 
 export function Home()
@@ -90,7 +103,7 @@ export function Home()
             <Brand />
             <h1 className="title">Que voulez-vous vérifier ?</h1>
             <p className="lead">
-                Cinq vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
+                Six vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
             </p>
             <nav className="checks" aria-label="Vérifications">
                 {checks.map((check) => (

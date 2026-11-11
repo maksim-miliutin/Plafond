@@ -13,19 +13,20 @@ test("the first screen offers every check, each a link relative to the page, so 
     expect(page).toMatch(/<a[^>]*href="depot\/"[^>]*>.*dépôt de garantie.*<\/a>/s);
     expect(page).toMatch(/<a[^>]*href="charges\/"[^>]*>.*régularisation de charges.*<\/a>/s);
     expect(page).toMatch(/<a[^>]*href="preavis\/"[^>]*>.*préavis.*<\/a>/s);
+    expect(page).toMatch(/<a[^>]*href="frais-agence\/"[^>]*>.*frais d&#x27;agence.*<\/a>/s);
     expect(page.match(/<h1/g)).toHaveLength(1);
 });
 
 test("each check has its own drawing, kept from screen readers, and says what to have at hand and how long it takes", () =>
 {
-    expect(tiles).toHaveLength(5);
+    expect(tiles).toHaveLength(6);
     for (const tile of tiles)
     {
         expect(tile).toMatch(/<svg[^>]*aria-hidden="true"/);
         expect(tile).toMatch(/environ \d minutes/);
     }
 
-    expect(new Set(tiles.map((tile) => tile.match(/<svg.*?<\/svg>/s)?.[0])).size).toBe(5);
+    expect(new Set(tiles.map((tile) => tile.match(/<svg.*?<\/svg>/s)?.[0])).size).toBe(6);
 });
 
 test("the welcome says every check ends with a letter to send", () =>

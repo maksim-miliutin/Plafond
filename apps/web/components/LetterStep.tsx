@@ -9,20 +9,21 @@ export interface LetterProps
 {
     letter: Letter;
     city?: City;
+    to?: string;
     onBack?: () => void;
 }
 
-export function LetterStep({ letter, city, onBack }: LetterProps)
+export function LetterStep({ letter, city, to = "au propriétaire", onBack }: LetterProps)
 {
     return (
         <main className="screen">
             <button type="button" className="back" onClick={onBack}>Retour au résultat</button>
-            <h1 className="title">Votre lettre au propriétaire</h1>
+            <h1 className="title">Votre lettre {to}</h1>
             <p className="lead">
                 Complétez les noms entre crochets, relisez, puis envoyez-la en recommandé avec accusé de réception.
             </p>
             {letter.caution !== null && <ContestNote contest={letter.caution} city={city} />}
-            <article className="letter" aria-label="Lettre au propriétaire">
+            <article className="letter" aria-label={`Lettre ${to}`}>
                 <Lines className="from" lines={letter.sender} />
                 <Lines className="to" lines={letter.recipient} />
                 <p className="to">{letter.dated}</p>
