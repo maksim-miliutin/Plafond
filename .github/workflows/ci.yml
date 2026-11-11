@@ -70,7 +70,13 @@ jobs:
 
       - run: npm ci
       - run: npm run build
-      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      # The system packages come from the apt mirrors, which have failed whole runs at name lookup.
+      # A failed or stalled attempt must not stop the tests: if the browser cannot start without them, the tests say so.
+      - run: npx playwright install-deps ${{ matrix.browser }}
+        continue-on-error: true
+        timeout-minutes: 3
+
+      - run: npx playwright install ${{ matrix.browser }}
       - run: npx playwright test --config apps/web/playwright.config.ts ${{ matrix.projects }}
 
       - uses: actions/upload-artifact@v7
