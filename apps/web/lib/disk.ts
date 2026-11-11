@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { decreesOf, lyonSeed, parisRates, quartiersOf } from "@plafond/import";
+import type { FeeCaps } from "@plafond/domain";
+import { decreesOf, feeCapsOf, lyonSeed, parisRates, quartiersOf } from "@plafond/import";
 
 import { arrondissementPages, communePages, placePages, type CommunePage, type DistrictPage, type PlacePage } from "./places";
 
@@ -37,4 +38,9 @@ export function fromDisk(): Places
     }
 
     return read;
+}
+
+export function feeCapsFromDisk(): FeeCaps[]
+{
+    return feeCapsOf(JSON.parse(readFileSync(join(seed, "agency-fees.json"), "utf8")));
 }

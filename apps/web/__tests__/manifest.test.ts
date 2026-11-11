@@ -29,7 +29,7 @@ test("phones get the icon sizes they ask for, one of them safe to crop into a ci
 
 test("an installed app describes every check, not only the rent in Paris", () =>
 {
-    for (const check of ["loyer", "DPE", "dépôt de garantie", "charges", "préavis"])
+    for (const check of ["loyer", "DPE", "dépôt de garantie", "charges", "préavis", "frais d'agence"])
     {
         expect(app.description, check).toContain(check);
     }

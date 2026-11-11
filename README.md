@@ -6,6 +6,7 @@ Plafond is a set of free checks for tenants in France, each ending with a letter
 - **Deposit.** Whether the deposit came back within the month, or two, that the law allows after the keys, and the penalty of a tenth of the rent for each month started late.
 - **Service charges.** Which lines of the yearly statement of charges the landlord may pass on under the decree of 26 August 1987, and what was charged wrongly.
 - **Notice to leave.** When the tenant's notice ends, one month or three by the letting and the reasons the law accepts, what the last month costs, and the letter giving notice (lettre de congé).
+- **Agency fees.** Whether what an estate agent charged the tenant for the visits, the file, the lease and the entry inspection stays within the caps per square metre of the flat's zone, and the letter asking the agency to pay back the rest.
 - **Energy rating.** From the flat's energy diagnosis (DPE), whether a rent rise was allowed for an F or G flat and whether a G flat still counts as decent, across mainland France.
 
 ## What it stands on
