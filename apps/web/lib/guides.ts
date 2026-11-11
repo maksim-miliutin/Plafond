@@ -193,7 +193,7 @@ export const guides: readonly GuideText[] = [
             {
                 heading: "Comment le donner",
                 paragraphs: [
-                    "Par lettre recommandée avec accusé de réception, par acte de commissaire de justice ou par remise en main propre contre récépissé. Si vous demandez un préavis réduit, indiquez-en le motif et joignez le justificatif.",
+                    "Par lettre recommandée avec accusé de réception, par acte de commissaire de justice ou par remise en main propre contre récépissé. Un simple e-mail ne suffit pas. Si vous demandez un préavis réduit, indiquez-en le motif et joignez le justificatif.",
                 ],
             },
             {
@@ -209,7 +209,7 @@ export const guides: readonly GuideText[] = [
                 ],
             },
         ],
-        sources: [adil],
+        sources: [{ text: "Préavis du locataire (Service public)", href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F1168" }, adil],
     },
     {
         slug: "revision-du-loyer",
