@@ -218,7 +218,7 @@ export const guides: readonly GuideText[] = [
         description: "Quand le propriétaire peut augmenter le loyer chaque année, comment l'indice de référence des loyers limite la hausse, et quand elle est interdite.",
         heading: "Révision annuelle du loyer\u00A0: ce que le propriétaire peut demander",
         intro: "En cours de bail, le loyer ne peut augmenter qu'une fois par an, et seulement si le bail le prévoit.",
-        check: { text: "Vérifier si une hausse était permise", href: "dpe/" },
+        check: { text: "Vérifier ma hausse de loyer", href: "revision/" },
         sections: [
             {
                 heading: "Une clause est nécessaire",

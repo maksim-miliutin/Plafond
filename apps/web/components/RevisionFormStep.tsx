@@ -3,6 +3,7 @@
 import type { FormEvent } from "react";
 
 import { readForm } from "../lib/forms";
+import { guideFor } from "../lib/guides";
 import { revisionQuestions, type RevisionErrors, type RevisionFields } from "../lib/revision-flow";
 import { Brand } from "./Brand";
 import { Choice, Typed } from "./Fields";
@@ -41,6 +42,7 @@ export function RevisionFormStep({ fields, errors, onAnswer }: RevisionFormProps
                 Une fois par an, si le bail le prévoit, le loyer peut augmenter, au plus de la variation de l'indice de référence des loyers
                 publié par l'Insee.
             </p>
+            <a className="rule" href={`../guides/${guideFor("revision/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <h2 className="section">Le bail</h2>
                 <Typed id="address" label="Adresse du logement" type="address" value={fields.address} error={errors.address} />

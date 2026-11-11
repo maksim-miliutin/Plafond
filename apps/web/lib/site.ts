@@ -35,7 +35,7 @@ export const pages: readonly Page[] = [
     {
         path: "",
         title: "Plafond\u00A0: vérifiez vos droits de locataire",
-        description: "Six vérifications gratuites pour locataires\u00A0: loyer encadré à Paris et Lyon, DPE, dépôt de garantie, charges, préavis et frais d'agence, avec la lettre.",
+        description: "Sept vérifications gratuites pour locataires\u00A0: loyer encadré, hausse annuelle, DPE, dépôt de garantie, charges, préavis et frais d'agence, avec la lettre.",
     },
     {
         path: "loyer/",
@@ -66,6 +66,11 @@ export const pages: readonly Page[] = [
         path: "frais-agence/",
         title: "Frais d'agence\u00A0: dépassent-ils le plafond\u00A0? | Plafond",
         description: "Vérifiez si les honoraires de location facturés par l'agence dépassent le plafond légal par m² de votre zone, et préparez la lettre de remboursement.",
+    },
+    {
+        path: "revision/",
+        title: "Hausse de loyer annuelle\u00A0: vérifiez l'indice | Plafond",
+        description: "Vérifiez si la révision annuelle de votre loyer respecte l'indice de référence des loyers et les délais, et préparez la lettre au propriétaire.",
     },
     {
         path: "mentions/",

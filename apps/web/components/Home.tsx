@@ -28,6 +28,19 @@ const checks: Check[] = [
         ),
     },
     {
+        href: "revision/",
+        question: "Ma hausse de loyer respecte-t-elle l'indice ?",
+        reach: "En France hexagonale, d'après l'indice de l'Insee.",
+        needs: "Le bail et la demande du propriétaire, environ 2 minutes.",
+        drawing: (
+            <>
+                <path d="M4 27h24" />
+                <path d="M6 22l7-7 5 4 9-10" />
+                <path d="M21 9h6v6" />
+            </>
+        ),
+    },
+    {
         href: "dpe/",
         question: "Mon logement est-il une passoire thermique ?",
         reach: "En France métropolitaine, d'après le DPE.",
@@ -103,7 +116,7 @@ export function Home()
             <Brand />
             <h1 className="title">Que voulez-vous vérifier ?</h1>
             <p className="lead">
-                Six vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
+                Sept vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
             </p>
             <nav className="checks" aria-label="Vérifications">
                 {checks.map((check) => (
