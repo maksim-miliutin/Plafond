@@ -1,0 +1,18 @@
+[
+    {
+        "from": "2014-09-15",
+        "until": "2026-01-01",
+        "letting": { "very-tense": 1200, "tense": 1000, "other": 800 },
+        "inspection": 300,
+        "title": "Décret n° 2014-890 du 1er août 2014",
+        "url": "https://www.legifrance.gouv.fr/loda/id/JORFTEXT000029337625/"
+    },
+    {
+        "from": "2026-01-01",
+        "until": "2027-01-01",
+        "letting": { "very-tense": 1210, "tense": 1009, "other": 807 },
+        "inspection": 303,
+        "title": "Arrêté du 17 juillet 2025, modifié par l'arrêté publié au Journal officiel du 20 novembre 2025",
+        "url": "https://www.legifrance.gouv.fr/loda/id/JORFTEXT000051949607/"
+    }
+]
