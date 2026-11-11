@@ -308,6 +308,43 @@ export const guides: readonly GuideText[] = [
         ],
         sources: [{ text: "Encadrement des loyers (préfecture du Rhône)", href: "https://www.rhone.gouv.fr/Actions-de-l-Etat/Amenagement-du-territoire-urbanisme-construction-logement/Logement/Encadrement-des-loyers" }, conciliation, adil],
     },
+    {
+        slug: "frais-d-agence",
+        label: "Les frais d'agence",
+        title: "Frais d'agence en location\u00A0: les plafonds | Plafond",
+        description: "Ce qu'une agence peut facturer au locataire pour la visite, le dossier, le bail et l'état des lieux, selon la zone, et comment se faire rembourser.",
+        heading: "Frais d'agence\u00A0: ce que l'agence peut facturer au locataire",
+        intro: "Quand une agence loue un logement, ses honoraires sont à la charge du propriétaire, sauf quatre prestations partagées avec le locataire et plafonnées par m².",
+        check: { text: "Vérifier mes frais d'agence", href: "frais-agence/" },
+        sections: [
+            {
+                heading: "Ce que le locataire peut payer",
+                paragraphs: [
+                    "La visite du logement, la constitution du dossier, la rédaction du bail et l'état des lieux d'entrée. Tout le reste, comme la gestion locative, est à la charge du propriétaire.",
+                    "Pour chacune de ces prestations, la part du locataire ne peut pas dépasser celle du propriétaire.",
+                ],
+            },
+            {
+                heading: "Un plafond par m² selon la zone",
+                paragraphs: [
+                    "La visite, le dossier et le bail ont ensemble un plafond par m² de surface habitable, qui dépend de la zone du logement. L'état des lieux d'entrée a son propre plafond, le même partout. Ces plafonds valent pour les baux, vides ou meublés, signés depuis le 15 septembre 2014, et peuvent être relevés selon l'indice de référence des loyers\u00A0: le tableau ci-dessous donne ceux de chaque période.",
+                    "La zone très tendue réunit Paris et des communes proches, classées en zone A bis. La zone tendue regroupe les autres communes de la liste du décret n° 2013-392 du 10 mai 2013, dont Lyon, Marseille, Lille, Bordeaux et Toulouse. Le reste du territoire est hors zone tendue.",
+                ],
+            },
+            {
+                heading: "Se faire rembourser",
+                paragraphs: [
+                    "Écrivez à l'agence en recommandé avec accusé de réception pour demander le remboursement de ce qui dépasse le plafond, en vous appuyant sur la facture et sur le bail.",
+                    "Le dépassement des plafonds peut aussi être signalé à la DGCCRF, qui peut infliger une amende administrative à l'agence.",
+                ],
+            },
+        ],
+        sources: [
+            { text: "Décret n° 2014-890 du 1er août 2014 (Légifrance)", href: "https://www.legifrance.gouv.fr/loda/id/JORFTEXT000029337625/" },
+            { text: "Arrêté du 17 juillet 2025 (Légifrance)", href: "https://www.legifrance.gouv.fr/loda/id/JORFTEXT000051949607/" },
+            adil,
+        ],
+    },
 ];
 
 export function guideFor(check: string): GuideText
