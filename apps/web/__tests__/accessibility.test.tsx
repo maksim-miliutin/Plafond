@@ -22,10 +22,12 @@ import { NoticeFormStep } from "../components/NoticeFormStep";
 import { NoticeResultStep } from "../components/NoticeResultStep";
 import { FeesFormStep } from "../components/FeesFormStep";
 import { FeesResultStep } from "../components/FeesResultStep";
+import { RevisionFormStep } from "../components/RevisionFormStep";
 import { chargesStart } from "../lib/charges-flow";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 import { noticeStart } from "../lib/notice-flow";
 import { feesStart } from "../lib/fees-flow";
+import { revisionStart } from "../lib/revision-flow";
 import { Mentions } from "../components/Mentions";
 import { Guide } from "../components/Guide";
 import { QuartierPage } from "../components/QuartierPage";
@@ -87,6 +89,7 @@ const screens: Record<string, ReactElement> = {
     "notice result": <NoticeResultStep check={notice(leaving)} receivedOn="2027-03-15" ifTense={notice({ ...leaving, reasons: ["tense"] })} onHelp={() => undefined} onBack={() => undefined} />,
     "fees form": <FeesFormStep fields={feesStart.fields} errors={{ zone: "Indiquez la zone du logement." }} />,
     "fees result": <FeesResultStep paid={fees} check={agencyFees(fees, caps)} writable onHelp={() => undefined} onBack={() => undefined} />,
+    "revision form": <RevisionFormStep fields={revisionStart.fields} errors={{ quarter: "Indiquez le trimestre de référence du bail." }} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
