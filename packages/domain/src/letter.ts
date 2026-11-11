@@ -4,7 +4,7 @@ import { euros, frenchDay, squareMetres } from "./format.js";
 import { letting, periods, rooms } from "./labels.js";
 import type { City, Contest } from "./rates.js";
 
-export type Ground = "excess" | "unstated" | "complement" | "freeze" | "decency" | "deposit" | "charges" | "twelfths" | "proofs";
+export type Ground = "excess" | "unstated" | "complement" | "freeze" | "decency" | "deposit" | "charges" | "twelfths" | "proofs" | "fees";
 
 export interface Demand
 {
@@ -76,6 +76,7 @@ export interface Frame
 {
     address: string;
     on: Day;
+    to?: string[];  // the recipient's lines, the landlord's when left out
     subject: string;
     opening: string[];
     demands: Demand[];
@@ -93,7 +94,7 @@ export function framed(frame: Frame): Letter
     return {
         kind: "letter",
         sender: ["[Votre prénom et nom]", frame.address],
-        recipient: ["[Nom du propriétaire]", "[Adresse du propriétaire]"],
+        recipient: frame.to ?? ["[Nom du propriétaire]", "[Adresse du propriétaire]"],
         dated: `${townOf(frame.address)}, le ${frenchDay(frame.on)}`,
         delivery: "Lettre recommandée avec accusé de réception",
         subject: `Objet\u00A0: ${frame.subject}`,
