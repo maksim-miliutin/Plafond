@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { agencyFees, charges, check, deposit, letter, notice, type AgencyFees, type Check, type Claim, type Contest, type Deposit, type FeeCaps, type Leaving, type Letter, type Regularisation, type Quartier, type Rate } from "@plafond/domain";
+import { agencyFees, charges, check, deposit, letter, notice, revision, type AgencyFees, type Check, type Claim, type Contest, type Deposit, type FeeCaps, type IndexRow, type Leaving, type Revision, type Letter, type Regularisation, type Quartier, type Rate } from "@plafond/domain";
 
 import type { Listing } from "@plafond/ademe";
 
@@ -23,6 +23,7 @@ import { NoticeResultStep } from "../components/NoticeResultStep";
 import { FeesFormStep } from "../components/FeesFormStep";
 import { FeesResultStep } from "../components/FeesResultStep";
 import { RevisionFormStep } from "../components/RevisionFormStep";
+import { RevisionResultStep } from "../components/RevisionResultStep";
 import { chargesStart } from "../lib/charges-flow";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 import { noticeStart } from "../lib/notice-flow";
@@ -68,6 +69,9 @@ const leaving: Leaving = { furnished: false, reasons: [], receivedOn: "2027-03-1
 const caps: FeeCaps[] = [{ from: "2026-01-01", until: "2027-01-01", letting: { "very-tense": 1210, tense: 1009, other: 807 }, inspection: 303, title: "Arrêté du 17 juillet 2025", url: "https://example.org/caps" }];
 const fees: AgencyFees = { zone: null, surface: 4250, letting: 80000, inspection: 15000, signedOn: "2026-03-01" };
 
+const index: IndexRow[] = [{ year: 2025, quarter: 2, value: 14668, publishedOn: "2025-07-11" }, { year: 2026, quarter: 2, value: 14837, publishedOn: "2026-07-10" }];
+const raised: Revision = { clause: true, rent: 60000, asked: 62000, quarter: null, signedOn: "2025-07-20", revisedOn: "2026-07-20", askedOn: "2026-08-03" };
+
 const statement: Regularisation = { year: 2024, lines: [{ kind: "water", billed: 30000 }, { kind: "insurance", billed: 15000 }], provisions: 30000, receivedOn: "2026-02-10" };
 
 const screens: Record<string, ReactElement> = {
@@ -90,6 +94,7 @@ const screens: Record<string, ReactElement> = {
     "fees form": <FeesFormStep fields={feesStart.fields} errors={{ zone: "Indiquez la zone du logement." }} />,
     "fees result": <FeesResultStep paid={fees} check={agencyFees(fees, caps)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "revision form": <RevisionFormStep fields={revisionStart.fields} errors={{ quarter: "Indiquez le trimestre de référence du bail." }} />,
+    "revision result": <RevisionResultStep lease={raised} clauseAssumed check={revision(raised, index)} writable onHelp={() => undefined} onBack={() => undefined} />,
     "dpe choice": <DpeChooseStep listings={[listing, { ...listing, dpe: { ...listing.dpe, number: "2375E1759742J", label: "E" } }]} />,
     "address": <AddressStep />,
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
