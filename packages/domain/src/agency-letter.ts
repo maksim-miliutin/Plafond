@@ -1,6 +1,7 @@
-import type { AgencyFees, FeesCheck, FeeZone, NoCaps } from "./agency.js";
+import type { AgencyFees, FeesCheck, NoCaps } from "./agency.js";
 import type { Day } from "./day.js";
 import { euros, frenchDay, squareMetres } from "./format.js";
+import { feeZones } from "./labels.js";
 import { framed, postal, type Letter, type NothingToClaim } from "./letter.js";
 
 export interface AgencyLetterInput
@@ -10,8 +11,6 @@ export interface AgencyLetterInput
     address: string;
     on: Day;
 }
-
-const places: Record<FeeZone, string> = { "very-tense": "en zone très tendue", tense: "en zone tendue", other: "hors zone tendue" };
 
 export function agencyLetter({ paid, check, address, on }: AgencyLetterInput): Letter | NothingToClaim
 {
@@ -41,7 +40,7 @@ export function agencyLetter({ paid, check, address, on }: AgencyLetterInput): L
 
 function parts(paid: AgencyFees, check: FeesCheck): string[]
 {
-    const where = check.assumed ? "Même en zone très tendue, où le plafond est le plus élevé," : `Pour un logement situé ${places[check.zone]},`;
+    const where = check.assumed ? "Même en zone très tendue, où le plafond est le plus élevé," : `Pour un logement situé ${feeZones[check.zone]},`;
     const letting = `Pour la visite, la constitution de mon dossier et la rédaction du bail, vous m'avez facturé ${euros(paid.letting)}. `
         + `${where} ces honoraires ne peuvent pas dépasser ${euros(check.caps.letting[check.zone])} par m² de surface habitable, `
         + `soit ${euros(check.lettingCap)} pour ce logement.`;

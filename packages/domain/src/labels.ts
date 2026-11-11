@@ -1,3 +1,4 @@
+import type { FeeZone } from "./agency.js";
 import type { Period, Rooms } from "./rates.js";
 
 export const rooms: Record<Rooms, string> = {
@@ -14,6 +15,13 @@ export const periods: Record<Period, string> = {
     "after-1990": "après 1990",
     "1991-2005": "entre 1991 et 2005",
     "after-2005": "après 2005",
+};
+
+// Where the flat lies, as a sentence goes on after "situé" or "par m²".
+export const feeZones: Record<FeeZone, string> = {
+    "very-tense": "en zone très tendue",
+    tense: "en zone tendue",
+    other: "hors zone tendue",
 };
 
 export function letting(furnished: boolean): string

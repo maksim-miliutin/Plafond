@@ -4,7 +4,7 @@ export { RatesError, controlledSince, periodsOf, type City, type Contest, type D
 export { arrondissementOf, quartierAt, type Border, type Found, type Outside, type Point, type Quartier } from "./quartier.js";
 export { FormatError, euros, frenchDay, ordinal, percent, squareMetres } from "./format.js";
 export { centsFrom, hundredthsFrom, type Unreadable } from "./input.js";
-export { letting, periods, rooms } from "./labels.js";
+export { feeZones, letting, periods, rooms } from "./labels.js";
 export { letter, letterText, type Demand, type Ground, type Letter, type LetterInput, type NothingToClaim } from "./letter.js";
 export { PackedError, pack, packQuartiers, unpack, unpackQuartiers, type Packed, type PackedQuartiers } from "./packed.js";
 export type { Dpe, Label } from "./dpe.js";
