@@ -22,15 +22,15 @@ export function DepositResultStep({ held, check, writable, onWrite, onHelp, onBa
                 <>
                     <h1 className="headline"><span className="amount">{euros(due)}</span> vous sont dus</h1>
                     <dl className="figures">
-                        <div>
+                        <div className="figure">
                             <dt>Dépôt restant dû</dt>
                             <dd>{euros(check.owed)}</dd>
                         </div>
-                        <div>
+                        <div className="figure">
                             <dt>Majoration de retard</dt>
                             <dd>{euros(check.penalty)}</dd>
                         </div>
-                        <div>
+                        <div className="figure">
                             <dt>Date limite de restitution</dt>
                             <dd>{frenchDay(check.deadline)}</dd>
                         </div>

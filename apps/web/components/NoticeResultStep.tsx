@@ -23,11 +23,11 @@ export function NoticeResultStep({ check, receivedOn, ifTense, onWrite, onHelp, 
                 Votre préavis prend fin le {frenchDay(check.endsOn)} à minuit, si le propriétaire reçoit votre lettre le {frenchDay(receivedOn)}.
             </p>
             <dl className="figures">
-                <div>
+                <div className="figure">
                     <dt>Fin du préavis</dt>
                     <dd>{frenchDay(check.endsOn)}</dd>
                 </div>
-                <div>
+                <div className="figure">
                     <dt>Loyer et charges du dernier mois</dt>
                     <dd>{euros(owed)}</dd>
                 </div>

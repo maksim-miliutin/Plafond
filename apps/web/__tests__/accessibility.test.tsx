@@ -125,3 +125,19 @@ test("every screen has exactly one main heading and names each group of choices"
         expect(html.match(/<legend[\s>]/g)?.length ?? 0, name).toBe(html.match(/<fieldset[\s>]/g)?.length ?? 0);
     }
 });
+
+// Seen on a phone: rows of a figures list without their class lost the line between them and the number on the right,
+// on the deposit and charges results since the new design.
+test("every row of a list of figures is a figure, so it gets its line and its number on the right", () =>
+{
+    for (const [name, screen] of Object.entries(screens))
+    {
+        for (const list of renderToStaticMarkup(screen).match(/<dl class="figures">.*?<\/dl>/gs) ?? [])
+        {
+            const rows = list.match(/<div[^>]*>/g) ?? [];
+
+            expect(rows.length, name).toBeGreaterThan(0);
+            expect(rows.filter((row) => !row.includes('class="figure"')), name).toEqual([]);
+        }
+    }
+});
