@@ -2,7 +2,7 @@ export { CapError, check, type Check, type Claim, type Complement, type Invalid,
 export { DayError, dayBefore, isDay, type Day } from "./day.js";
 export { RatesError, controlledSince, periodsOf, type City, type Contest, type Decree, type Flat, type NoRate, type Period, type Rate, type Rooms } from "./rates.js";
 export { arrondissementOf, quartierAt, type Border, type Found, type Outside, type Point, type Quartier } from "./quartier.js";
-export { FormatError, euros, frenchDay, ordinal, percent, squareMetres } from "./format.js";
+export { FormatError, euros, frenchDay, indexPoints, ordinal, percent, squareMetres } from "./format.js";
 export { centsFrom, hundredthsFrom, type Unreadable } from "./input.js";
 export { feeZones, letting, periods, rooms } from "./labels.js";
 export { letter, letterText, type Demand, type Ground, type Letter, type LetterInput, type NothingToClaim } from "./letter.js";
