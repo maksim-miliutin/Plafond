@@ -41,6 +41,14 @@ test("each guide names its official sources, by secure links", () =>
     }
 });
 
+test("the notice guide cites service-public's page and says an e-mail does not count", () =>
+{
+    const leaving = guides.find((guide) => guide.slug === "preavis-de-depart")!;
+
+    expect(leaving.sources.map((source) => source.href)).toContain("https://www.service-public.gouv.fr/particuliers/vosdroits/F1168");
+    expect(leaving.sections.flatMap((section) => section.paragraphs).join(" ")).toContain("Un simple e-mail ne suffit pas.");
+});
+
 // Counted by hand: a rent of 1 200 € before charges, keys on 1 July, deadline 1 August, returned 2 September is two
 // periods started late, so 240 €. A guide that teaches a rule has to get its own example right.
 test("the deposit guide's worked example matches the rule it explains", () =>
