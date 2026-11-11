@@ -70,6 +70,8 @@ test("the first screen lists every guide, and each check's first screen links to
     const { ChargesFormStep } = await import("../components/ChargesFormStep");
     const { NoticeFormStep } = await import("../components/NoticeFormStep");
     const { noticeStart } = await import("../lib/notice-flow");
+    const { FeesFormStep } = await import("../components/FeesFormStep");
+    const { feesStart } = await import("../lib/fees-flow");
     const home = renderToStaticMarkup(<Home />);
 
     for (const guide of guides)
@@ -83,6 +85,7 @@ test("the first screen lists every guide, and each check's first screen links to
         [renderToStaticMarkup(<DepositFormStep fields={{} as never} errors={{}} />), "depot-de-garantie"],
         [renderToStaticMarkup(<ChargesFormStep fields={{}} errors={{}} />), "charges-recuperables"],
         [renderToStaticMarkup(<NoticeFormStep fields={noticeStart.fields} errors={{}} />), "preavis-de-depart"],
+        [renderToStaticMarkup(<FeesFormStep fields={feesStart.fields} errors={{}} />), "frais-d-agence"],
     ];
     for (const [page, slug] of firsts)
     {
@@ -132,4 +135,36 @@ test("the Lyon guide lists each commune's page, so readers and search engines re
     expect(page).toContain('href="../../lyon/lyon-1er-arrondissement/"');
     expect(page).toContain(">Lyon 1er<");
     expect(page).toContain('href="../../lyon/villeurbanne/"');
+});
+
+test("the agency fees guide shows every row of caps from the seed, with its dates and its text", async () =>
+{
+    const { FeeCapsTable } = await import("../components/FeeCapsTable");
+    const seed = (await import("../../../db/seed/agency-fees.json")).default;
+    const { feeCapsOf } = await import("@plafond/import");
+    const fees = guides.find((guide) => guide.slug === "frais-d-agence")!;
+    const page = renderToStaticMarkup(<Guide guide={fees} more={<FeeCapsTable caps={feeCapsOf(seed)} />} />);
+
+    expect(fees.check.href).toBe("frais-agence/");
+    expect(page.match(/<table/g)).toHaveLength(2);
+    expect(page).toContain("Baux signés du 15 septembre 2014 au 31 décembre 2025");
+    expect(page).toContain("Baux signés du 1er janvier 2026 au 31 décembre 2026");
+    for (const sum of ["12,10", "10,09", "8,07", "3,03", "12,00", "10,00", "8,00", "3,00"])
+    {
+        expect(page, sum).toContain(`${sum}\u00A0€`);
+    }
+
+    expect(page).toMatch(/<a[^>]*href="https:\/\/www.legifrance.gouv.fr\/loda\/id\/JORFTEXT000051949607\/"/);
+});
+
+test("the agency fees guide names the zones and the way to be paid back, and leaves the sums to the table", () =>
+{
+    const fees = guides.find((guide) => guide.slug === "frais-d-agence")!;
+    const said = fees.sections.flatMap((section) => section.paragraphs).join(" ");
+
+    expect(said).toContain("zone A bis");
+    expect(said).toContain("décret n° 2013-392 du 10 mai 2013");
+    expect(said).toContain("DGCCRF");
+    expect(said).toContain("ne peut pas dépasser celle du propriétaire");
+    expect(said).not.toMatch(/\d+,\d{2}/);
 });

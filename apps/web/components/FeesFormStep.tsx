@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 
 import { feesQuestions, type FeesErrors, type FeesFields } from "../lib/fees-flow";
 import { readForm } from "../lib/forms";
+import { guideFor } from "../lib/guides";
 import { Brand } from "./Brand";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
@@ -34,6 +35,7 @@ export function FeesFormStep({ fields, errors, onAnswer }: FeesFormProps)
                 Pour la visite, le dossier et le bail, une agence ne peut facturer au locataire qu'un montant par m² fixé selon la zone.
                 L'état des lieux d'entrée a son propre plafond.
             </p>
+            <a className="rule" href={`../guides/${guideFor("frais-agence/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
                 <h2 className="section">Le logement</h2>
                 <Typed id="address" label="Adresse du logement" type="address" value={fields.address} error={errors.address} />
