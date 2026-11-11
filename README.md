@@ -29,6 +29,8 @@ Reference rents for Lyon and Villeurbanne come from the open data of the Métrop
 
 `db/seed/agency-fees.json` holds the caps on what an estate agent may charge a tenant, per square metre of living space: one cap for the visits, the file and the lease together in each zone, and one for the entry inspection. The first row holds those of décret n° 2014-890 from 15 September 2014, the second those of the arrêté of 17 July 2025, as amended in November 2025, from 1 January 2026. Each row ends the day the next one starts; the last ends on 1 January 2027, when the caps may be raised again, so a later lease is told that no caps are known for it yet.
 
+`db/seed/irl.json` holds the reference rent index (IRL) of mainland France, quarter by quarter from 2017, as the ANIL publishes it from INSEE: each value in hundredths of a point, the day INSEE published it, and the change over the same quarter a year before in hundredths of a percent. The import recomputes each change from the values and refuses the table if one disagrees, which catches a value typed wrong. A new quarter is added by hand when INSEE publishes it, about the middle of the month after each quarter.
+
 ## Status
 
 The app is live at https://maksim-miliutin.com/Plafond/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. The rents of Paris were checked against the official map of reference rents of the DRIHL Île-de-France; those of Lyon are still to be checked against the Métropole's own simulator.
