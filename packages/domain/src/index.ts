@@ -20,3 +20,5 @@ export type { FeeCaps, FeeZone } from "./agency.js";
 export { AgencyError, agencyFees, type AgencyFees, type FeesCheck, type NoCaps } from "./agency.js";
 export { agencyLetter, type AgencyLetterInput } from "./agency-letter.js";
 export type { IndexRow, Quarter } from "./revision.js";
+export { revision, type Revision, type RevisionCheck } from "./revision.js";
+export { revisionLetter, type RevisionLetterInput } from "./revision-letter.js";
