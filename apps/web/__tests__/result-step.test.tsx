@@ -118,6 +118,12 @@ test("a complement in a lease signed since 18 August 2022 comes with the nine ch
     expect(page()).not.toContain("ces caractéristiques");
 });
 
+test("a complement leads to what judges have accepted and rejected", () =>
+{
+    expect(page({ complement: 20000 })).toMatch(/<a[^>]*href="\.\.\/guides\/complement-de-loyer\/#juges"[^>]*>Ce que les juges ont admis ou écarté<\/a>/);
+    expect(page()).not.toContain("Ce que les juges");
+});
+
 test("the screen says which of the four steps it is", () =>
 {
     expect(page()).toContain("Étape 4 sur 4\u00A0: le résultat");

@@ -103,7 +103,8 @@ function ComplementNote({ complement, on, signedOn }: { complement: Complement; 
             <p>
                 Votre bail prévoit un complément de {euros(complement.amount)} par mois, soit {percent(complement.share)} du
                 plafond. Il n'est permis que pour un logement aux caractéristiques exceptionnelles par rapport aux
-                logements comparables du quartier, et c'est au propriétaire de le justifier.
+                logements comparables du quartier, et c'est au propriétaire de le justifier.{" "}
+                <a href="../guides/complement-de-loyer/#juges">Ce que les juges ont admis ou écarté</a>
             </p>
             {open
                 ? <p>Vous pouvez le contester devant la commission départementale de conciliation avant le {deadline}.</p>
