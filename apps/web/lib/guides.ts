@@ -263,19 +263,13 @@ export const guides: readonly GuideText[] = [
                 ],
             },
             {
-                heading: "Les interdictions",
-                paragraphs: [
-                    "Depuis le 18 août 2022, aucun complément ne peut s'appliquer à un logement classé F ou G au DPE, ni à un logement qui présente certains défauts, comme des sanitaires sur le palier, des signes d'humidité ou des infiltrations.",
-                ],
-            },
-            {
                 heading: "Le contester",
                 paragraphs: [
                     "Vous disposez de trois mois après la signature du bail pour contester le complément devant la commission départementale de conciliation. C'est gratuit, et c'est au propriétaire de démontrer les caractéristiques exceptionnelles du logement.",
                 ],
             },
         ],
-        sources: [conciliation, adil],
+        sources: [{ text: "Complément de loyer\u00A0: les règles (service-public.fr)", href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F34413" }, conciliation, adil],
     },
     {
         slug: "encadrement-des-loyers-lyon",
