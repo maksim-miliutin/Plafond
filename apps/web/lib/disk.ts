@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import type { FeeCaps } from "@plafond/domain";
-import { decreesOf, feeCapsOf, indexOf, lyonSeed, parisRates, quartiersOf, type RentIndex } from "@plafond/import";
+import type { FeeCaps, LawPeriod } from "@plafond/domain";
+import { decreesOf, feeCapsOf, indexOf, lawOf, lyonSeed, parisRates, quartiersOf, type RentIndex } from "@plafond/import";
 
 import { arrondissementPages, communePages, placePages, type CommunePage, type DistrictPage, type PlacePage } from "./places";
 
@@ -48,4 +48,9 @@ export function feeCapsFromDisk(): FeeCaps[]
 export function indexFromDisk(): RentIndex
 {
     return indexOf(JSON.parse(readFileSync(join(seed, "irl.json"), "utf8")));
+}
+
+export function lawFromDisk(): LawPeriod[]
+{
+    return lawOf(JSON.parse(readFileSync(join(seed, "rent-control-law.json"), "utf8")));
 }

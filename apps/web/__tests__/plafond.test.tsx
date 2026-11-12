@@ -7,7 +7,7 @@ import type { Quartier } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
 import { Plafond, type Needs } from "../components/Plafond";
-import { rate } from "./fixtures";
+import { law, rate } from "./fixtures";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -46,7 +46,7 @@ async function open(given: Needs): Promise<HTMLElement>
     hosts.push(host);
     await act(async () =>
     {
-        createRoot(host).render(<Plafond needs={given} />);
+        createRoot(host).render(<Plafond law={law} needs={given} />);
     });
 
     return host;

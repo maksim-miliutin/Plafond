@@ -1,8 +1,11 @@
 import { expect, test } from "vitest";
 
 import { check, type Check, type Claim } from "../src/cap.js";
+import type { LawPeriod } from "../src/law.js";
 import { letter, letterText, type Letter } from "../src/letter.js";
 import type { Contest, Rate } from "../src/rates.js";
+
+const law: LawPeriod[] = [{ from: "2018-11-24", until: "2026-11-25", title: "fixture law", url: "https://example.org/law" }];
 
 const thin = "\u202F";
 const hard = "\u00A0";
@@ -38,7 +41,7 @@ function written(change: Partial<Claim> = {}, stated = true, rates: Rate[] = [ra
 
     const address = "4 Place du Louvre 75001 Paris";
 
-    return letter({ check: check(lease, rates) as Check, claim: lease, address, quartier: "Saint-Germain-l'Auxerrois", stated });
+    return letter({ check: check(lease, rates, law) as Check, claim: lease, address, quartier: "Saint-Germain-l'Auxerrois", stated });
 }
 
 function text(result: ReturnType<typeof letter>): string
@@ -210,7 +213,7 @@ test("a lease that takes effect the day it is signed says so once", () =>
 test("an address the geocoder gives without a number is not put after au", () =>
 {
     const lease = { ...claim, on: "2026-09-29" };
-    const sent = letter({ check: check(lease, [rate]) as Check, claim: lease, address: "Place du Louvre 75001 Paris", quartier: "Saint-Germain-l'Auxerrois", stated: true }) as Letter;
+    const sent = letter({ check: check(lease, [rate], law) as Check, claim: lease, address: "Place du Louvre 75001 Paris", quartier: "Saint-Germain-l'Auxerrois", stated: true }) as Letter;
 
     expect(sent.opening[0]).toContain("situé Place du Louvre, 75001 Paris,");
 });
@@ -252,7 +255,7 @@ test("a letter for a flat in Lyon names the prefect for the fine and leaves Pari
 {
     const lyonRate: Rate = { ...rate, flat: { ...rate.flat, city: "lyon", quartier: 693830101 } };
     const lease = { ...claim, flat: lyonRate.flat };
-    const sent = letter({ check: check(lease, [lyonRate]) as Check, claim: lease, address: "10 Rue de la Part-Dieu 69003 Lyon", quartier: "Lyon 3e Arrondissement", stated: true }) as Letter;
+    const sent = letter({ check: check(lease, [lyonRate], law) as Check, claim: lease, address: "10 Rue de la Part-Dieu 69003 Lyon", quartier: "Lyon 3e Arrondissement", stated: true }) as Letter;
     const text = letterText(sent);
 
     expect(text).toContain("préfet du Rhône");

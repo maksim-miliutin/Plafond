@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { expect, test, vi } from "vitest";
 
 import { Plafond } from "../components/Plafond";
+import { law } from "./fixtures";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -22,7 +23,7 @@ test("every opening asks the server whether the tables changed, instead of trust
     document.body.append(host);
     await act(async () =>
     {
-        createRoot(host).render(<Plafond />);
+        createRoot(host).render(<Plafond law={law} />);
     });
 
     expect(asked).toEqual(expect.arrayContaining([["/rates.json", { cache: "no-cache" }], ["/quartiers.json", { cache: "no-cache" }]]));

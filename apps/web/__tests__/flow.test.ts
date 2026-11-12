@@ -5,7 +5,7 @@ import type { Lookup } from "@plafond/address";
 
 import type { LeaseFields } from "../lib/lease";
 import { next, start, type Step, type World } from "../lib/flow";
-import { rate } from "./fixtures";
+import { law, rate } from "./fixtures";
 
 const side = 0.005;
 
@@ -20,7 +20,7 @@ function square(number: number, name: string, west: number): Quartier
 const one = square(1, "Saint-Germain-l'Auxerrois", 2.34);
 const two = square(2, "Halles", 2.34 + side);
 
-const world: World = { city: "paris", rates: [rate], quartiers: [one, two], on: "2026-09-29" };
+const world: World = { city: "paris", rates: [rate], quartiers: [one, two], on: "2026-09-29", law };
 
 const filled: LeaseFields = {
     rooms: "3",
@@ -78,7 +78,7 @@ test("a confirmed quartier opens an empty lease form", () =>
 {
     const step = walk({ type: "located", typed, lookup: found }, { type: "confirmed" });
 
-    expect(step).toMatchObject({ at: "lease", errors: {}, noRate: null });
+    expect(step).toMatchObject({ at: "lease", errors: {}, unchecked: null });
     expect(step.at === "lease" && Object.values(step.fields).every((value) => value === "")).toBe(true);
 });
 
@@ -89,13 +89,20 @@ test("an incomplete lease stays on the form with its questions", () =>
     expect(step).toMatchObject({ at: "lease", fields: { rent: "" }, errors: { rent: expect.any(String) } });
 });
 
+test("a lease signed after the last day of the law stays on the form, with that day", () =>
+{
+    const step = walk({ type: "located", typed, lookup: found }, { type: "confirmed" }, { type: "answered", fields: { ...filled, signedOn: "2026-11-25", startsOn: "2026-11-25" } });
+
+    expect(step).toMatchObject({ at: "lease", unchecked: { kind: "lapsed", lastDay: "2026-11-24" }, errors: {} });
+});
+
 test("a lease signed on a day no rate covers says so on the form, and on which side of the known decrees", () =>
 {
     const signed = (signedOn: string) => walk({ type: "located", typed, lookup: found }, { type: "confirmed" }, { type: "answered", fields: { ...filled, signedOn, startsOn: signedOn } });
 
-    expect(signed("2026-08-01")).toMatchObject({ at: "lease", noRate: { side: "after", until: "2026-06-30" }, errors: {} });
-    expect(signed("2025-06-01")).toMatchObject({ at: "lease", noRate: { side: "between" }, errors: {} });
-    expect(signed("2019-06-01")).toMatchObject({ at: "lease", noRate: { side: "before", from: "2019-07-01" }, errors: {} });
+    expect(signed("2026-08-01")).toMatchObject({ at: "lease", unchecked: { side: "after", until: "2026-06-30" }, errors: {} });
+    expect(signed("2025-06-01")).toMatchObject({ at: "lease", unchecked: { side: "between" }, errors: {} });
+    expect(signed("2019-06-01")).toMatchObject({ at: "lease", unchecked: { side: "before", from: "2019-07-01" }, errors: {} });
 });
 
 test("a lease over the cap shows the check and offers the letter", () =>
@@ -181,6 +188,6 @@ test("a lease signed after the city's control began but before the first table P
     const lyonWorld: World = { ...world, city: "lyon", rates: [{ ...rate, flat: { ...rate.flat, city: "lyon" }, decree: { ...rate.decree, from: "2022-11-01", until: "2023-11-01" } }] };
     const signed = (signedOn: string) => next(next(next(start, { type: "located", typed, lookup: found }, lyonWorld), { type: "confirmed" }, lyonWorld), { type: "answered", fields: { ...filled, signedOn, startsOn: signedOn } }, lyonWorld);
 
-    expect(signed("2022-03-01")).toMatchObject({ at: "lease", noRate: { side: "between" } });
-    expect(signed("2021-06-01")).toMatchObject({ at: "lease", noRate: { side: "before", from: "2021-11-01" } });
+    expect(signed("2022-03-01")).toMatchObject({ at: "lease", unchecked: { side: "between" } });
+    expect(signed("2021-06-01")).toMatchObject({ at: "lease", unchecked: { side: "before", from: "2021-11-01" } });
 });

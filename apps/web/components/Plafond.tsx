@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { geoplateforme, type Geocoder } from "@plafond/address";
-import type { City } from "@plafond/domain";
+import type { City, LawPeriod } from "@plafond/domain";
 
 import { next, start, type Event, type Step } from "../lib/flow";
 import { loadCity, type Tables, type Unreachable } from "../lib/load";
@@ -37,7 +37,7 @@ const live: Needs = {
 
 const none: Tables = { rates: [], quartiers: [] };
 
-export function Plafond({ needs = live }: { needs?: Needs })
+export function Plafond({ law, needs = live }: { law: readonly LawPeriod[]; needs?: Needs })
 {
     const [step, setStep] = useState<Step>(start);
     const [worlds, setWorlds] = useState<Partial<Record<City, Tables | Unreachable>>>({});
@@ -68,7 +68,7 @@ export function Plafond({ needs = live }: { needs?: Needs })
 
     function go(event: Event, city: City, world: Tables)
     {
-        setStep((current) => next(current, event, { ...world, city, on: todayInParis(needs.now()) }));
+        setStep((current) => next(current, event, { ...world, city, on: todayInParis(needs.now()), law }));
     }
 
     async function find(typed: string)
@@ -116,7 +116,7 @@ export function Plafond({ needs = live }: { needs?: Needs })
                     city={step.place.city}
                     fields={step.fields}
                     errors={step.errors}
-                    noRate={step.noRate}
+                    unchecked={step.unchecked}
                     onAnswer={(fields) => go({ type: "answered", fields }, city, world)}
                     onBack={back}
                 />

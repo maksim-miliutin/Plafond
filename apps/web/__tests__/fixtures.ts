@@ -1,4 +1,4 @@
-import type { Claim, Rate } from "@plafond/domain";
+import type { Claim, LawPeriod, Rate } from "@plafond/domain";
 
 // The 2025 rate for St-Germain-l'Auxerrois, three rooms, 1946-1970, furnished, as the City's table publishes it.
 export const rate: Rate = {
@@ -24,3 +24,7 @@ export const claim: Claim = {
     complement: 0,
     on: "2026-09-29",
 };
+
+export const law: LawPeriod[] = [
+    { from: "2018-11-24", until: "2026-11-25", title: "Article 140 de la loi n° 2018-1021 du 23 novembre 2018", url: "https://example.org/law" },
+];
