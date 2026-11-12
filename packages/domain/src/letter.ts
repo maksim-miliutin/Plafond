@@ -209,6 +209,12 @@ function complement({ check, claim }: LetterInput): Demand | null
         return null;
     }
 
+    const floor = check.complement.shortOfCap === 0
+        ? []
+        : ["Selon le même article, un complément de loyer ne peut pas non plus être appliqué à un loyer de base inférieur au "
+            + `loyer de référence majoré, soit ${euros(check.cap)} par mois pour ce logement, alors que le loyer de base prévu `
+            + `au bail est de ${euros(claim.rent)}.`];
+
     return {
         ground: "complement",
         paragraphs: [
@@ -217,6 +223,7 @@ function complement({ check, claim }: LetterInput): Demand | null
                 + "présentant des caractéristiques de localisation ou de confort le justifiant, par comparaison avec les "
                 + "logements de la même catégorie situés dans le même secteur géographique. Il appartient au bailleur de "
                 + "démontrer que le logement présente de telles caractéristiques.",
+            ...floor,
             "Je conteste ce complément de loyer et vous demande de me communiquer les éléments qui le justifient. À défaut "
                 + "d'accord, je saisirai la commission départementale de conciliation au plus tard le "
                 + `${frenchDay(check.complement.contestUntil)}, comme la loi le prévoit.`,

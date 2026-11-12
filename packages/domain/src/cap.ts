@@ -18,6 +18,7 @@ export interface Complement
     amount: number;      // cents a month
     share: number;       // hundredths of a percent of the cap
     contestUntil: Day;   // last day, inclusive, to bring it before the commission
+    shortOfCap: number;  // cents a month the base rent falls below the cap; zero when it reaches it
 }
 
 export interface Check
@@ -109,5 +110,6 @@ function complementOf(claim: Claim, cap: number): Complement | null
         amount: claim.complement,
         share: rounded(claim.complement * 10000, cap),
         contestUntil: addMonths(claim.signedOn, contestMonths),
+        shortOfCap: Math.max(0, cap - claim.rent),
     };
 }

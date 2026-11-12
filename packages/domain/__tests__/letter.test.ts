@@ -138,6 +138,17 @@ test("the complement is weighed in the words of article 140, III, B, and its pro
     expect(open).not.toContain("exceptionnel");
 });
 
+test("a complement on a base rent below the cap is met with the floor the law sets, in figures", () =>
+{
+    const below = text(written({ rent: 120000, complement: 20000, on: "2025-10-15" }));
+    const at = text(written({ rent: 128000, complement: 20000, on: "2025-10-15" }));
+
+    expect(below).toContain("un complément de loyer ne peut pas non plus être appliqué à un loyer de base inférieur au loyer de "
+        + `référence majoré, soit 1${thin}280,00${hard}€ par mois pour ce logement, alors que le loyer de base prévu au bail est `
+        + `de 1${thin}200,00${hard}€.`);
+    expect(at).not.toContain("loyer de base inférieur");
+});
+
 test("every ground found goes into one letter, in a fixed order", () =>
 {
     const all = written({ complement: 20000, on: "2025-09-25" }, false) as Letter;

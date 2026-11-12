@@ -107,6 +107,12 @@ function ComplementNote({ complement, on, signedOn }: { complement: Complement; 
                 le démontrer.{" "}
                 <a href="../guides/complement-de-loyer/#juges">Ce que les juges ont admis ou écarté</a>
             </p>
+            {complement.shortOfCap > 0 && (
+                <p>
+                    Un complément ne peut s'ajouter qu'à un loyer de base au moins égal au plafond. Le loyer de base de votre bail est
+                    inférieur de {euros(complement.shortOfCap)} au plafond.
+                </p>
+            )}
             {open
                 ? <p>Vous pouvez le contester devant la commission départementale de conciliation avant le {deadline}.</p>
                 : <p>Le délai pour le contester devant la commission départementale de conciliation a expiré le {deadline}.</p>}
