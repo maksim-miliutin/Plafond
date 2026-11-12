@@ -31,6 +31,10 @@ export function Mentions()
                     la Géoplateforme, tenu par l'IGN, qui fournit aussi le plan du quartier. Pour le DPE, il envoie ensuite
                     l'identifiant de l'adresse, ou le numéro du DPE, aux données ouvertes de l'ADEME.
                 </p>
+                <p>
+                    Sur les pages de Paris et de Lyon, le plan de la ville vient aussi de la Géoplateforme&nbsp;: votre appareil lui
+                    demande les morceaux de plan affichés, sans l'adresse.
+                </p>
                 <p>Comme pour tout site hébergé par GitHub Pages, GitHub enregistre l'adresse IP des visiteurs pour sa sécurité.</p>
             </section>
             <section className="findings">

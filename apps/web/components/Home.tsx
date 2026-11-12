@@ -1,113 +1,6 @@
-import type { ReactNode } from "react";
-
 import { guides } from "../lib/guides";
 import { Brand } from "./Brand";
-
-interface Check
-{
-    href: string;
-    question: string;
-    reach: string;
-    needs: string;
-    drawing: ReactNode;
-}
-
-const checks: Check[] = [
-    {
-        href: "loyer/",
-        question: "Mon loyer dépasse-t-il le plafond légal ?",
-        reach: "À Paris, Lyon et Villeurbanne, avec l'encadrement des loyers.",
-        needs: "Votre bail sous la main, environ 3 minutes.",
-        drawing: (
-            <>
-                <path d="M4 15 16 5l12 10" />
-                <path d="M7 13v14h18V13" />
-                <path d="M19.5 15.8a4.2 4.2 0 1 0 0 6.4" />
-                <path d="M12 18h6M12 20.6h6" />
-            </>
-        ),
-    },
-    {
-        href: "revision/",
-        question: "Ma hausse de loyer respecte-t-elle l'indice ?",
-        reach: "En France hexagonale, d'après l'indice de l'Insee.",
-        needs: "Le bail et la demande du propriétaire, environ 2 minutes.",
-        drawing: (
-            <>
-                <path d="M4 27h24" />
-                <path d="M6 22l7-7 5 4 9-10" />
-                <path d="M21 9h6v6" />
-            </>
-        ),
-    },
-    {
-        href: "dpe/",
-        question: "Mon logement est-il une passoire thermique ?",
-        reach: "En France métropolitaine, d'après le DPE.",
-        needs: "L'adresse ou le numéro du DPE, environ 2 minutes.",
-        drawing: (
-            <g stroke="none">
-                <path d="M4 5h11l2.5 2.5L15 10H4z" fill="#009C6D" />
-                <path d="M4 11.5h14.5L21 14l-2.5 2.5H4z" fill="#C9B800" />
-                <path d="M4 18h18l2.5 2.5L22 23H4z" fill="#EB8235" />
-                <path d="M4 24.5h21.5L28 27l-2.5 2.5H4z" fill="#D7221F" />
-            </g>
-        ),
-    },
-    {
-        href: "depot/",
-        question: "Mon dépôt de garantie m'a-t-il été rendu à temps ?",
-        reach: "Partout en France, d'après la loi du 6 juillet 1989.",
-        needs: "Les dates et les montants, environ 2 minutes.",
-        drawing: (
-            <>
-                <circle cx="10" cy="16" r="5.5" />
-                <circle cx="10" cy="16" r="1.6" />
-                <path d="M15.5 16H28M23 16v4.5M27 16v3" />
-            </>
-        ),
-    },
-    {
-        href: "charges/",
-        question: "Ma régularisation de charges est-elle juste ?",
-        reach: "Partout en France, d'après le décret du 26 août 1987.",
-        needs: "Votre décompte annuel, environ 5 minutes.",
-        drawing: (
-            <>
-                <path d="M7 4h18v24l-3-2-3 2-3-2-3 2-3-2-3 2z" />
-                <path d="M11 10h10M11 14.5h10" />
-                <path d="M20.5 18.6a2.8 2.8 0 1 0 0 4.3" />
-                <path d="M15.5 20h3.5M15.5 21.6h3.5" />
-            </>
-        ),
-    },
-    {
-        href: "preavis/",
-        question: "Combien de temps dure mon préavis ?",
-        reach: "Partout en France, d'après la loi du 6 juillet 1989.",
-        needs: "La date de réception de votre lettre, environ 2 minutes.",
-        drawing: (
-            <>
-                <rect x="4" y="7" width="18" height="20" rx="2" />
-                <path d="M9 4v5M17 4v5M4 13h18" />
-                <path d="M14 20h14M24 16l4 4-4 4" />
-            </>
-        ),
-    },
-    {
-        href: "frais-agence/",
-        question: "Mes frais d'agence dépassent-ils le plafond ?",
-        reach: "Partout en France, d'après la loi du 6 juillet 1989.",
-        needs: "Le bail et la facture de l'agence, environ 2 minutes.",
-        drawing: (
-            <>
-                <path d="M4 6.5V15l13 13 11-11L15 4H6.5A2.5 2.5 0 0 0 4 6.5z" />
-                <circle cx="9.5" cy="9.5" r="1.8" />
-                <path d="M19.8 15.6a3.4 3.4 0 1 0 0 4.8M14.6 17.2h3.6M14.6 19h3.6" />
-            </>
-        ),
-    },
-];
+import { CheckList } from "./Checks";
 
 export function Home()
 {
@@ -118,32 +11,7 @@ export function Home()
             <p className="lead">
                 Sept vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
             </p>
-            <nav className="checks" aria-label="Vérifications">
-                {checks.map((check) => (
-                    <a key={check.href} href={check.href} className="check">
-                        <span className="drawing">
-                            <svg
-                                aria-hidden="true"
-                                viewBox="0 0 32 32"
-                                width="34"
-                                height="34"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.2"
-                                strokeLinejoin="round"
-                                strokeLinecap="round"
-                            >
-                                {check.drawing}
-                            </svg>
-                        </span>
-                        <span className="words">
-                            <strong>{check.question}</strong>
-                            <span>{check.reach}</span>
-                            <span className="needs">{check.needs}</span>
-                        </span>
-                    </a>
-                ))}
-            </nav>
+            <CheckList base="" rentReach="À Paris, Lyon et Villeurbanne, avec l'encadrement des loyers." />
             <section className="findings">
                 <h2>Comprendre vos droits</h2>
                 <ul className="references">

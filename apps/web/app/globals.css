@@ -403,7 +403,9 @@ a:hover
     line-height: 1.05;
 }
 
-.map
+.map,
+.city-map,
+.city-map.leaflet-container
 {
     width: 100%;
     height: auto;
@@ -419,9 +421,11 @@ a:hover
     stroke-dasharray: 5 4;
 }
 
-.map .own
+.map .own,
+.city-map .zone
 {
     fill: rgba(197, 225, 250, 0.45);
+    fill-opacity: 1;
     stroke: var(--blue);
     stroke-width: 2.5;
 }
@@ -1011,3 +1015,36 @@ a:hover
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
+.city-block
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.city-block .credit
+{
+    margin: 0;
+}
+
+.city-map
+{
+    aspect-ratio: 1;
+    max-height: 60vh;
+    z-index: 0;
+}
+
+.city-map.leaflet-container
+{
+    font: inherit;
+}
+
+.city-map.leaflet-container .leaflet-bar a
+{
+    width: 44px;
+    height: 44px;
+    font: 700 24px/44px var(--text);
+    color: var(--blue);
+}
+

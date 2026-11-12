@@ -44,7 +44,7 @@ The app is live at https://maksim-miliutin.com/Plafond/ and can be added to the 
 - `packages/import`: reads the published tables (the rents of Paris and Lyon, the annexes of the decrees, the outlines of the quartiers and of Lyon's areas) and checks them line by line.
 - `packages/address`: the client of the Géoplateforme geocoder.
 - `packages/ademe`: the client of the ADEME open data on energy diagnoses.
-- `apps/web`: the Next.js app, exported as plain files and published on GitHub Pages; `e2e` holds the tests that run in real browsers, iPhones included.
+- `apps/web`: the Next.js app, exported as plain files and published on GitHub Pages; `e2e` holds the tests that run in real browsers, iPhones included. The pages of Paris and Lyon draw the plan of the city with Leaflet over Plan IGN; the limit drawn on it is the union, computed at build time, of the same outlines of quartiers and areas the rent check searches.
 - `db/seed`: the published data the build reads, each file described above.
 - `.github/workflows`: the checks every change goes through, and the deploy.
 
