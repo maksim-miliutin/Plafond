@@ -158,6 +158,12 @@ a:hover
     color: var(--blue);
 }
 
+.note.stacked
+{
+    flex-direction: column;
+    gap: 0;
+}
+
 .note p
 {
     margin: 0;
