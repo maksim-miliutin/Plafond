@@ -97,7 +97,7 @@ function ComplementNote({ complement, on, signedOn }: { complement: Complement; 
     const open = on <= complement.contestUntil;
 
     return (
-        <section className="note">
+        <section className="note stacked">
             <h2>Complément de loyer</h2>
             <p>
                 Votre bail prévoit un complément de {euros(complement.amount)} par mois, soit {percent(complement.share)} du
