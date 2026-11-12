@@ -1,5 +1,5 @@
-import { check, controlledSince, dayBefore, letter, quartierAt } from "@plafond/domain";
-import type { City, Check, Claim, Day, Letter, Point, Quartier, Rate } from "@plafond/domain";
+import { check, letter, quartierAt } from "@plafond/domain";
+import type { City, Check, Claim, Day, Letter, Point, Quartier, Rate, Unpriced } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
 import { leaseFrom, questions, type FieldErrors, type LeaseFields } from "./lease";
@@ -45,15 +45,10 @@ interface Checked extends Found
     check: Check;
 }
 
-export type Gap =
-    | { side: "before"; from: Day }
-    | { side: "after"; until: Day }
-    | { side: "between" };
-
 export type Step =
     | { at: "address"; typed: string; problem: Problem | null }
     | ({ at: "quartier" } & Found)
-    | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; noRate: Gap | null } & Found)
+    | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; noRate: Unpriced | null } & Found)
     | ({ at: "result"; letter: Letter | null } & Checked)
     | ({ at: "letter"; letter: Letter } & Checked)
     | { at: "help"; from: Extract<Step, { at: "result" }> };
@@ -129,7 +124,7 @@ function answered(step: Extract<Step, { at: "lease" }>, fields: LeaseFields, wor
     const result = check(lease.claim, world.rates);
     if (result.kind === "no-rate")
     {
-        return { ...step, fields, errors: {}, noRate: gapOf(lease.claim.signedOn, world.rates, controlledSince[world.city]) };
+        return { ...step, fields, errors: {}, noRate: result };
     }
 
     if (result.kind === "invalid")
@@ -178,21 +173,5 @@ function back(step: Step): Step
         case "help":
             return step.from;
     }
-}
-
-function gapOf(signedOn: Day, rates: readonly Rate[], since: Day): Gap
-{
-    if (signedOn < since)
-    {
-        return { side: "before", from: since };
-    }
-
-    const last = rates.map((rate) => rate.decree.until).sort().at(-1);
-    if (last !== undefined && signedOn >= last)
-    {
-        return { side: "after", until: dayBefore(last) };
-    }
-
-    return { side: "between" };
 }
 

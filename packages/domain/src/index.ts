@@ -1,7 +1,7 @@
-export { CapError, check, type Check, type Claim, type Complement, type Invalid, type Refusal } from "./cap.js";
+export { CapError, check, type Check, type Claim, type Complement, type Gap, type Invalid, type Refusal, type Unpriced } from "./cap.js";
 export { DayError, dayBefore, isDay, type Day } from "./day.js";
 export type { LawPeriod } from "./law.js";
-export { RatesError, controlledSince, periodsOf, type City, type Contest, type Decree, type Flat, type NoRate, type Period, type Rate, type Rooms } from "./rates.js";
+export { RatesError, periodsOf, type City, type Contest, type Decree, type Flat, type NoRate, type Period, type Rate, type Rooms } from "./rates.js";
 export { arrondissementOf, quartierAt, type Border, type Found, type Outside, type Point, type Quartier } from "./quartier.js";
 export { FormatError, euros, frenchDay, indexPoints, ordinal, percent, squareMetres } from "./format.js";
 export { centsFrom, hundredthsFrom, type Unreadable } from "./input.js";
