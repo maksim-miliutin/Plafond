@@ -174,6 +174,20 @@ test("the agency fees guide names the zones and the way to be paid back, and lea
     expect(said).not.toMatch(/\d+,\d{2}/);
 });
 
+test("the complement guide lists the nine characteristics that bar a complement, from the table the result screen uses", async () =>
+{
+    const { default: SupplementGuide } = await import("../app/guides/complement-de-loyer/page");
+    const page = renderToStaticMarkup(<SupplementGuide />);
+    const listed = /<ul class="bars">(.*?)<\/ul>/.exec(page)?.[1] ?? "";
+
+    expect(page).toContain("<h2>Ce qui exclut tout complément</h2>");
+    expect(listed.match(/<li>/g)).toHaveLength(9);
+    expect(listed).toContain("<li>des sanitaires sur le palier</li>");
+    expect(page).toMatch(/<a[^>]*href="\.\.\/\.\.\/dpe\/"[^>]*>Vérifier le DPE du logement<\/a>/);
+    expect(page).not.toContain("certains défauts");
+    expect(page).toContain('href="https://www.service-public.gouv.fr/particuliers/vosdroits/F34413"');
+});
+
 test("the revision guide shows the index of the last three years from the seed, newest first, with its source", async () =>
 {
     const { IndexTable } = await import("../components/IndexTable");

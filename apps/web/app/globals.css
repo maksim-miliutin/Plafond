@@ -164,7 +164,8 @@ a:hover
     gap: 0;
 }
 
-.note p
+.note p,
+.note li
 {
     margin: 0;
     font-size: 14px;
@@ -938,6 +939,15 @@ a:hover
     align-items: center;
     justify-content: center;
     text-decoration: none;
+}
+
+.bars
+{
+    margin: 0 0 8px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .references

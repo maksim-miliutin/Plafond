@@ -1,6 +1,7 @@
-import { dayBefore, euros, frenchDay, letting, noComplementFrom, percent, periods, rooms, squareMetres } from "@plafond/domain";
+import { dayBefore, euros, frenchDay, letting, percent, periods, rooms, squareMetres } from "@plafond/domain";
 import type { Check, Claim, Complement, Day } from "@plafond/domain";
 
+import { ComplementBars } from "./ComplementBars";
 import { ContestNote } from "./ContestNote";
 import { Progress } from "./Progress";
 
@@ -107,12 +108,7 @@ function ComplementNote({ complement, on, signedOn }: { complement: Complement; 
             {open
                 ? <p>Vous pouvez le contester devant la commission départementale de conciliation avant le {deadline}.</p>
                 : <p>Le délai pour le contester devant la commission départementale de conciliation a expiré le {deadline}.</p>}
-            {signedOn >= noComplementFrom && (
-                <p>
-                    Depuis le {frenchDay(noComplementFrom)}, aucun complément de loyer ne peut être appliqué à un logement classé F
-                    ou G au diagnostic de performance énergétique. <a href="../dpe/">Vérifier le DPE du logement</a>
-                </p>
-            )}
+            <ComplementBars signedOn={signedOn} dpe="../dpe/" />
         </section>
     );
 }

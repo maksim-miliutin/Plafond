@@ -99,18 +99,23 @@ test("the result says when the lease was signed, since that date picks the decre
     expect(signed).toMatch(/<dt>Bail<\/dt><dd>[^<]*signé le 20 août 2025[^<]*pris effet le 1er septembre 2025/);
 });
 
-// Loi du 16 août 2022: from 18 August 2022 no complement may be applied to a flat rated F or G; the screen cannot know
-// the rating, so it says the rule and points to the DPE check, without judging this complement.
-test("a complement in a lease signed since 18 August 2022 comes with the rule for F and G flats and a way to check", () =>
+// Loi du 16 août 2022: from 18 August 2022 nine characteristics bar a complement; the screen cannot see the flat, so it
+// lists them and points to the DPE check, without judging this complement.
+test("a complement in a lease signed since 18 August 2022 comes with the nine characteristics that bar one, and a way to check", () =>
 {
     const recent = page({ complement: 20000 });
     const decree2022 = { ...rate, decree: { ...rate.decree, from: "2022-07-01", until: "2023-07-01" } };
     const older = page({ complement: 20000, signedOn: "2022-08-17", startsOn: "2022-08-17" }, [decree2022]);
+    const listed = /<ul class="bars">(.*?)<\/ul>/.exec(recent)?.[1] ?? "";
 
-    expect(recent).toContain("aucun complément de loyer ne peut être appliqué à un logement classé F ou G");
+    expect(recent).toContain("Pour un bail signé depuis le 18 août 2022, aucun complément de loyer ne peut être appliqué si le "
+        + "logement présente l&#x27;une de ces caractéristiques");
+    expect(listed.match(/<li>/g)).toHaveLength(9);
+    expect(listed).toContain("<li>un diagnostic de performance énergétique de classe F ou G</li>");
     expect(recent).toMatch(/<a[^>]*href="\.\.\/dpe\/"[^>]*>Vérifier le DPE du logement<\/a>/);
-    expect(older).not.toContain("classé F ou G");
-    expect(page()).not.toContain("classé F ou G");
+    expect(older).not.toContain("ces caractéristiques");
+    expect(older).not.toContain("Vérifier le DPE du logement");
+    expect(page()).not.toContain("ces caractéristiques");
 });
 
 test("the screen says which of the four steps it is", () =>
