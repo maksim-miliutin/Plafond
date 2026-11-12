@@ -158,6 +158,8 @@ test("the agency fees guide shows every row of caps from the seed, with its date
     }
 
     expect(page).toMatch(/<a[^>]*href="https:\/\/www.legifrance.gouv.fr\/loda\/id\/JORFTEXT000051949607\/"/);
+    expect(page).toContain(">Décret n° 2014-890 du 1er août 2014</a>");
+    expect(page).toContain(">Arrêté du 17 juillet 2025 modifié par l&#x27;arrêté du 13 novembre 2025</a>");
 });
 
 test("the agency fees guide names the zones and the way to be paid back, and leaves the sums to the table", () =>

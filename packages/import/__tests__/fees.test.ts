@@ -47,7 +47,7 @@ test("a cap that is not a whole number of cents, a zone left out, a day that is 
     expect(() => feeCapsOf([])).toThrow(FeeCapsError);
 });
 
-// Décret n° 2014-890, article 2, and the arrêté of 17 July 2025 as amended in November 2025, which raised the caps from
+// Décret n° 2014-890, article 2, and the arrêté of 17 July 2025 as amended on 13 November 2025, which raised the caps from
 // 1 January 2026 by the change of the rent index from the third quarter of 2024 to that of 2025: +0,87 %.
 test("the seed holds the caps of 2014 and those of 2026, the second the first raised by 0,87 % to the cent", () =>
 {
