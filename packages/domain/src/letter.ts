@@ -214,8 +214,9 @@ function complement({ check, claim }: LetterInput): Demand | null
         paragraphs: [
             `Le bail prévoit en outre un complément de loyer de ${euros(check.complement.amount)} par mois. Selon `
                 + "l'article 140, III, B de la même loi, un complément de loyer ne peut s'appliquer qu'à un logement "
-                + "présentant des caractéristiques de localisation ou de confort exceptionnelles par comparaison avec les "
-                + "logements de la même catégorie situés dans le même secteur géographique.",
+                + "présentant des caractéristiques de localisation ou de confort le justifiant, par comparaison avec les "
+                + "logements de la même catégorie situés dans le même secteur géographique. Il appartient au bailleur de "
+                + "démontrer que le logement présente de telles caractéristiques.",
             "Je conteste ce complément de loyer et vous demande de me communiquer les éléments qui le justifient. À défaut "
                 + "d'accord, je saisirai la commission départementale de conciliation au plus tard le "
                 + `${frenchDay(check.complement.contestUntil)}, comme la loi le prévoit.`,

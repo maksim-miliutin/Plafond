@@ -127,6 +127,17 @@ test("a complement is contested only while its three months run, and never calle
     }
 });
 
+// The letter once lent article 140 the word "exceptionnelles", which the law does not use.
+test("the complement is weighed in the words of article 140, III, B, and its proof is left to the landlord", () =>
+{
+    const open = text(written({ rent: 120000, complement: 20000, on: "2025-10-15" }));
+
+    expect(open).toContain("un complément de loyer ne peut s'appliquer qu'à un logement présentant des caractéristiques de "
+        + "localisation ou de confort le justifiant, par comparaison avec les logements de la même catégorie situés dans le même "
+        + "secteur géographique. Il appartient au bailleur de démontrer que le logement présente de telles caractéristiques.");
+    expect(open).not.toContain("exceptionnel");
+});
+
 test("every ground found goes into one letter, in a fixed order", () =>
 {
     const all = written({ complement: 20000, on: "2025-09-25" }, false) as Letter;
