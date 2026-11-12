@@ -77,7 +77,7 @@ test("the lease form sends nothing anywhere, even before the page wakes up", () 
 
 test("a lease signed on a day no rate covers is told so, above the button, and only then", () =>
 {
-    const refused = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} noRate={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />);
+    const refused = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />);
     const notice = refused.match(/<p[^>]*role="alert"[^>]*>([^<]*)<\/p>/)?.[1] ?? "";
 
     expect(notice).toContain("Aucun loyer de référence");
@@ -88,12 +88,31 @@ test("a lease signed on a day no rate covers is told so, above the button, and o
 // After 24 November 2026 the old notice blamed a missing update for what may be the end of the experiment itself.
 test("the notice says why no rate applies: too early for the scheme, or past the latest known decree", () =>
 {
-    const early = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} noRate={{ kind: "no-rate", side: "before", from: "2019-07-01" }} />);
-    const late = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} noRate={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />);
+    const early = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "before", from: "2019-07-01" }} />);
+    const late = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />);
 
     expect(early).toContain("aux baux signés à partir du 1er juillet 2019");
     expect(late).toContain("le plus récent s&#x27;applique jusqu&#x27;au 24 novembre 2026");
     expect(late).not.toContain("1er juillet 2019");
+});
+
+test("a lapsed law is named with its last day, and nothing says the rent is free", () =>
+{
+    const lapsed = renderToStaticMarkup(
+        <LeaseStep
+            fields={blank}
+            errors={{}}
+            unchecked={{ kind: "lapsed", lastDay: "2026-11-24", title: "Article 140 de la loi n° 2018-1021 du 23 novembre 2018", url: "https://example.org/law" }}
+        />,
+    );
+
+    expect(lapsed).toContain("Plafond ne peut pas vérifier un bail signé après le 24 novembre 2026");
+    expect(lapsed).toMatch(/<a[^>]*href="https:\/\/example.org\/law"[^>]*>Article 140 de la loi/);
+    expect(lapsed).not.toContain("Aucun loyer de référence");
+    for (const words of ["libre", "n&#x27;est plus encadré", "ne s&#x27;applique plus"])
+    {
+        expect(lapsed).not.toContain(words);
+    }
 });
 
 // A date field shows the phone's own order of day and month; 01/09/2025 reads as January to a phone set to English.
@@ -125,7 +144,7 @@ test("the construction periods offered are the city's own", () =>
 
 test("a gap in the tables says Plafond lacks that period, without blaming the decree", () =>
 {
-    const gap = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} noRate={{ kind: "no-rate", side: "between" }} />);
+    const gap = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "between" }} />);
 
     expect(gap).toContain("Plafond ne dispose pas encore des loyers de référence de cette période");
     expect(gap).not.toContain("Aucun arrêté");

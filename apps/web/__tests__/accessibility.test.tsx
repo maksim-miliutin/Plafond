@@ -41,14 +41,14 @@ import { LetterStep } from "../components/LetterStep";
 import { QuartierStep } from "../components/QuartierStep";
 import { ResultStep } from "../components/ResultStep";
 import { questions, type LeaseFields } from "../lib/lease";
-import { claim as lease, rate as base } from "./fixtures";
+import { claim as lease, law, rate as base } from "./fixtures";
 
 const contest: Contest = { outcome: "pending", court: "Conseil d'État", decidedOn: "2024-11-18", claimsBy: null, source: "https://example.org" };
 const rate: Rate = { ...base, decree: { ...base.decree, contest } };
 
 const claim: Claim = { ...lease, complement: 20000, on: "2025-09-25" };
 
-const checked = check(claim, [rate]) as Check;
+const checked = check(claim, [rate], law) as Check;
 const written = letter({ check: checked, claim, address: "4 Place du Louvre 75001 Paris", quartier: "Saint-Germain-l'Auxerrois", stated: false }) as Letter;
 const quartier: Quartier = { number: 1, name: "Saint-Germain-l'Auxerrois", rings: [[[2.34, 48.86], [2.345, 48.86], [2.345, 48.863], [2.34, 48.86]]] };
 const blank = Object.fromEntries(Object.keys(questions).map((key) => [key, ""])) as unknown as LeaseFields;
@@ -100,7 +100,8 @@ const screens: Record<string, ReactElement> = {
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
     "quartier": <QuartierStep quartier={quartier} around={[]} address="4 Place du Louvre 75001 Paris" point={{ lon: 2.342, lat: 48.861 }} />,
     "lease": <LeaseStep fields={blank} errors={{}} />,
-    "refused lease": <LeaseStep fields={blank} errors={questions} noRate={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />,
+    "refused lease": <LeaseStep fields={blank} errors={questions} unchecked={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />,
+    "lapsed lease": <LeaseStep fields={blank} errors={{}} unchecked={{ kind: "lapsed", lastDay: "2026-11-24", title: law[0]!.title, url: law[0]!.url }} />,
     "result": <ResultStep check={checked} claim={claim} quartier="Saint-Germain-l'Auxerrois" writable />,
     "letter": <LetterStep letter={written} />,
 };

@@ -1,9 +1,9 @@
 "use client";
 
-import type { FormEvent } from "react";
+import type { FormEvent, ReactNode } from "react";
 
 import { frenchDay, periods, periodsOf, rooms } from "@plafond/domain";
-import type { City, Gap, Unpriced } from "@plafond/domain";
+import type { City, Gap, Lapsed, Unchecked } from "@plafond/domain";
 
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
 import { Choice, Typed } from "./Fields";
@@ -14,7 +14,7 @@ export interface LeaseProps
 {
     fields: LeaseFields;
     errors: FieldErrors;
-    noRate?: Unpriced | null;
+    unchecked?: Unchecked | null;
     city?: City;
     onAnswer?: (fields: LeaseFields) => void;
     onBack?: () => void;
@@ -30,7 +30,7 @@ const answers: [string, string][] = [
     ["no", "non"],
 ];
 
-export function LeaseStep({ fields, errors, noRate = null, city = "paris", onAnswer, onBack }: LeaseProps)
+export function LeaseStep({ fields, errors, unchecked = null, city = "paris", onAnswer, onBack }: LeaseProps)
 {
     function answer(event: FormEvent<HTMLFormElement>)
     {
@@ -60,15 +60,27 @@ export function LeaseStep({ fields, errors, noRate = null, city = "paris", onAns
                     value={fields.stated}
                     error={errors.stated}
                 />
-                {noRate !== null && (
-                    <p className="error" role="alert">
-                        Aucun loyer de référence n'est disponible pour cette date de signature. {gapText(noRate)}
-                    </p>
-                )}
+                {unchecked !== null && <p className="error" role="alert">{unchecked.kind === "lapsed" ? lapsedText(unchecked) : noRateText(unchecked)}</p>}
                 <button type="submit" className="primary">Vérifier mon loyer</button>
             </LocalForm>
         </main>
     );
+}
+
+function lapsedText(lapsed: Lapsed): ReactNode
+{
+    return (
+        <>
+            Plafond ne peut pas vérifier un bail signé après le {frenchDay(lapsed.lastDay)}&nbsp;: c'est le dernier jour où s'applique le
+            texte qui prévoit l'encadrement des loyers (<a href={lapsed.url}>{lapsed.title}</a>), et Plafond ne connaît pas encore de
+            texte publié qui le prolonge.
+        </>
+    );
+}
+
+function noRateText(gap: Gap): string
+{
+    return `Aucun loyer de référence n'est disponible pour cette date de signature. ${gapText(gap)}`;
 }
 
 function gapText(gap: Gap): string

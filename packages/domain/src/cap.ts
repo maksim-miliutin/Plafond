@@ -1,4 +1,5 @@
 import { addMonths, dayBefore, isDay, wholeMonths, type Day } from "./day.js";
+import { lawOn, type Lapsed, type LawPeriod } from "./law.js";
 import { controlledSince, rateOn, type Flat, type Rate } from "./rates.js";
 import { rounded } from "./money.js";
 
@@ -43,7 +44,9 @@ export type Gap = { side: "before"; from: Day } | { side: "after"; until: Day } 
 
 export type Unpriced = { kind: "no-rate" } & Gap;
 
-export type Refusal = Unpriced | Invalid;
+export type Unchecked = Unpriced | Lapsed;
+
+export type Refusal = Unchecked | Invalid;
 
 export class CapError extends Error
 {
@@ -68,12 +71,18 @@ const demands: readonly { field: keyof Claim; met: (claim: Claim) => boolean }[]
     { field: "on", met: (c) => isDay(c.on) },
 ];
 
-export function check(claim: Claim, rates: readonly Rate[]): Check | Refusal
+export function check(claim: Claim, rates: readonly Rate[], law: readonly LawPeriod[]): Check | Refusal
 {
     const unmet = demands.find((d) => !d.met(claim));
     if (unmet !== undefined)
     {
         return { kind: "invalid", field: unmet.field };
+    }
+
+    const inForce = lawOn(claim.signedOn, law);
+    if (inForce !== null && "kind" in inForce)
+    {
+        return inForce;
     }
 
     const rate = rateOn(rates, claim.flat, claim.signedOn);

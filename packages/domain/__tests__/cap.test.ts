@@ -1,7 +1,10 @@
 import { expect, test } from "vitest";
 
 import { CapError, check, type Claim } from "../src/cap.js";
+import type { LawPeriod } from "../src/law.js";
 import type { City, Contest, Flat, Rate } from "../src/rates.js";
+
+const law: LawPeriod[] = [{ from: "2018-11-24", until: "2026-11-25", title: "fixture law", url: "https://example.org/law" }];
 
 const flat: Flat = { city: "paris", quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
 
@@ -36,26 +39,26 @@ const claim: Claim = {
 // 31.44 euros per square metre times 32.45 square metres is 1020.228 euros.
 test("a rent above the cap is over by the difference every month", () =>
 {
-    expect(check(claim, rates)).toMatchObject({ kind: "checked", rate: rates[1], cap: 102023, excess: 17977 });
+    expect(check(claim, rates, law)).toMatchObject({ kind: "checked", rate: rates[1], cap: 102023, excess: 17977 });
 });
 
 test("the overpayment counts whole months from the day the lease took effect", () =>
 {
-    expect(check(claim, rates)).toMatchObject({ months: 23, sinceStart: 413471, recoverable: 413471 });
+    expect(check(claim, rates, law)).toMatchObject({ months: 23, sinceStart: 413471, recoverable: 413471 });
 });
 
 test("the rate comes from the signing day even when the lease starts under the next one", () =>
 {
     const lateStart = { ...claim, signedOn: "2025-06-20", startsOn: "2025-07-05" };
 
-    expect(check(lateStart, rates)).toMatchObject({ rate: rates[1], cap: 102023 });
+    expect(check(lateStart, rates, law)).toMatchObject({ rate: rates[1], cap: 102023 });
 });
 
 test("only the last three years can be claimed back", () =>
 {
     const old = { ...claim, surface: 3000, signedOn: "2021-01-10", startsOn: "2021-01-15", rent: 100000 };
 
-    expect(check(old, rates)).toMatchObject({
+    expect(check(old, rates, law)).toMatchObject({
         cap: 90000,
         excess: 10000,
         months: 68,
@@ -68,22 +71,22 @@ test("a rent within the cap is a check with nothing to claim, not a refusal", ()
 {
     const within = { ...claim, rent: 100000 };
 
-    expect(check(within, rates)).toMatchObject({ kind: "checked", excess: 0, sinceStart: 0, recoverable: 0 });
+    expect(check(within, rates, law)).toMatchObject({ kind: "checked", excess: 0, sinceStart: 0, recoverable: 0 });
 });
 
 test("the cap rounds a half cent up and less than half down", () =>
 {
     const half = [{ ...rates[1]!, majored: 3145 }];
 
-    expect(check({ ...claim, surface: 10 }, half)).toMatchObject({ cap: 315 });
-    expect(check({ ...claim, surface: 3246 }, rates)).toMatchObject({ cap: 102054 });
+    expect(check({ ...claim, surface: 10 }, half, law)).toMatchObject({ cap: 315 });
+    expect(check({ ...claim, surface: 3246 }, rates, law)).toMatchObject({ cap: 102054 });
 });
 
 test("a complement is set against the cap with the last day to contest it", () =>
 {
     const withComplement = { ...claim, complement: 20000 };
 
-    expect(check(withComplement, rates)).toMatchObject({
+    expect(check(withComplement, rates, law)).toMatchObject({
         excess: 17977,
         complement: { amount: 20000, share: 1960, contestUntil: "2024-12-19" },
     });
@@ -93,26 +96,26 @@ test("a complement is set against the cap with the last day to contest it", () =
 // 1 020,23 € less 1 000,00 € leaves 20,23 €.
 test("a complement on a base rent below the cap carries how far below it falls, and none at or above it", () =>
 {
-    expect(check({ ...claim, rent: 100000, complement: 20000 }, rates)).toMatchObject({ complement: { shortOfCap: 2023 } });
-    expect(check({ ...claim, rent: 102023, complement: 20000 }, rates)).toMatchObject({ complement: { shortOfCap: 0 } });
-    expect(check({ ...claim, complement: 20000 }, rates)).toMatchObject({ complement: { shortOfCap: 0 } });
+    expect(check({ ...claim, rent: 100000, complement: 20000 }, rates, law)).toMatchObject({ complement: { shortOfCap: 2023 } });
+    expect(check({ ...claim, rent: 102023, complement: 20000 }, rates, law)).toMatchObject({ complement: { shortOfCap: 0 } });
+    expect(check({ ...claim, complement: 20000 }, rates, law)).toMatchObject({ complement: { shortOfCap: 0 } });
 });
 
 test("the window to contest a complement ends on the last day of a shorter month", () =>
 {
     const lateInMonth = { ...claim, signedOn: "2024-11-30", startsOn: "2024-12-01", complement: 20000 };
 
-    expect(check(lateInMonth, rates)).toMatchObject({ complement: { contestUntil: "2025-02-28" } });
+    expect(check(lateInMonth, rates, law)).toMatchObject({ complement: { contestUntil: "2025-02-28" } });
 });
 
 test("a lease without a complement has none to show", () =>
 {
-    expect(check(claim, rates)).toMatchObject({ complement: null });
+    expect(check(claim, rates, law)).toMatchObject({ complement: null });
 });
 
 test("a missing rate says on which side of the known decrees the lease falls", () =>
 {
-    const signed = (signedOn: string, city: City = "paris") => check({ ...claim, flat: { ...flat, city }, signedOn, startsOn: signedOn }, rates);
+    const signed = (signedOn: string, city: City = "paris") => check({ ...claim, flat: { ...flat, city }, signedOn, startsOn: signedOn }, rates, law);
 
     expect(signed("2019-06-01")).toEqual({ kind: "no-rate", side: "before", from: "2019-07-01" });
     expect(signed("2026-07-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-06-30" });
@@ -126,7 +129,7 @@ test("a lease that has not taken effect yet has no months to claim", () =>
 {
     const ahead = { ...claim, startsOn: "2026-10-01" };
 
-    expect(check(ahead, rates)).toMatchObject({ kind: "checked", excess: 17977, months: 0, sinceStart: 0 });
+    expect(check(ahead, rates, law)).toMatchObject({ kind: "checked", excess: 17977, months: 0, sinceStart: 0 });
 });
 
 test("each impossible field is named in the refusal", () =>
@@ -143,7 +146,7 @@ test("each impossible field is named in the refusal", () =>
 
     for (const [change, field] of wrong)
     {
-        expect(check({ ...claim, ...change }, rates)).toEqual({ kind: "invalid", field });
+        expect(check({ ...claim, ...change }, rates, law)).toEqual({ kind: "invalid", field });
     }
 });
 
@@ -158,12 +161,12 @@ test("the court record of the decree comes back with the check", () =>
     };
     const judged = [{ ...rates[1]!, decree: { ...rates[1]!.decree, contest } }];
 
-    expect(check(claim, judged)).toMatchObject({ rate: { decree: { contest } } });
+    expect(check(claim, judged, law)).toMatchObject({ rate: { decree: { contest } } });
 });
 
 test("a rate that gives a zero cap is broken data", () =>
 {
     const broken = [{ ...rates[1]!, majored: 0 }];
 
-    expect(() => check(claim, broken)).toThrow(CapError);
+    expect(() => check(claim, broken, law)).toThrow(CapError);
 });

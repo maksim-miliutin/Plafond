@@ -4,7 +4,7 @@ import { expect, test } from "vitest";
 import { check, type Check, type Claim, type Contest, type Rate } from "@plafond/domain";
 
 import { ResultStep } from "../components/ResultStep";
-import { claim, rate } from "./fixtures";
+import { claim, law, rate } from "./fixtures";
 
 const thin = "\u202F";
 const hard = "\u00A0";
@@ -12,7 +12,7 @@ const hard = "\u00A0";
 function page(change: Partial<Claim> = {}, rates: Rate[] = [rate], writable = true): string
 {
     const lease = { ...claim, ...change };
-    const result = check(lease, rates) as Check;
+    const result = check(lease, rates, law) as Check;
 
     return renderToStaticMarkup(<ResultStep check={result} claim={lease} quartier="Saint-Germain-l'Auxerrois" writable={writable} />);
 }

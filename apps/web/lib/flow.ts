@@ -1,5 +1,5 @@
 import { check, letter, quartierAt } from "@plafond/domain";
-import type { City, Check, Claim, Day, Letter, Point, Quartier, Rate, Unpriced } from "@plafond/domain";
+import type { City, Check, Claim, Day, LawPeriod, Letter, Point, Quartier, Rate, Unchecked } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
 import { leaseFrom, questions, type FieldErrors, type LeaseFields } from "./lease";
@@ -19,6 +19,7 @@ export interface World
     rates: readonly Rate[];
     quartiers: readonly Quartier[];
     on: Day;
+    law: readonly LawPeriod[];
 }
 
 export interface Place
@@ -48,7 +49,7 @@ interface Checked extends Found
 export type Step =
     | { at: "address"; typed: string; problem: Problem | null }
     | ({ at: "quartier" } & Found)
-    | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; noRate: Unpriced | null } & Found)
+    | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; unchecked: Unchecked | null } & Found)
     | ({ at: "result"; letter: Letter | null } & Checked)
     | ({ at: "letter"; letter: Letter } & Checked)
     | { at: "help"; from: Extract<Step, { at: "result" }> };
@@ -73,7 +74,7 @@ export function next(step: Step, event: Event, world: World): Step
             return step.at === "address" ? located(event.typed, event.lookup, world) : step;
 
         case "confirmed":
-            return step.at === "quartier" ? { at: "lease", typed: step.typed, place: step.place, fields: empty, errors: {}, noRate: null } : step;
+            return step.at === "quartier" ? { at: "lease", typed: step.typed, place: step.place, fields: empty, errors: {}, unchecked: null } : step;
 
         case "answered":
             return step.at === "lease" ? answered(step, event.fields, world) : step;
@@ -118,13 +119,13 @@ function answered(step: Extract<Step, { at: "lease" }>, fields: LeaseFields, wor
     const lease = leaseFrom(fields, { city: step.place.city, quartier: step.place.quartier.number, on: world.on });
     if ("kind" in lease)
     {
-        return { ...step, fields, errors: lease.fields, noRate: null };
+        return { ...step, fields, errors: lease.fields, unchecked: null };
     }
 
-    const result = check(lease.claim, world.rates);
-    if (result.kind === "no-rate")
+    const result = check(lease.claim, world.rates, world.law);
+    if (result.kind === "no-rate" || result.kind === "lapsed")
     {
-        return { ...step, fields, errors: {}, noRate: result };
+        return { ...step, fields, errors: {}, unchecked: result };
     }
 
     if (result.kind === "invalid")
@@ -165,7 +166,7 @@ function back(step: Step): Step
             return { at: "quartier", typed: step.typed, place: step.place };
 
         case "result":
-            return { at: "lease", typed: step.typed, place: step.place, fields: step.fields, errors: {}, noRate: null };
+            return { at: "lease", typed: step.typed, place: step.place, fields: step.fields, errors: {}, unchecked: null };
 
         case "letter":
             return { ...step, at: "result" };

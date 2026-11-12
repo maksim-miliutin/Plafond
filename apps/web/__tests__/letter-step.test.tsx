@@ -4,7 +4,7 @@ import { expect, test } from "vitest";
 import { check, letter, type Check, type Claim, type Contest, type Letter } from "@plafond/domain";
 
 import { LetterStep } from "../components/LetterStep";
-import { claim as lease, rate } from "./fixtures";
+import { claim as lease, law, rate } from "./fixtures";
 
 const claim: Claim = { ...lease, complement: 20000, on: "2025-09-25" };
 
@@ -13,7 +13,7 @@ const address = "4 Place du Louvre 75001 Paris";
 function page(contest: Contest | null = null): string
 {
     const rates = [{ ...rate, decree: { ...rate.decree, contest } }];
-    const sent = letter({ check: check(claim, rates) as Check, claim, address, quartier: "Saint-Germain-l'Auxerrois", stated: false });
+    const sent = letter({ check: check(claim, rates, law) as Check, claim, address, quartier: "Saint-Germain-l'Auxerrois", stated: false });
 
     return renderToStaticMarkup(<LetterStep letter={sent as Letter} />);
 }
