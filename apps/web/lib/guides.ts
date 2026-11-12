@@ -214,7 +214,7 @@ export const guides: readonly GuideText[] = [
     {
         slug: "revision-du-loyer",
         label: "La révision annuelle du loyer",
-        title: "Révision annuelle du loyer\u00A0: les règles | Plafond",
+        title: "Révision du loyer et IRL\u00A0: règles et valeurs | Plafond",
         description: "Quand le propriétaire peut augmenter le loyer chaque année, comment l'indice de référence des loyers limite la hausse, et quand elle est interdite.",
         heading: "Révision annuelle du loyer\u00A0: ce que le propriétaire peut demander",
         intro: "En cours de bail, le loyer ne peut augmenter qu'une fois par an, et seulement si le bail le prévoit.",
