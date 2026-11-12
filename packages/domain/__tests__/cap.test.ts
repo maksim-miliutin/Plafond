@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { CapError, check, type Claim } from "../src/cap.js";
-import type { Contest, Flat, Rate } from "../src/rates.js";
+import type { City, Contest, Flat, Rate } from "../src/rates.js";
 
 const flat: Flat = { city: "paris", quartier: 12, rooms: 2, period: "1946-1970", furnished: false };
 
@@ -110,10 +110,16 @@ test("a lease without a complement has none to show", () =>
     expect(check(claim, rates)).toMatchObject({ complement: null });
 });
 
-test("no rate on the signing day is a refusal", () =>
+test("a missing rate says on which side of the known decrees the lease falls", () =>
 {
-    expect(check({ ...claim, signedOn: "2023-01-10" }, rates)).toEqual({ kind: "no-rate" });
-    expect(check({ ...claim, signedOn: "2019-06-30" }, rates)).toEqual({ kind: "no-rate" });
+    const signed = (signedOn: string, city: City = "paris") => check({ ...claim, flat: { ...flat, city }, signedOn, startsOn: signedOn }, rates);
+
+    expect(signed("2019-06-01")).toEqual({ kind: "no-rate", side: "before", from: "2019-07-01" });
+    expect(signed("2026-07-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-06-30" });
+    expect(signed("2026-08-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-06-30" });
+    expect(signed("2022-03-01")).toEqual({ kind: "no-rate", side: "between" });
+    expect(signed("2021-06-01", "lyon")).toEqual({ kind: "no-rate", side: "before", from: "2021-11-01" });
+    expect(signed("2026-08-01", "lyon")).toEqual({ kind: "no-rate", side: "between" });
 });
 
 test("a lease that has not taken effect yet has no months to claim", () =>

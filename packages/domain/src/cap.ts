@@ -1,5 +1,5 @@
-import { addMonths, isDay, wholeMonths, type Day } from "./day.js";
-import { rateOn, type Flat, type NoRate, type Rate } from "./rates.js";
+import { addMonths, dayBefore, isDay, wholeMonths, type Day } from "./day.js";
+import { controlledSince, rateOn, type Flat, type Rate } from "./rates.js";
 import { rounded } from "./money.js";
 
 export interface Claim
@@ -39,7 +39,11 @@ export interface Invalid
     field: keyof Claim;
 }
 
-export type Refusal = NoRate | Invalid;
+export type Gap = { side: "before"; from: Day } | { side: "after"; until: Day } | { side: "between" };
+
+export type Unpriced = { kind: "no-rate" } & Gap;
+
+export type Refusal = Unpriced | Invalid;
 
 export class CapError extends Error
 {
@@ -75,7 +79,7 @@ export function check(claim: Claim, rates: readonly Rate[]): Check | Refusal
     const rate = rateOn(rates, claim.flat, claim.signedOn);
     if ("kind" in rate)
     {
-        return rate;
+        return { kind: "no-rate", ...gapOf(claim, rates) };
     }
 
     const cap = rounded(rate.majored * claim.surface, 100);
@@ -112,4 +116,21 @@ function complementOf(claim: Claim, cap: number): Complement | null
         contestUntil: addMonths(claim.signedOn, contestMonths),
         shortOfCap: Math.max(0, cap - claim.rent),
     };
+}
+
+function gapOf(claim: Claim, rates: readonly Rate[]): Gap
+{
+    const since = controlledSince[claim.flat.city];
+    if (claim.signedOn < since)
+    {
+        return { side: "before", from: since };
+    }
+
+    const last = rates.filter((rate) => rate.flat.city === claim.flat.city).map((rate) => rate.decree.until).sort().at(-1);
+    if (last !== undefined && claim.signedOn >= last)
+    {
+        return { side: "after", until: dayBefore(last) };
+    }
+
+    return { side: "between" };
 }

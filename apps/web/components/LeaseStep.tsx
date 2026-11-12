@@ -3,9 +3,8 @@
 import type { FormEvent } from "react";
 
 import { frenchDay, periods, periodsOf, rooms } from "@plafond/domain";
-import type { City } from "@plafond/domain";
+import type { City, Gap, Unpriced } from "@plafond/domain";
 
-import type { Gap } from "../lib/flow";
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
 import { Choice, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
@@ -15,7 +14,7 @@ export interface LeaseProps
 {
     fields: LeaseFields;
     errors: FieldErrors;
-    noRate?: Gap | null;
+    noRate?: Unpriced | null;
     city?: City;
     onAnswer?: (fields: LeaseFields) => void;
     onBack?: () => void;
