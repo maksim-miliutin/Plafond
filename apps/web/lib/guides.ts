@@ -130,7 +130,7 @@ export const guides: readonly GuideText[] = [
             {
                 heading: "Le complément de loyer",
                 paragraphs: [
-                    "Un complément peut s'ajouter au loyer de base pour un logement aux caractéristiques exceptionnelles, s'il est mentionné au bail. Il est interdit pour un logement classé F ou G au DPE dans les baux signés depuis le 18 août 2022.",
+                    "Un complément peut s'ajouter au loyer de base, s'il est mentionné au bail, pour un logement dont la localisation ou le confort le justifient par comparaison avec les logements de la même catégorie du même secteur. Il est interdit pour un logement classé F ou G au DPE dans les baux signés depuis le 18 août 2022.",
                     "Vous disposez de trois mois après la signature du bail pour le contester devant la commission départementale de conciliation.",
                 ],
             },
@@ -259,13 +259,14 @@ export const guides: readonly GuideText[] = [
             {
                 heading: "Les conditions",
                 paragraphs: [
-                    "Le complément doit correspondre à des caractéristiques de localisation ou de confort exceptionnelles par rapport aux logements du même quartier, et il doit être mentionné au bail avec son montant et ses raisons.",
+                    "Le complément n'est permis que si le logement présente des caractéristiques de localisation ou de confort qui le justifient, par comparaison avec les logements de la même catégorie du même secteur géographique. Son montant et ces caractéristiques doivent figurer au bail.",
+                    "Il ne peut s'ajouter qu'à un loyer de base au moins égal au loyer de référence majoré.",
                 ],
             },
             {
                 heading: "Le contester",
                 paragraphs: [
-                    "Vous disposez de trois mois après la signature du bail pour contester le complément devant la commission départementale de conciliation. C'est gratuit, et c'est au propriétaire de démontrer les caractéristiques exceptionnelles du logement.",
+                    "Vous disposez de trois mois après la signature du bail pour contester le complément devant la commission départementale de conciliation. C'est gratuit, et c'est au propriétaire de démontrer que les caractéristiques du logement justifient le complément.",
                 ],
             },
         ],
