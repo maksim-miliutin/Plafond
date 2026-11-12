@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 
 import type { Quartier } from "@plafond/domain";
 
-import { drawing, mercator, planIgn } from "../lib/map";
+import { drawing, mercator, planIgn, planIgnTemplate } from "../lib/map";
 
 // 300 metres a side at the latitude of Paris: a degree of longitude is shorter there than a degree of latitude.
 const lat = 48.86;
@@ -118,4 +118,11 @@ test("a tile is asked from Plan IGN with its row and its column in the right pla
     expect(url.searchParams.get("LAYER")).toBe("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2");
     expect(url.searchParams.get("TILEMATRIXSET")).toBe("PM");
     expect([url.searchParams.get("TILEMATRIX"), url.searchParams.get("TILEROW"), url.searchParams.get("TILECOL")]).toEqual(["16", "22547", "33195"]);
+});
+
+test("the Leaflet address template is the Plan IGN address the quartier map uses", () =>
+{
+    const filled = planIgnTemplate.replace("{z}", "12").replace("{y}", "1409").replace("{x}", "2075");
+
+    expect(filled).toBe(planIgn({ z: 12, x: 2075, y: 1409, left: 0, top: 0, size: 256 }));
 });

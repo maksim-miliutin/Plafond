@@ -38,6 +38,11 @@ export const pages: readonly Page[] = [
         description: "Sept vérifications gratuites pour locataires\u00A0: loyer encadré, hausse annuelle, DPE, dépôt de garantie, charges, préavis et frais d'agence, avec la lettre.",
     },
     {
+        path: "paris/",
+        title: "Loyer encadré à Paris\u00A0: le plan de la zone | Plafond",
+        description: "Le plan de Paris avec la limite de l'encadrement des loyers, les loyers de référence par arrondissement et la vérification de votre loyer.",
+    },
+    {
         path: "loyer/",
         title: "Loyer plafonné à Paris et Lyon\u00A0: vérifiez le vôtre | Plafond",
         description: "Vérifiez si votre loyer respecte l'encadrement des loyers à Paris, Lyon et Villeurbanne, calculez le trop-perçu et préparez la lettre au propriétaire.",

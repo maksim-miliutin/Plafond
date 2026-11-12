@@ -37,3 +37,10 @@ test("the notice is one tap away from the first screen of the app and of each ch
     expect(renderToStaticMarkup(<DpeFindStep />)).toMatch(/<a[^>]*href="\.\.\/mentions\/"[^>]*>Mentions légales<\/a>/);
     expect(page).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
 });
+
+test("the notice says the plan of each city comes from the Géoplateforme too, without the address", () =>
+{
+    expect(page).toContain("le plan de la ville vient aussi de la Géoplateforme");
+    expect(page).toContain("sans l&#x27;adresse");
+});
+

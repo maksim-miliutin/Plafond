@@ -38,7 +38,7 @@ interface Unit
 
 const margin = 0.25;  // share of the quartier's size left clear on each side
 const tilePixels = 256;
-const deepest = 18;
+export const deepest = 18;
 
 // Web Mercator, the projection map tiles are cut in: the world as a unit square, x eastward and y southward.
 export function mercator(lon: number, lat: number): Unit
@@ -80,22 +80,21 @@ export function drawing(own: Quartier, around: readonly Quartier[], point: Point
 }
 
 // IGN serves Plan IGN free and without a key, from the same Géoplateforme as the geocoder, asking only for credit.
+const planIgnLayer = new URLSearchParams({
+    SERVICE: "WMTS",
+    REQUEST: "GetTile",
+    VERSION: "1.0.0",
+    LAYER: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+    STYLE: "normal",
+    FORMAT: "image/png",
+    TILEMATRIXSET: "PM",
+});
+
+export const planIgnTemplate = `https://data.geopf.fr/wmts?${planIgnLayer}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}`;
+
 export function planIgn(tile: Tile): string
 {
-    const query = new URLSearchParams({
-        SERVICE: "WMTS",
-        REQUEST: "GetTile",
-        VERSION: "1.0.0",
-        LAYER: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
-        STYLE: "normal",
-        FORMAT: "image/png",
-        TILEMATRIXSET: "PM",
-        TILEMATRIX: String(tile.z),
-        TILEROW: String(tile.y),
-        TILECOL: String(tile.x),
-    });
-
-    return `https://data.geopf.fr/wmts?${query}`;
+    return planIgnTemplate.replace("{z}", String(tile.z)).replace("{y}", String(tile.y)).replace("{x}", String(tile.x));
 }
 
 function tilesFor(scale: number, corner: Unit, frame: Frame): Tile[]
