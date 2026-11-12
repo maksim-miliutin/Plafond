@@ -129,6 +129,13 @@ test("a complement is described in the terms of the law, the proof left to the l
     expect(said).not.toContain("exceptionnel");
 });
 
+test("a complement on a base rent below the cap comes with the floor the law sets and the gap to it", () =>
+{
+    expect(page({ rent: 120000, complement: 20000 })).toContain("Un complément ne peut s&#x27;ajouter qu&#x27;à un loyer de base au "
+        + `moins égal au plafond. Le loyer de base de votre bail est inférieur de 80,00${hard}€ au plafond.`);
+    expect(page({ rent: 128000, complement: 20000 })).not.toContain("au moins égal au plafond");
+});
+
 test("a complement leads to what judges have accepted and rejected", () =>
 {
     expect(page({ complement: 20000 })).toMatch(/<a[^>]*href="\.\.\/guides\/complement-de-loyer\/#juges"[^>]*>Ce que les juges ont admis ou écarté<\/a>/);

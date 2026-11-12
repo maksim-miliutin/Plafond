@@ -89,6 +89,15 @@ test("a complement is set against the cap with the last day to contest it", () =
     });
 });
 
+// Loi n° 2018-1021, article 140, III, B: a complement cannot be applied to a base rent below the majored reference rent.
+// 1 020,23 € less 1 000,00 € leaves 20,23 €.
+test("a complement on a base rent below the cap carries how far below it falls, and none at or above it", () =>
+{
+    expect(check({ ...claim, rent: 100000, complement: 20000 }, rates)).toMatchObject({ complement: { shortOfCap: 2023 } });
+    expect(check({ ...claim, rent: 102023, complement: 20000 }, rates)).toMatchObject({ complement: { shortOfCap: 0 } });
+    expect(check({ ...claim, complement: 20000 }, rates)).toMatchObject({ complement: { shortOfCap: 0 } });
+});
+
 test("the window to contest a complement ends on the last day of a shorter month", () =>
 {
     const lateInMonth = { ...claim, signedOn: "2024-11-30", startsOn: "2024-12-01", complement: 20000 };
