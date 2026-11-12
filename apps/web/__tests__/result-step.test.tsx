@@ -118,6 +118,17 @@ test("a complement in a lease signed since 18 August 2022 comes with the nine ch
     expect(page()).not.toContain("ces caractéristiques");
 });
 
+// The law asks for characteristics that justify the complement against comparable flats of the sector, not exceptional ones.
+test("a complement is described in the terms of the law, the proof left to the landlord", () =>
+{
+    const said = page({ complement: 20000 });
+
+    expect(said).toContain("Il n&#x27;est permis que si le logement présente des caractéristiques de localisation ou de confort qui "
+        + "le justifient, par comparaison avec les logements de la même catégorie du même secteur, et c&#x27;est au propriétaire "
+        + "de le démontrer.");
+    expect(said).not.toContain("exceptionnel");
+});
+
 test("a complement leads to what judges have accepted and rejected", () =>
 {
     expect(page({ complement: 20000 })).toMatch(/<a[^>]*href="\.\.\/guides\/complement-de-loyer\/#juges"[^>]*>Ce que les juges ont admis ou écarté<\/a>/);

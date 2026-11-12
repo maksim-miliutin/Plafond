@@ -210,6 +210,19 @@ test("the complement guide sets out what judges accepted and rejected, each with
     }
 });
 
+test("the guides put the complement in the terms of the law, with the floor the base rent must reach", () =>
+{
+    const complement = guides.find((guide) => guide.slug === "complement-de-loyer")!;
+    const said = complement.sections.flatMap((section) => section.paragraphs).join(" ");
+
+    expect(said).toContain("par comparaison avec les logements de la même catégorie du même secteur géographique");
+    expect(said).toContain("Il ne peut s'ajouter qu'à un loyer de base au moins égal au loyer de référence majoré.");
+    for (const guide of guides)
+    {
+        expect(guide.sections.flatMap((section) => section.paragraphs).join(" "), guide.slug).not.toContain("exceptionnel");
+    }
+});
+
 test("the revision guide shows the index of the last three years from the seed, newest first, with its source", async () =>
 {
     const { IndexTable } = await import("../components/IndexTable");
