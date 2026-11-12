@@ -269,7 +269,13 @@ export const guides: readonly GuideText[] = [
                 ],
             },
         ],
-        sources: [{ text: "Complément de loyer\u00A0: les règles (service-public.fr)", href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F34413" }, conciliation, adil],
+        sources: [
+            { text: "Complément de loyer\u00A0: les règles (service-public.fr)", href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F34413" },
+            { text: "Cour de cassation, 4 décembre 2025, n°\u00A024-17.930 (Légifrance)", href: "https://www.legifrance.gouv.fr/juri/id/JURITEXT000053135178" },
+            { text: "Dépliant pour les locataires (DRIHL)", href: "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/IMG/pdf/flyer-locataire.pdf" },
+            conciliation,
+            adil,
+        ],
     },
     {
         slug: "encadrement-des-loyers-lyon",

@@ -188,6 +188,28 @@ test("the complement guide lists the nine characteristics that bar a complement,
     expect(page).toContain('href="https://www.service-public.gouv.fr/particuliers/vosdroits/F34413"');
 });
 
+// The two rulings of the Cour de cassation read in Que Choisir and in two law firms' notes, the Paris judgment in two
+// notes; the DRIHL's word on renovation in its leaflet for tenants. No judgment was read in full.
+test("the complement guide sets out what judges accepted and rejected, each with its court, day and number, and judges no complement itself", async () =>
+{
+    const { default: SupplementGuide } = await import("../app/guides/complement-de-loyer/page");
+    const page = renderToStaticMarkup(<SupplementGuide />);
+    const accepted = /<h2>Ce que les juges ont admis<\/h2>(.*?)<\/section>/.exec(page)?.[1] ?? "";
+    const rejected = /<h2>Ce que les juges ont écarté<\/h2>(.*?)<\/section>/.exec(page)?.[1] ?? "";
+
+    expect(page).toMatch(/<section class="findings" id="juges">/);
+    expect(accepted).toContain("au cas par cas");
+    expect(accepted).toContain("Cour de cassation, 3e chambre civile, 4 décembre 2025, n°\u00A024-17.930");
+    expect(accepted).toContain("Cour de cassation, 3e chambre civile, 4 décembre 2025, n°\u00A024-15.589");
+    expect(rejected).toContain("La proximité du métro et des commerces");
+    expect(rejected).toContain("Tribunal judiciaire de Paris, 26 février 2026, RG n°\u00A025/05963");
+    expect(rejected).toContain("des travaux de rénovation ne suffisent pas");
+    for (const word of ["illégal", "illicite", "abusif"])
+    {
+        expect(page).not.toContain(word);
+    }
+});
+
 test("the revision guide shows the index of the last three years from the seed, newest first, with its source", async () =>
 {
     const { IndexTable } = await import("../components/IndexTable");
