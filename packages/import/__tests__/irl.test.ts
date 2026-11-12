@@ -46,12 +46,13 @@ test("a row that is not a quarter, a value in decimals, a plain link or an empty
     expect(() => indexOf({ source, rows: [] })).toThrow(IndexError);
 });
 
-// ANIL's table of the IRL, mainland France: from the first quarter of 2017 to the second of 2026, read on 12 October 2026.
-test("the seed holds every quarter from 2017 to the second of 2026, each agreeing with its published change", () =>
+// ANIL's table of the IRL, mainland France, from the first quarter of 2017; the third of 2026, published by INSEE on
+// 15 October 2026 at 148,06, read in INSEE's release and in ANIL's table on 9 November 2026.
+test("the seed holds every quarter from 2017 to the third of 2026, each agreeing with its published change", () =>
 {
     const read = indexOf(seed);
 
-    expect(read.rows).toHaveLength(38);
+    expect(read.rows).toHaveLength(39);
     expect(read.rows[0]).toEqual({ year: 2017, quarter: 1, value: 12590, publishedOn: "2017-04-13" });
-    expect(read.rows.at(-1)).toEqual({ year: 2026, quarter: 2, value: 14837, publishedOn: "2026-07-10" });
+    expect(read.rows.at(-1)).toEqual({ year: 2026, quarter: 3, value: 14806, publishedOn: "2026-10-15" });
 });

@@ -38,6 +38,7 @@
         { "year": 2025, "quarter": 3, "value": 14577, "change": 87, "publishedOn": "2025-10-15" },
         { "year": 2025, "quarter": 4, "value": 14578, "change": 79, "publishedOn": "2026-01-15" },
         { "year": 2026, "quarter": 1, "value": 14660, "change": 78, "publishedOn": "2026-04-15" },
-        { "year": 2026, "quarter": 2, "value": 14837, "change": 115, "publishedOn": "2026-07-10" }
+        { "year": 2026, "quarter": 2, "value": 14837, "change": 115, "publishedOn": "2026-07-10" },
+        { "year": 2026, "quarter": 3, "value": 14806, "change": 157, "publishedOn": "2026-10-15" }
     ]
 }

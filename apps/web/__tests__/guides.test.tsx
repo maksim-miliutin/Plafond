@@ -184,9 +184,9 @@ test("the revision guide shows the index of the last three years from the seed, 
 
     expect(rise.check.href).toBe("revision/");
     expect(rows).toHaveLength(13);
-    expect(rows[1]).toContain("2e trimestre 2026");
-    expect(rows[1]).toContain("148,37");
-    expect(rows[1]).toContain("10 juillet 2026");
-    expect(rows[12]).toContain("3e trimestre 2023");
+    expect(rows[1]).toContain("3e trimestre 2026");
+    expect(rows[1]).toContain("148,06");
+    expect(rows[1]).toContain("15 octobre 2026");
+    expect(rows[12]).toContain("4e trimestre 2023");
     expect(page).toMatch(/<a[^>]*href="https:\/\/anil.org\/outils\/indices-et-plafonds\/tableau-de-lirl"/);
 });
