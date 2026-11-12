@@ -171,3 +171,22 @@ test("the agency fees guide names the zones and the way to be paid back, and lea
     expect(said).toContain("ne peut pas dépasser celle du propriétaire");
     expect(said).not.toMatch(/\d+,\d{2}/);
 });
+
+test("the revision guide shows the index of the last three years from the seed, newest first, with its source", async () =>
+{
+    const { IndexTable } = await import("../components/IndexTable");
+    const seed = (await import("../../../db/seed/irl.json")).default;
+    const { indexOf } = await import("@plafond/import");
+    const rise = guides.find((guide) => guide.slug === "revision-du-loyer")!;
+    const read = indexOf(seed);
+    const page = renderToStaticMarkup(<Guide guide={rise} more={<IndexTable index={read} />} />);
+    const rows = page.match(/<tr>.*?<\/tr>/gs) ?? [];
+
+    expect(rise.check.href).toBe("revision/");
+    expect(rows).toHaveLength(13);
+    expect(rows[1]).toContain("2e trimestre 2026");
+    expect(rows[1]).toContain("148,37");
+    expect(rows[1]).toContain("10 juillet 2026");
+    expect(rows[12]).toContain("3e trimestre 2023");
+    expect(page).toMatch(/<a[^>]*href="https:\/\/anil.org\/outils\/indices-et-plafonds\/tableau-de-lirl"/);
+});
