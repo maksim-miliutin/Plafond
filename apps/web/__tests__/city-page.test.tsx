@@ -15,13 +15,25 @@ const links = [
 
 function paris(lastDay = span.lastDay): string
 {
-    return renderToStaticMarkup(<CityPage city="paris" outlines={[square]} span={{ ...span, lastDay }} links={links} />);
+    return renderToStaticMarkup(<CityPage city="paris" outlines={[square]} spans={[{ ...span, lastDay }]} links={links} />);
 }
 
 test("the page names the leases Plafond can check, with the days of the data", () =>
 {
     expect(paris()).toContain("Plafond vérifie les baux signés du 1er juillet 2019 au 24 novembre 2026, dans les 20 arrondissements");
     expect(paris("2028-11-23")).toContain("au 23 novembre 2028, dans les 20 arrondissements");
+});
+
+test("days without rents split the sentence, so the page never claims them", () =>
+{
+    const spans: Span[] = [
+        { from: "2019-07-01", lastDay: "2020-06-30" },
+        { from: "2021-07-01", lastDay: "2023-06-30" },
+        { from: "2024-07-01", lastDay: "2026-11-24" },
+    ];
+    const page = renderToStaticMarkup(<CityPage city="paris" outlines={[square]} spans={spans} links={links} />);
+
+    expect(page).toContain("Plafond vérifie les baux signés du 1er juillet 2019 au 30 juin 2020, du 1er juillet 2021 au 30 juin 2023 et du 1er juillet 2024 au 24 novembre 2026, dans les 20 arrondissements");
 });
 
 test("every check is offered one floor up, even before the map loads", () =>
@@ -69,10 +81,11 @@ test("Changer de ville leads home and the notice is one tap away", () =>
 
 test("the Lyon page speaks of Lyon and Villeurbanne only", () =>
 {
-    const page = renderToStaticMarkup(<CityPage city="lyon" outlines={[square, square]} span={{ from: "2021-11-01", lastDay: "2026-10-31" }} links={[{ href: "villeurbanne/", label: "Villeurbanne" }]} />);
+    const spans: Span[] = [{ from: "2022-11-01", lastDay: "2023-10-31" }, { from: "2024-11-01", lastDay: "2026-10-31" }];
+    const page = renderToStaticMarkup(<CityPage city="lyon" outlines={[square, square]} spans={spans} links={[{ href: "villeurbanne/", label: "Villeurbanne" }]} />);
     const tiles = page.match(/<a[^>]*class="check"[^>]*>.*?<\/a>/gs) ?? [];
 
-    expect(page).toContain("Plafond vérifie les baux signés du 1er novembre 2021 au 31 octobre 2026, dans les 9 arrondissements de Lyon et à Villeurbanne");
+    expect(page).toContain("Plafond vérifie les baux signés du 1er novembre 2022 au 31 octobre 2023 et du 1er novembre 2024 au 31 octobre 2026, dans les 9 arrondissements de Lyon et à Villeurbanne");
     expect(tiles[0]).toContain("À Lyon et Villeurbanne, avec l&#x27;encadrement des loyers.");
     expect(page).not.toContain('href="../guides/encadrement-des-loyers-paris/"');
     expect(page).toContain("seules Lyon et Villeurbanne ont des loyers de référence");

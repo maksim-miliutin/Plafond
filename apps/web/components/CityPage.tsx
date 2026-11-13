@@ -10,11 +10,11 @@ export interface CityPageProps
 {
     city: City;
     outlines: readonly Quartier["rings"][];
-    span: Span;
+    spans: readonly Span[];
     links: readonly { href: string; label: string }[];
 }
 
-export function CityPage({ city, outlines, span, links }: CityPageProps)
+export function CityPage({ city, outlines, spans, links }: CityPageProps)
 {
     const copy = cityCopy[city];
 
@@ -24,7 +24,7 @@ export function CityPage({ city, outlines, span, links }: CityPageProps)
             <Brand />
             <h1 className="title">{copy.name}</h1>
             <p className="lead">
-                Plafond vérifie les baux signés du {frenchDay(span.from)} au {frenchDay(span.lastDay)}, {copy.within}
+                Plafond vérifie les baux signés {stretchesOf(spans)}, {copy.within}
             </p>
             <div className="city-block">
                 <CityMap outlines={outlines} label={copy.mapLabel} />
@@ -58,4 +58,15 @@ export function CityPage({ city, outlines, span, links }: CityPageProps)
             </p>
         </main>
     );
+}
+
+function stretchesOf(spans: readonly Span[]): string
+{
+    const named = spans.map((span) => `du ${frenchDay(span.from)} au ${frenchDay(span.lastDay)}`);
+    if (named.length === 1)
+    {
+        return named[0]!;
+    }
+
+    return `${named.slice(0, -1).join(", ")} et ${named.at(-1)}`;
 }

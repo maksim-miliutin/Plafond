@@ -1,6 +1,6 @@
 import { dayBefore, type Day } from "./day.js";
-import type { LawPeriod } from "./law.js";
-import { controlledSince, type City, type Decree } from "./rates.js";
+import { lawOn, type LawPeriod } from "./law.js";
+import type { City, Rate } from "./rates.js";
 
 export interface Span
 {
@@ -17,11 +17,18 @@ export class SpanError extends Error
     }
 }
 
-export function checkedSpan(city: City, decrees: readonly Decree[], law: readonly LawPeriod[]): Span
+interface Stretch
 {
-    if (decrees.length === 0)
+    from: Day;
+    until: Day;
+}
+
+export function checkedSpans(city: City, rates: readonly Rate[], law: readonly LawPeriod[]): Span[]
+{
+    const priced = joined(rates.filter((rate) => rate.flat.city === city).map((rate) => rate.decree));
+    if (priced.length === 0)
     {
-        throw new SpanError(`no decree of ${city} was given`);
+        throw new SpanError(`no rent of ${city} was given`);
     }
 
     if (law.length === 0)
@@ -29,13 +36,43 @@ export function checkedSpan(city: City, decrees: readonly Decree[], law: readonl
         throw new SpanError("no period of the law was given");
     }
 
-    const decreesEnd = latest(decrees.map((decree) => decree.until));
-    const lawEnd = latest(law.map((period) => period.until));
+    // Not an overlap with the law periods: lawOn lets days before the law through, and the page must agree with the check.
+    const edges = law.flatMap((period) => [period.from, period.until]);
+    const pieces = priced.flatMap((stretch) =>
+    {
+        const cuts = [stretch.from, ...edges.filter((day) => stretch.from < day && day < stretch.until).sort(), stretch.until];
 
-    return { from: controlledSince[city], lastDay: dayBefore(decreesEnd < lawEnd ? decreesEnd : lawEnd) };
+        return cuts.slice(1).map((until, i) => ({ from: cuts[i]!, until }));
+    });
+    const open = pieces.filter((piece) => !isLapsed(lawOn(piece.from, law)));
+    if (open.length === 0)
+    {
+        throw new SpanError(`every rent of ${city} falls after the law lapsed`);
+    }
+
+    return joined(open).map((stretch) => ({ from: stretch.from, lastDay: dayBefore(stretch.until) }));
 }
 
-function latest(days: readonly Day[]): Day
+function isLapsed(found: ReturnType<typeof lawOn>): boolean
 {
-    return [...days].sort().at(-1)!;
+    return found !== null && "kind" in found;
+}
+
+function joined(stretches: readonly Stretch[]): Stretch[]
+{
+    const sorted = [...stretches].sort((a, b) => a.from.localeCompare(b.from));
+    const merged: Stretch[] = [];
+    for (const stretch of sorted)
+    {
+        const last = merged.at(-1);
+        if (last === undefined || stretch.from > last.until)
+        {
+            merged.push({ from: stretch.from, until: stretch.until });
+            continue;
+        }
+
+        merged[merged.length - 1] = { from: last.from, until: stretch.until > last.until ? stretch.until : last.until };
+    }
+
+    return merged;
 }
