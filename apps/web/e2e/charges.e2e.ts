@@ -1,7 +1,9 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("a tenant goes from the first screen to the charges letter, and nothing leaves the phone", async ({ page, baseURL }) =>
+import { answerForGeoplateforme } from "./geoplateforme";
+
+test("a tenant goes from the first screen to the charges letter, and nothing typed leaves the phone", async ({ page, baseURL }) =>
 {
     const elsewhere: string[] = [];
     page.on("request", (request) =>
@@ -9,12 +11,14 @@ test("a tenant goes from the first screen to the charges letter, and nothing lea
         const url = new URL(request.url());
         if (url.origin !== new URL(baseURL ?? "").origin)
         {
-            elsewhere.push(url.host);
+            elsewhere.push(url.href);
         }
     });
 
     await page.clock.setFixedTime(new Date("2026-03-01T10:00:00+01:00"));
+    await answerForGeoplateforme(page, []);
     await page.goto("/");
+    await page.getByRole("link", { name: /^Lyon et Villeurbanne/ }).click();
     await page.getByRole("link", { name: /^Ma régularisation de charges/ }).click();
 
     await page.locator("#address").fill("12 Rue des Lilas 69003 Lyon");
@@ -35,5 +39,5 @@ test("a tenant goes from the first screen to the charges letter, and nothing lea
     await page.getByRole("button", { name: "Préparer la lettre au propriétaire" }).click();
     await expect(page.locator("article")).toContainText("je vous mets en demeure de retirer ces sommes");
 
-    expect(elsewhere).toEqual([]);
+    expect(elsewhere.filter((href) => !href.startsWith("https://data.geopf.fr/wmts?"))).toEqual([]);
 });

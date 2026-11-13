@@ -37,7 +37,7 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
 
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <Brand />
             <Progress at={1} of={4} label="votre adresse" />
             <h1 className="title">Votre loyer dépasse-t-il le plafond légal ?</h1>

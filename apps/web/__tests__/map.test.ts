@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 
 import type { Quartier } from "@plafond/domain";
 
-import { drawing, mercator, planIgn, planIgnTemplate } from "../lib/map";
+import { drawing, mercator, planIgn, planIgnTemplate, silhouette } from "../lib/map";
 
 // 300 metres a side at the latitude of Paris: a degree of longitude is shorter there than a degree of latitude.
 const lat = 48.86;
@@ -126,3 +126,33 @@ test("the Leaflet address template is the Plan IGN address the quartier map uses
 
     expect(filled).toBe(planIgn({ z: 12, x: 2075, y: 1409, left: 0, top: 0, size: 256 }));
 });
+
+function pointsOf(path: string): [number, number][]
+{
+    return [...path.matchAll(/(-?[\d.]+),(-?[\d.]+)/g)].map((found) => [Number(found[1]), Number(found[2])]);
+}
+
+test("a silhouette fits its square with north up", () =>
+{
+    const peak: [number, number][] = [[2.3, 48.85], [2.32, 48.85], [2.31, 48.87], [2.3, 48.85]];
+    const points = pointsOf(silhouette([[peak]], 32));
+
+    for (const [x, y] of points)
+    {
+        expect(x).toBeGreaterThanOrEqual(0);
+        expect(x).toBeLessThanOrEqual(32);
+        expect(y).toBeGreaterThanOrEqual(0);
+        expect(y).toBeLessThanOrEqual(32);
+    }
+
+    expect(Math.min(...points.map(([, y]) => y))).toBe(points[2]![1]);
+});
+
+// The circle fills 26 px of the 32 px square, about 82 px around: at half a pixel apart, about 160 corners at most.
+test("a silhouette drops corners closer than half a pixel", () =>
+{
+    const circle = Array.from({ length: 1001 }, (_, i): [number, number] => [2.35 + 0.01 * Math.cos((i / 1000) * 2 * Math.PI), 48.85 + 0.0066 * Math.sin((i / 1000) * 2 * Math.PI)]);
+
+    expect(pointsOf(silhouette([[circle]], 32)).length).toBeLessThanOrEqual(170);
+});
+

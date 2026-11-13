@@ -35,7 +35,7 @@ export function RevisionFormStep({ fields, errors, onAnswer }: RevisionFormProps
 
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <Brand />
             <h1 className="title">Ma hausse de loyer respecte-t-elle l'indice ?</h1>
             <p className="lead">

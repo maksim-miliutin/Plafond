@@ -29,7 +29,7 @@ export function DepositFormStep({ fields, errors, onAnswer }: DepositFormProps)
 
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <Brand />
             <h1 className="title">Mon dépôt de garantie m'a-t-il été rendu à temps ?</h1>
             <p className="lead">

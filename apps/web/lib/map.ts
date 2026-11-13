@@ -37,6 +37,8 @@ interface Unit
 }
 
 const margin = 0.25;  // share of the quartier's size left clear on each side
+const padding = 3;  // pixels left clear around a silhouette
+const thinnest = 0.5;  // pixels: a corner closer than this to the last one kept is dropped
 const tilePixels = 256;
 export const deepest = 18;
 
@@ -79,6 +81,24 @@ export function drawing(own: Quartier, around: readonly Quartier[], point: Point
     };
 }
 
+export function silhouette(outlines: readonly Quartier["rings"][], size: number): string
+{
+    const corners = outlines.flat(2).map(([lon, lat]) => mercator(lon, lat));
+    const west = Math.min(...corners.map((c) => c.x));
+    const east = Math.max(...corners.map((c) => c.x));
+    const north = Math.min(...corners.map((c) => c.y));
+    const south = Math.max(...corners.map((c) => c.y));
+
+    const scale = (size - 2 * padding) / Math.max(east - west, south - north);
+    const corner = { x: west - (size / scale - (east - west)) / 2, y: north - (size / scale - (south - north)) / 2 };
+    const place = ({ x, y }: Unit) => ({ x: (x - corner.x) * scale, y: (y - corner.y) * scale });
+
+    return outlines
+        .flat()
+        .map((ring) => "M" + thinned(ring.map(([lon, lat]) => place(mercator(lon, lat)))).map(spot).join("L") + "Z")
+        .join("");
+}
+
 // IGN serves Plan IGN free and without a key, from the same Géoplateforme as the geocoder, asking only for credit.
 const planIgnLayer = new URLSearchParams({
     SERVICE: "WMTS",
@@ -119,4 +139,19 @@ function tilesFor(scale: number, corner: Unit, frame: Frame): Tile[]
 function spot({ x, y }: { x: number; y: number }): string
 {
     return `${x.toFixed(1)},${y.toFixed(1)}`;
+}
+
+function thinned(points: readonly Unit[]): Unit[]
+{
+    const kept: Unit[] = [];
+    for (const point of points)
+    {
+        const last = kept.at(-1);
+        if (last === undefined || Math.hypot(point.x - last.x, point.y - last.y) >= thinnest)
+        {
+            kept.push(point);
+        }
+    }
+
+    return kept;
 }

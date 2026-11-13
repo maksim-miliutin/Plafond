@@ -81,9 +81,9 @@ test("while the search runs the button says so and cannot be pressed twice", () 
 });
 
 // An app on the home screen has no back button of its own; the first screen of each check needs its own way back.
-test("the first screen of the rent check leads back to all the checks", () =>
+test("the first screen of the rent check leads back home", () =>
 {
-    expect(page).toMatch(/<a[^>]*class="back"[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>|<a[^>]*href="\.\.\/"[^>]*class="back"[^>]*>Toutes les vérifications<\/a>/);
+    expect(page).toMatch(/<a[^>]*class="back"[^>]*href="\.\.\/"[^>]*>Accueil<\/a>|<a[^>]*href="\.\.\/"[^>]*class="back"[^>]*>Accueil<\/a>/);
 });
 
 test("the screen says which of the four steps it is", () =>

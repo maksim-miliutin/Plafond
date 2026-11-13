@@ -29,15 +29,17 @@ async function scanned(page: Page, screen: string): Promise<void>
     expect(found.violations.map((v) => `${screen} ${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
 }
 
-test("the first screen offers both checks and leads to each", async ({ page }) =>
+test("a city page offers both checks and leads to each", async ({ page }) =>
 {
+    await answerForGeoplateforme(page, []);
     await page.goto("/");
     await scanned(page, "home");
 
+    await page.getByRole("link", { name: /^Paris/ }).click();
     await page.getByRole("link", { name: /^Mon loyer/ }).click();
     await expect(page.getByLabel("Adresse du logement")).toBeVisible();
 
-    await page.goto("/");
+    await page.goto("/paris/");
     await page.getByRole("link", { name: /^Mon logement est-il une passoire/ }).click();
     await expect(page.getByLabel("Numéro du DPE ou adresse du logement")).toBeVisible();
 });

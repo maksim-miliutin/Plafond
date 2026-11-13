@@ -1,9 +1,11 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+import { answerForGeoplateforme } from "./geoplateforme";
+
 // Service-public's own example, on the index the build ships: a lease of 600 € signed on 20 July 2025 that names no quarter,
 // revised on 20 July 2026, allows 600 × 148,37 / 146,68 = 606,91 €; 620 € asked is 13,09 € too much each month.
-test("a tenant checks the yearly rise against the index and writes to the landlord, and nothing leaves the phone", async ({ page, baseURL }) =>
+test("a tenant checks the yearly rise against the index and writes to the landlord, and nothing typed leaves the phone", async ({ page, baseURL }) =>
 {
     const elsewhere: string[] = [];
     page.on("request", (request) =>
@@ -11,12 +13,14 @@ test("a tenant checks the yearly rise against the index and writes to the landlo
         const url = new URL(request.url());
         if (url.origin !== new URL(baseURL ?? "").origin)
         {
-            elsewhere.push(url.host);
+            elsewhere.push(url.href);
         }
     });
 
     await page.clock.setFixedTime(new Date("2026-10-12T10:00:00+02:00"));
+    await answerForGeoplateforme(page, []);
     await page.goto("/");
+    await page.getByRole("link", { name: /^Lyon et Villeurbanne/ }).click();
     await page.getByRole("link", { name: /^Ma hausse de loyer/ }).click();
 
     await page.getByLabel("Adresse du logement").fill("12 Rue des Lilas 69003 Lyon");
@@ -35,5 +39,5 @@ test("a tenant checks the yearly rise against the index and writes to the landlo
     await page.getByRole("button", { name: "Préparer la lettre au propriétaire" }).click();
     await expect(page.locator("article")).toContainText("ne peut donc pas dépasser 600,00 € × 148,37 / 146,68, soit 606,91 €");
 
-    expect(elsewhere).toEqual([]);
+    expect(elsewhere.filter((href) => !href.startsWith("https://data.geopf.fr/wmts?"))).toEqual([]);
 });

@@ -9,7 +9,7 @@ export function DistrictPage({ district }: { district: District })
 
     return (
         <main className="screen guide">
-            <a className="back" href="../../">Toutes les vérifications</a>
+            <a className="back" href="../../">Accueil</a>
             <Brand />
             <h1 className="title">Encadrement des loyers dans le {name}</h1>
             <p className="lead">

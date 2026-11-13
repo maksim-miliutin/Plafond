@@ -137,3 +137,32 @@ test("the Lyon page draws Lyon and Villeurbanne apart and leads to each commune"
     await expect(page).toHaveURL(/\/lyon\/villeurbanne\/$/);
 });
 
+test("the first screen offers only the two cities and fetches nothing from another site", async ({ page, baseURL }) =>
+{
+    const elsewhere: string[] = [];
+    page.on("request", (request) =>
+    {
+        if (new URL(request.url()).origin !== new URL(baseURL ?? "").origin)
+        {
+            elsewhere.push(request.url());
+        }
+    });
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.goto("/");
+
+    await expect(page.getByRole("navigation", { name: "Villes" }).getByRole("link")).toHaveCount(2);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+    await page.waitForLoadState("networkidle");
+    expect(elsewhere).toEqual([]);
+});
+
+test("a tenant reaches the rent check through the city", async ({ page }) =>
+{
+    await plan(page);
+    await page.goto("/");
+    await page.getByRole("link", { name: /^Paris/ }).click();
+    await page.getByRole("link", { name: "Mon loyer dépasse-t-il le plafond légal ?" }).click();
+
+    await expect(page.getByLabel("Adresse du logement")).toBeVisible();
+});
+

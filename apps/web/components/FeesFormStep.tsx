@@ -28,7 +28,7 @@ export function FeesFormStep({ fields, errors, onAnswer }: FeesFormProps)
 
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <Brand />
             <h1 className="title">Mes frais d'agence dépassent-ils le plafond ?</h1>
             <p className="lead">

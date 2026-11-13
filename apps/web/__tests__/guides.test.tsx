@@ -16,14 +16,14 @@ test("every guide is a page of its own in the table, so it gets its title, its c
     expect(new Set(pages.map((page) => page.title)).size).toBe(pages.length);
 });
 
-test("each guide leads to its check twice, at the top and at the end, and back to all the checks", () =>
+test("each guide leads to its check twice, at the top and at the end, and back home", () =>
 {
     for (const guide of guides)
     {
         const page = renderToStaticMarkup(<Guide guide={guide} />);
 
         expect(page.match(new RegExp(`href="\\.\\./\\.\\./${guide.check.href}"`, "g")), guide.slug).toHaveLength(2);
-        expect(page, guide.slug).toMatch(/<a[^>]*href="\.\.\/\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
+        expect(page, guide.slug).toMatch(/<a[^>]*href="\.\.\/\.\.\/"[^>]*>Accueil<\/a>/);
         expect(page.match(/<h1/g), guide.slug).toHaveLength(1);
         expect(page.match(/<h2/g)?.length, guide.slug).toBeGreaterThanOrEqual(3);
     }
@@ -61,9 +61,9 @@ test("the deposit guide's worked example matches the rule it explains", () =>
     expect(said).toContain("deux périodes, soit 240\u00A0€");
 });
 
-test("the first screen lists every guide, and each check's first screen links to its own", async () =>
+test("the two city pages list every guide between them, and each check's first screen links to its own", async () =>
 {
-    const { Home } = await import("../components/Home");
+    const { CityPage } = await import("../components/CityPage");
     const { AddressStep } = await import("../components/AddressStep");
     const { DpeFindStep } = await import("../components/DpeFindStep");
     const { DepositFormStep } = await import("../components/DepositFormStep");
@@ -74,11 +74,12 @@ test("the first screen lists every guide, and each check's first screen links to
     const { feesStart } = await import("../lib/fees-flow");
     const { RevisionFormStep } = await import("../components/RevisionFormStep");
     const { revisionStart } = await import("../lib/revision-flow");
-    const home = renderToStaticMarkup(<Home />);
+    const span = { from: "2019-07-01", lastDay: "2026-11-24" };
+    const cities = renderToStaticMarkup(<CityPage city="paris" outlines={[]} span={span} links={[]} />) + renderToStaticMarkup(<CityPage city="lyon" outlines={[]} span={span} links={[]} />);
 
     for (const guide of guides)
     {
-        expect(home, guide.slug).toContain(`href="guides/${guide.slug}/"`);
+        expect(cities, guide.slug).toContain(`href="../guides/${guide.slug}/"`);
     }
 
     const firsts: [string, string][] = [
