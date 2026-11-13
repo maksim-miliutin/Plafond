@@ -4,6 +4,7 @@ import { expect, test } from "vitest";
 import early from "../../../db/seed/lyon-2022-2023.csv?raw";
 import geojson from "../../../db/seed/lyon-2024-2025.geojson?raw";
 import recent from "../../../db/seed/lyon-2025-2026.csv?raw";
+import annulled from "../../../db/seed/lyon-2023-2024.geojson?raw";
 import lyonDecrees from "../../../db/seed/lyon-decrees.json" with { type: "json" };
 import { LyonError, lyonOutlines, lyonRates, lyonTable } from "../src/lyon.js";
 
@@ -18,6 +19,26 @@ test("the three published shapes read alike: 233 IRIS of Lyon and Villeurbanne, 
         expect(table.zones.size).toBe(233);
         expect(new Set(table.zones.values()).size).toBe(zones);
     }
+});
+
+// Expected rents come from an independent copy of the decree of 29 September 2023 (loyer-paris-be), not from this file.
+test("the 2023 file prices its five zones as the decree of 29 September 2023 does", () =>
+{
+    const table = lyonTable(annulled);
+    const rates = lyonRates(table, { ...decree, title: "Arrêté préfectoral n° DDT 69-2023-09-29-00003", from: "2023-11-01", until: "2024-11-01" });
+    const at = (zone: number, rooms: number, period: string, furnished: boolean) =>
+    {
+        const iris = [...table.zones].find(([, known]) => known === zone)![0];
+
+        return rates.find((rate) => rate.flat.quartier === iris && rate.flat.rooms === rooms && rate.flat.period === period && rate.flat.furnished === furnished);
+    };
+
+    expect(table.zones.size).toBe(233);
+    expect(new Set(table.zones.values()).size).toBe(5);
+    expect(at(1, 1, "before-1946", false)).toMatchObject({ reference: 1630, majored: 1960, minored: 1140 });
+    expect(at(1, 1, "before-1946", true)).toMatchObject({ reference: 1840, majored: 2210, minored: 1290 });
+    expect(at(5, 4, "1971-1990", false)).toMatchObject({ reference: 890, majored: 1070, minored: 620 });
+    expect(at(3, 2, "1991-2005", true)).toMatchObject({ reference: 1510, majored: 1810, minored: 1060 });
 });
 
 // Counted on the 2025-2026 file by hand: zone 1, one room, built before 1946, 17.50 € empty and 19.80 € furnished, majored by a fifth.
