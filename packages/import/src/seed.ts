@@ -82,7 +82,12 @@ export interface Seeds
     lyon: LyonRates;
 }
 
-const lyonTables = new Map([[2022, "lyon-2022-2023.csv"], [2024, "lyon-2024-2025.geojson"], [2025, "lyon-2025-2026.csv"]]);
+const lyonTables = new Map([
+    [2022, "lyon-2022-2023.csv"],
+    [2023, "lyon-2023-2024.geojson"],
+    [2024, "lyon-2024-2025.geojson"],
+    [2025, "lyon-2025-2026.csv"],
+]);
 
 export function seedsFrom(read: (name: string) => string): Seeds
 {
