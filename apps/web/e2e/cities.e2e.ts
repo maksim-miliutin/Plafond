@@ -125,3 +125,15 @@ test("the Paris page passes axe", async ({ page }) =>
     const found = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
     expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
 });
+
+test("the Lyon page draws Lyon and Villeurbanne apart and leads to each commune", async ({ page }) =>
+{
+    await plan(page);
+    await page.goto("/lyon/");
+
+    await expect(page.locator("path.zone")).toHaveCount(2);
+    await expect(page.locator(".references.districts a")).toHaveCount(10);
+    await page.getByRole("link", { name: "Villeurbanne", exact: true }).click();
+    await expect(page).toHaveURL(/\/lyon\/villeurbanne\/$/);
+});
+

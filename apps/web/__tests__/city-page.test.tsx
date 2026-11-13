@@ -66,3 +66,15 @@ test("Changer de ville leads home and the notice is one tap away", () =>
     expect(paris()).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Changer de ville<\/a>/);
     expect(paris()).toMatch(/<a[^>]*href="\.\.\/mentions\/"[^>]*>Mentions légales<\/a>/);
 });
+
+test("the Lyon page speaks of Lyon and Villeurbanne only", () =>
+{
+    const page = renderToStaticMarkup(<CityPage city="lyon" outlines={[square, square]} span={{ from: "2021-11-01", lastDay: "2026-10-31" }} links={[{ href: "villeurbanne/", label: "Villeurbanne" }]} />);
+    const tiles = page.match(/<a[^>]*class="check"[^>]*>.*?<\/a>/gs) ?? [];
+
+    expect(page).toContain("Plafond vérifie les baux signés du 1er novembre 2021 au 31 octobre 2026, dans les 9 arrondissements de Lyon et à Villeurbanne");
+    expect(tiles[0]).toContain("À Lyon et Villeurbanne, avec l&#x27;encadrement des loyers.");
+    expect(page).not.toContain('href="../guides/encadrement-des-loyers-paris/"');
+    expect(page).toContain("seules Lyon et Villeurbanne ont des loyers de référence");
+});
+
