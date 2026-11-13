@@ -3,7 +3,9 @@ import { expect, test } from "vitest";
 
 import type { Decree } from "@plafond/domain";
 
+import firstAnnex from "../../../db/seed/lyon-annex-2021.csv?raw";
 import lyonAnnex from "../../../db/seed/lyon-annex-2026.csv?raw";
+import firstSectors from "../../../db/seed/lyon-sectors-2021.csv?raw";
 import lyonSectorsText from "../../../db/seed/lyon-sectors-2026.csv?raw";
 import annex from "../../../db/seed/paris-annex-2026.csv?raw";
 import sectors from "../../../db/seed/paris-sectors-2026.csv?raw";
@@ -132,4 +134,36 @@ test("an IRIS given twice, or put in a sector the annex does not price, is a bre
 
     expect(() => lyonSectors([...lines, lines[1]].join("\n"))).toThrow(AnnexError);
     expect(() => lyonAnnexRates(lyonAnnex, lyonSectors(lyonSectorsText.replace(";Villeurbanne;4\n", ";Villeurbanne;6\n")), lyonDecree)).toThrow(AnnexError);
+});
+
+const firstDecree: Decree = {
+    title: "Arrêté préfectoral n° DDT 69-2021-09-29-00005",
+    url: "https://example.org/lyon-2021",
+    from: "2021-11-01",
+    until: "2022-11-01",
+    contest: null,
+};
+
+// Read off the scanned decree of 29 September 2021, through IRIS that the 2022 file puts in zones 1 and 4.
+test("the 2021 Lyon decree prices every IRIS in all 40 categories, its one period after 1990 standing for both later ones", () =>
+{
+    const rates = lyonAnnexRates(firstAnnex, lyonSectors(firstSectors), firstDecree);
+    const find = (iris: number, rooms: number, period: string, furnished: boolean) =>
+        rates.find(({ flat }) => flat.quartier === iris && flat.rooms === rooms && flat.period === period && flat.furnished === furnished);
+
+    expect(rates).toHaveLength(233 * 40);
+    expect(find(693810101, 1, "before-1946", false)).toMatchObject({ reference: 1610, majored: 1930, minored: 1130 });
+    expect(find(693810101, 1, "1991-2005", true)).toMatchObject({ reference: 1910, majored: 2290, minored: 1340 });
+    expect(find(693810101, 1, "after-2005", true)).toMatchObject({ reference: 1910, majored: 2290, minored: 1340 });
+    expect(find(692660201, 4, "after-2005", false)).toMatchObject({ reference: 1090, majored: 1310, minored: 760 });
+});
+
+test("a Lyon category priced both after 1990 and under a later period is priced twice", () =>
+{
+    const zones = lyonSectors(firstSectors);
+
+    for (const period of ["1991-2005", "après 2005"])
+    {
+        expect(() => lyonAnnexRates(`${firstAnnex}1;1;${period};12,6;18,0;21,6;1,1;13,4;19,1;22,9\n`, zones, firstDecree)).toThrow(/second time/);
+    }
 });

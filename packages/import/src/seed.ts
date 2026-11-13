@@ -124,8 +124,11 @@ const lyonTables = new Map([
     [2025, "lyon-2025-2026.csv"],
 ]);
 
-// The Métropole has not published the rents from 1 November 2026 yet, so they are copied from the decree's annexes.
-const lyonAnnexes = new Map([[2026, { annex: "lyon-annex-2026.csv", sectors: "lyon-sectors-2026.csv" }]]);
+// The Métropole published no table for the 2021 decree and none yet for 2026, so those rents are copied from the decrees' annexes.
+const lyonAnnexes = new Map([
+    [2021, { annex: "lyon-annex-2021.csv", sectors: "lyon-sectors-2021.csv" }],
+    [2026, { annex: "lyon-annex-2026.csv", sectors: "lyon-sectors-2026.csv" }],
+]);
 
 export function seedsFrom(read: (name: string) => string): Seeds
 {

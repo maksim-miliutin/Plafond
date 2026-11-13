@@ -5,6 +5,7 @@ import early from "../../../db/seed/lyon-2022-2023.csv?raw";
 import geojson from "../../../db/seed/lyon-2024-2025.geojson?raw";
 import recent from "../../../db/seed/lyon-2025-2026.csv?raw";
 import annulled from "../../../db/seed/lyon-2023-2024.geojson?raw";
+import firstSectors from "../../../db/seed/lyon-sectors-2021.csv?raw";
 import annex from "../../../db/seed/lyon-annex-2026.csv?raw";
 import sectors from "../../../db/seed/lyon-sectors-2026.csv?raw";
 import lyonDecrees from "../../../db/seed/lyon-decrees.json" with { type: "json" };
@@ -100,7 +101,7 @@ test("the Lyon decrees follow each other without a gap, the last one ending afte
     const { decreesOf } = await import("../src/decrees.js");
     const decrees = [...decreesOf(lyonDecrees).values()];
 
-    expect(decrees.map((decree) => decree.from)).toEqual(["2022-11-01", "2023-11-01", "2024-11-01", "2025-11-01", "2026-11-01"]);
+    expect(decrees.map((decree) => decree.from)).toEqual(["2021-11-01", "2022-11-01", "2023-11-01", "2024-11-01", "2025-11-01", "2026-11-01"]);
     decrees.slice(1).forEach((decree, index) => expect(decree.from).toBe(decrees[index]!.until));
     expect(decrees.at(-1)).toMatchObject({ title: "Arrêté préfectoral n° DDT 69-2026-10-23-00004", until: "2026-11-24", contest: null });
 });
@@ -172,4 +173,12 @@ test("sectors that leave out an IRIS the outlines draw, or a year given both as 
 
     expect(() => lyonSeed({ tables: new Map([[2025, recent]]), annexes: new Map([[2026, { annex, sectors: short }]]), decrees })).toThrow(SeedError);
     expect(() => lyonSeed({ tables: new Map([[2025, recent]]), annexes: new Map([[2025, { annex, sectors }]]), decrees })).toThrow(SeedError);
+});
+
+// Read off the scanned map of the 2021 decree IRIS by IRIS, every zone is the one the 2022 file gives.
+test("the 2021 decree draws the four zones of the 2022 file", async () =>
+{
+    const { lyonSectors } = await import("../src/annex.js");
+
+    expect(lyonSectors(firstSectors)).toEqual(lyonTable(early).zones);
 });
