@@ -1,8 +1,10 @@
 import type { Decree, Quartier, Rate } from "@plafond/domain";
 
 import { annexRates } from "./annex.js";
+import { decreesOf } from "./decrees.js";
 import { lyonOutlines, lyonRates, lyonTable } from "./lyon.js";
 import { parseParis } from "./paris.js";
+import { quartiersOf } from "./quartiers.js";
 
 export class SeedError extends Error
 {
@@ -73,3 +75,28 @@ export function lyonSeed({ tables, decrees }: LyonSeed): LyonRates
     };
 }
 
+export interface Seeds
+{
+    paris: Rate[];
+    quartiers: Quartier[];
+    lyon: LyonRates;
+}
+
+const lyonTables = new Map([[2022, "lyon-2022-2023.csv"], [2024, "lyon-2024-2025.geojson"], [2025, "lyon-2025-2026.csv"]]);
+
+export function seedsFrom(read: (name: string) => string): Seeds
+{
+    return {
+        paris: parisRates({
+            table: read("paris-rates.csv"),
+            annex: read("paris-annex-2026.csv"),
+            sectors: read("paris-sectors-2026.csv"),
+            decrees: decreesOf(JSON.parse(read("paris-decrees.json"))),
+        }),
+        quartiers: quartiersOf(JSON.parse(read("paris-quartiers.json"))),
+        lyon: lyonSeed({
+            tables: new Map([...lyonTables].map(([year, name]) => [year, read(name)])),
+            decrees: decreesOf(JSON.parse(read("lyon-decrees.json"))),
+        }),
+    };
+}
