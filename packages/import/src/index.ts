@@ -3,7 +3,7 @@ export { DecreesError, decreesOf } from "./decrees.js";
 export { ParisError, parseParis } from "./paris.js";
 export { QuartiersError, quartiersOf } from "./quartiers.js";
 export { AnnexError, annexRates } from "./annex.js";
-export { SeedError, lyonSeed, parisRates, seedsFrom, type LyonRates, type LyonSeed, type ParisSeed, type Seeds } from "./seed.js";
+export { SeedError, lyonSeed, parisRates, seedsFrom, type LyonAnnex, type LyonRates, type LyonSeed, type ParisSeed, type Seeds } from "./seed.js";
 export { LyonError, lyonOutlines, lyonRates, lyonTable, type LyonTable } from "./lyon.js";
 export { FeeCapsError, feeCapsOf } from "./fees.js";
 export { IndexError, indexOf, type RentIndex } from "./irl.js";

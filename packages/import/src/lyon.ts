@@ -28,8 +28,8 @@ export class LyonError extends Error
     }
 }
 
-const sizes: Record<string, Rooms> = { "1": 1, "2": 2, "3": 3, "4 et plus": 4 };
-const ages: Record<string, Period> = {
+export const lyonRooms: Readonly<Record<string, Rooms>> = { "1": 1, "2": 2, "3": 3, "4 et plus": 4 };
+export const lyonPeriods: Readonly<Record<string, Period>> = {
     "avant 1946": "before-1946",
     "1946-1970": "1946-1970",
     "1971-1990": "1971-1990",
@@ -71,8 +71,8 @@ export function lyonRates(table: LyonTable, decree: Decree): Rate[]
     {
         const nested = table.values.get(zone);
 
-        return Object.entries(sizes).flatMap(([size, rooms]) =>
-            Object.entries(ages).flatMap(([age, period]) =>
+        return Object.entries(lyonRooms).flatMap(([size, rooms]) =>
+            Object.entries(lyonPeriods).flatMap(([age, period]) =>
                 Object.entries(lettings).map(([letting, furnished]) => ({
                     flat: { city: "lyon" as const, quartier: iris, rooms, period, furnished },
                     ...rentsAt(nested, [size, age, letting], iris),

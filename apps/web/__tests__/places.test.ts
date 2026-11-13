@@ -95,7 +95,7 @@ test("each of Lyon's ten communes gets a page with the zones it lies in, each zo
     const lyonEarly = (await import("../../../db/seed/lyon-2022-2023.csv?raw")).default;
     const lyonRecent = (await import("../../../db/seed/lyon-2025-2026.csv?raw")).default;
     const lyonDecrees = (await import("../../../db/seed/lyon-decrees.json")).default;
-    const seeded = lyonSeed({ tables: new Map([[2022, lyonEarly], [2025, lyonRecent]]), decrees: decreesOf(lyonDecrees) });
+    const seeded = lyonSeed({ tables: new Map([[2022, lyonEarly], [2025, lyonRecent]]), annexes: new Map(), decrees: decreesOf(lyonDecrees) });
     const pages = communePages(seeded.rates, seeded.outlines, seeded.zoning);
 
     expect(pages.map((page) => page.slug)).toEqual([
