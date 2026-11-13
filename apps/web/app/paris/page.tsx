@@ -10,5 +10,5 @@ export default function Paris()
 {
     const links = fromDisk().districts.map((district) => ({ href: `../arrondissements/${district.slug}/`, label: `${ordinal(district.number)} arrondissement` }));
 
-    return <CityPage city="paris" outlines={outlinesFromDisk().paris} span={spansFromDisk().paris} links={links} />;
+    return <CityPage city="paris" outlines={outlinesFromDisk().paris} spans={spansFromDisk().paris} links={links} />;
 }

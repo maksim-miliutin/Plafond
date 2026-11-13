@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { checkedSpan, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
+import { checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
 import { decreesOf, feeCapsOf, indexOf, lawOf, lyonSeed, parisRates, quartiersOf, type RentIndex } from "@plafond/import";
 
 import { arrondissementPages, communePages, placePages, type CommunePage, type DistrictPage, type PlacePage } from "./places";
@@ -86,13 +86,10 @@ export function outlinesFromDisk(): Record<City, Quartier["rings"][]>
     };
 }
 
-export function spansFromDisk(): Record<City, Span>
+export function spansFromDisk(): Record<City, Span[]>
 {
-    const decrees = (name: string) => [...decreesOf(JSON.parse(readFileSync(join(seed, name), "utf8"))).values()];
+    const { rates, lyon } = seeds();
     const law = lawFromDisk();
 
-    return {
-        paris: checkedSpan("paris", decrees("paris-decrees.json"), law),
-        lyon: checkedSpan("lyon", decrees("lyon-decrees.json"), law),
-    };
+    return { paris: checkedSpans("paris", rates, law), lyon: checkedSpans("lyon", lyon.rates, law) };
 }
