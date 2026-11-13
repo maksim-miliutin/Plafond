@@ -27,7 +27,7 @@ test("the seeds the site reads date the leases Plafond can check, gaps included"
     const law = lawOf(lawSeed);
 
     expect(checkedSpans("paris", paris, law)).toEqual([{ from: "2019-07-01", lastDay: "2026-11-24" }]);
-    expect(checkedSpans("lyon", lyon.rates, law)).toEqual([{ from: "2022-11-01", lastDay: "2026-10-31" }]);
+    expect(checkedSpans("lyon", lyon.rates, law)).toEqual([{ from: "2022-11-01", lastDay: "2026-11-23" }]);
 });
 
 test("a lease signed under the annulled decree of 2023 is priced, and carries the annulment for the screen to show", () =>
