@@ -31,7 +31,7 @@ interface Category
 interface Labels
 {
     rooms: ReadonlyMap<string, Rooms>;
-    periods: ReadonlyMap<string, Period>;
+    periods: ReadonlyMap<string, readonly Period[]>;
 }
 
 interface Pricing
@@ -46,10 +46,14 @@ const quartiers = 80;
 
 const parisLabels: Labels = {
     rooms: new Map([["1", 1], ["2", 2], ["3", 3], ["4 et +", 4]]),
-    periods: new Map([["< 1946", "before-1946"], ["1946-1970", "1946-1970"], ["1971-1990", "1971-1990"], ["> 1990", "after-1990"]]),
+    periods: new Map([["< 1946", ["before-1946"]], ["1946-1970", ["1946-1970"]], ["1971-1990", ["1971-1990"]], ["> 1990", ["after-1990"]]]),
 };
 
-const lyonLabels: Labels = { rooms: new Map(Object.entries(lyonRooms)), periods: new Map(Object.entries(lyonPeriods)) };
+// The 2021 decree prints a single period after 1990; the Métropole's 2022 file repeats such rents under both later periods.
+const lyonLabels: Labels = {
+    rooms: new Map(Object.entries(lyonRooms)),
+    periods: new Map([...Object.entries(lyonPeriods).map(([label, period]): [string, Period[]] => [label, [period]]), ["après 1990", ["1991-2005", "after-2005"]]]),
+};
 
 export function annexRates(annex: string, sectors: string, decree: Decree): Rate[]
 {
@@ -98,22 +102,24 @@ function ratesOf({ city, placed, priced, decree }: Pricing): Rate[]
 function categoriesOf(annex: string, labels: Labels): Category[]
 {
     const seen = new Set<string>();
-    const priced = rowsAfterHeader(annex).map((fields, line): Category =>
+    const priced = rowsAfterHeader(annex).flatMap((fields, line): Category[] =>
     {
         const [sector, count, built, ...prices] = fields;
-        const parsed = { sector: Number(sector), rooms: labels.rooms.get(count ?? ""), period: labels.periods.get(built ?? "") };
-        if (!Number.isInteger(parsed.sector) || parsed.rooms === undefined || parsed.period === undefined || prices.length !== 7)
+        const zone = Number(sector);
+        const rooms = labels.rooms.get(count ?? "");
+        const periods = labels.periods.get(built ?? "");
+        if (!Number.isInteger(zone) || rooms === undefined || periods === undefined || prices.length !== 7)
         {
             throw new AnnexError(`line ${line + 2} is not a sector, a number of rooms, a period and seven rents`);
         }
 
-        const key = `${parsed.sector} ${parsed.rooms} ${parsed.period}`;
-        if (seen.has(key))
+        const keys = periods.map((period) => `${zone} ${rooms} ${period}`);
+        if (keys.some((key) => seen.has(key)))
         {
-            throw new AnnexError(`line ${line + 2} prices sector ${parsed.sector}, ${count} rooms, ${built} a second time`);
+            throw new AnnexError(`line ${line + 2} prices sector ${zone}, ${count} rooms, ${built} a second time`);
         }
 
-        seen.add(key);
+        keys.forEach((key) => seen.add(key));
 
         const [emptyMinored, emptyReference, emptyMajored, supplement, furnishedMinored, furnishedReference, furnishedMajored] =
             prices.map((price) => tenthsOf(price, line)) as [number, number, number, number, number, number, number];
@@ -125,10 +131,10 @@ function categoriesOf(annex: string, labels: Labels): Category[]
         const empty = rentsOf(emptyReference, emptyMajored, emptyMinored, line);
         const furnished = rentsOf(furnishedReference, furnishedMajored, furnishedMinored, line);
 
-        return { sector: parsed.sector, rooms: parsed.rooms, period: parsed.period, empty, furnished };
+        return periods.map((period) => ({ sector: zone, rooms, period, empty, furnished }));
     });
 
-    const whole = labels.rooms.size * labels.periods.size;
+    const whole = labels.rooms.size * new Set([...labels.periods.values()].flat()).size;
     for (const sector of new Set(priced.map((category) => category.sector)))
     {
         const count = priced.filter((category) => category.sector === sector).length;
