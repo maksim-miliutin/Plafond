@@ -22,7 +22,7 @@ test("the first screen of the app and of each check carries the brand", () =>
 {
     const blankDeposit = Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields;
     const screens = [
-        <Home key="home" />,
+        <Home key="home" shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} />,
         <AddressStep key="rent" />,
         <DpeFindStep key="dpe" />,
         <DepositFormStep key="deposit" fields={blankDeposit} errors={{}} />,

@@ -32,9 +32,9 @@ test("every reason a search can fail is explained under the field and tied to it
     }
 });
 
-test("the first screen of the energy check leads back to all the checks", () =>
+test("the first screen of the energy check leads back home", () =>
 {
-    expect(page).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
+    expect(page).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Accueil<\/a>/);
 });
 
 test("an address without a diagnosis on file says where the number is and what a diagnosis without one is worth", () =>

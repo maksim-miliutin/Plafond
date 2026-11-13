@@ -1048,3 +1048,11 @@ a:hover
     color: var(--blue);
 }
 
+.cities .drawing svg path
+{
+    fill: var(--sky);
+    stroke: var(--blue);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+}
+

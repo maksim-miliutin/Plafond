@@ -15,7 +15,7 @@ export function LyonPage({ commune }: { commune: CommunePage })
 
     return (
         <main className="screen guide">
-            <a className="back" href="../../">Toutes les vérifications</a>
+            <a className="back" href="../../">Accueil</a>
             <Brand />
             <h1 className="title">Loyer de référence à {shortName(commune.name)}</h1>
             <p className="lead">

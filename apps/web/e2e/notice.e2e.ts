@@ -1,7 +1,9 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("a tenant finds when the notice ends and writes the letter giving notice, and nothing leaves the phone", async ({ page, baseURL }) =>
+import { answerForGeoplateforme } from "./geoplateforme";
+
+test("a tenant finds when the notice ends and writes the letter giving notice, and nothing typed leaves the phone", async ({ page, baseURL }) =>
 {
     const elsewhere: string[] = [];
     page.on("request", (request) =>
@@ -9,12 +11,14 @@ test("a tenant finds when the notice ends and writes the letter giving notice, a
         const url = new URL(request.url());
         if (url.origin !== new URL(baseURL ?? "").origin)
         {
-            elsewhere.push(url.host);
+            elsewhere.push(url.href);
         }
     });
 
     await page.clock.setFixedTime(new Date("2027-03-10T10:00:00+01:00"));
+    await answerForGeoplateforme(page, []);
     await page.goto("/");
+    await page.getByRole("link", { name: /^Lyon et Villeurbanne/ }).click();
     await page.getByRole("link", { name: /^Combien de temps dure mon préavis/ }).click();
 
     await page.getByLabel("Adresse du logement").fill("12 Rue des Lilas 69003 Lyon");
@@ -33,5 +37,5 @@ test("a tenant finds when the notice ends and writes the letter giving notice, a
     await expect(page.locator("article")).toContainText("pour le motif suivant : ma mutation professionnelle");
     await expect(page.locator("article")).toContainText("je quitterai donc le logement au plus tard le 15 avril 2027");
 
-    expect(elsewhere).toEqual([]);
+    expect(elsewhere.filter((href) => !href.startsWith("https://data.geopf.fr/wmts?"))).toEqual([]);
 });

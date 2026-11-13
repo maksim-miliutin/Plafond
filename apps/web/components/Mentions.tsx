@@ -2,7 +2,7 @@ export function Mentions()
 {
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <h1 className="title">Mentions légales et données</h1>
             <section className="findings">
                 <h2>Éditeur</h2>

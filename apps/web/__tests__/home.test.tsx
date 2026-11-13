@@ -3,31 +3,25 @@ import { expect, test } from "vitest";
 
 import { Home } from "../components/Home";
 
-const page = renderToStaticMarkup(<Home />);
-const tiles = page.match(/<a[^>]*class="check"[^>]*>.*?<\/a>/gs) ?? [];
+const page = renderToStaticMarkup(<Home shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} />);
+const doors = page.match(/<a[^>]*class="check"[^>]*>.*?<\/a>/gs) ?? [];
 
-test("the first screen offers every check, each a link relative to the page, so it works under the project path too", () =>
+test("the first screen offers only the two cities, as links relative to the page", () =>
 {
-    expect(page).toMatch(/<a[^>]*href="loyer\/"[^>]*>.*Mon loyer.*<\/a>/s);
-    expect(page).toMatch(/<a[^>]*href="dpe\/"[^>]*>.*DPE.*<\/a>/s);
-    expect(page).toMatch(/<a[^>]*href="depot\/"[^>]*>.*dépôt de garantie.*<\/a>/s);
-    expect(page).toMatch(/<a[^>]*href="charges\/"[^>]*>.*régularisation de charges.*<\/a>/s);
-    expect(page).toMatch(/<a[^>]*href="preavis\/"[^>]*>.*préavis.*<\/a>/s);
-    expect(page).toMatch(/<a[^>]*href="frais-agence\/"[^>]*>.*frais d&#x27;agence.*<\/a>/s);
-    expect(page).toMatch(/<a[^>]*href="revision\/"[^>]*>.*hausse de loyer.*<\/a>/s);
-    expect(page.match(/<h1/g)).toHaveLength(1);
+    expect(doors).toHaveLength(2);
+    expect(doors[0]).toMatch(/href="paris\/"/);
+    expect(doors[0]).toContain("<strong>Paris</strong>");
+    expect(doors[0]).toContain("Les 20 arrondissements. Le plan de la zone et les sept vérifications.");
+    expect(doors[0]).toMatch(/<svg[^>]*aria-hidden="true".*d="M1,1Z"/s);
+    expect(doors[1]).toMatch(/href="lyon\/"/);
+    expect(doors[1]).toContain("<strong>Lyon et Villeurbanne</strong>");
+    expect(doors[1]).toMatch(/<svg[^>]*aria-hidden="true".*d="M2,2Z"/s);
 });
 
-test("each check has its own drawing, kept from screen readers, and says what to have at hand and how long it takes", () =>
+test("the first screen asks where the home is and keeps no check or guide", () =>
 {
-    expect(tiles).toHaveLength(7);
-    for (const tile of tiles)
-    {
-        expect(tile).toMatch(/<svg[^>]*aria-hidden="true"/);
-        expect(tile).toMatch(/environ \d minutes/);
-    }
-
-    expect(new Set(tiles.map((tile) => tile.match(/<svg.*?<\/svg>/s)?.[0])).size).toBe(7);
+    expect(page.match(/<h1[^>]*>.*?<\/h1>/g)).toEqual(['<h1 class="title">Où se trouve votre logement ?</h1>']);
+    expect(page).not.toMatch(/href="(loyer|depot|guides)\//);
 });
 
 test("the welcome says every check ends with a letter to send", () =>

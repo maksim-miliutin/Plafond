@@ -30,7 +30,7 @@ export function NoticeFormStep({ fields, errors, onAnswer }: NoticeFormProps)
 
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <Brand />
             <h1 className="title">Combien de temps dure mon préavis ?</h1>
             <p className="lead">

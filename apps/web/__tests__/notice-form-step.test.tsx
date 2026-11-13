@@ -51,10 +51,10 @@ test("an error sits under its own field and is tied to it", () =>
     expect(page({}, { tense: "Indiquez la zone." })).toMatch(/<fieldset[^>]*aria-describedby="tense-error"/);
 });
 
-test("the screen says nothing leaves the phone, sends nothing anywhere and leads back to all the checks", () =>
+test("the screen says nothing leaves the phone, sends nothing anywhere and leads back home", () =>
 {
     expect(page()).toContain("Rien ne quitte votre appareil");
     expect(page()).toMatch(/<form[^>]*method="dialog"/);
-    expect(page()).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
+    expect(page()).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Accueil<\/a>/);
     expect(page()).toMatch(/<a[^>]*href="\.\.\/mentions\/"[^>]*>Mentions légales<\/a>/);
 });

@@ -40,7 +40,7 @@ export function DpeFindStep({ typed = "", problem = null, busy = false, onSearch
 
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <Brand />
             <Progress at={1} of={4} label="le diagnostic" />
             <h1 className="title">Mon logement est-il une passoire thermique ?</h1>

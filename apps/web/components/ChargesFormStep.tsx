@@ -66,7 +66,7 @@ export function ChargesFormStep({ fields, errors, onAnswer }: ChargesFormProps)
 
     return (
         <main className="screen">
-            <a className="back" href="../">Toutes les vérifications</a>
+            <a className="back" href="../">Accueil</a>
             <Brand />
             <h1 className="title">Ma régularisation de charges est-elle juste ?</h1>
             <p className="lead">

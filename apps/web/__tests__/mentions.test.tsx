@@ -32,10 +32,10 @@ test("the notice says what leaves the device and where it goes, and that nothing
 
 test("the notice is one tap away from the first screen of the app and of each check", () =>
 {
-    expect(renderToStaticMarkup(<Home />)).toMatch(/<a[^>]*href="mentions\/"[^>]*>Mentions légales<\/a>/);
+    expect(renderToStaticMarkup(<Home shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} />)).toMatch(/<a[^>]*href="mentions\/"[^>]*>Mentions légales<\/a>/);
     expect(renderToStaticMarkup(<AddressStep />)).toMatch(/<a[^>]*href="\.\.\/mentions\/"[^>]*>Mentions légales<\/a>/);
     expect(renderToStaticMarkup(<DpeFindStep />)).toMatch(/<a[^>]*href="\.\.\/mentions\/"[^>]*>Mentions légales<\/a>/);
-    expect(page).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Toutes les vérifications<\/a>/);
+    expect(page).toMatch(/<a[^>]*href="\.\.\/"[^>]*>Accueil<\/a>/);
 });
 
 test("the notice says the plan of each city comes from the Géoplateforme too, without the address", () =>

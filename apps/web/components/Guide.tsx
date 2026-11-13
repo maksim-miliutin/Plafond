@@ -9,7 +9,7 @@ export function Guide({ guide, more }: { guide: GuideText; more?: ReactNode })
 
     return (
         <main className="screen guide">
-            <a className="back" href="../../">Toutes les vérifications</a>
+            <a className="back" href="../../">Accueil</a>
             <Brand />
             <h1 className="title">{guide.heading}</h1>
             <p className="lead">{guide.intro}</p>
