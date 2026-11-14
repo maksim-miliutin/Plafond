@@ -35,6 +35,11 @@ export function outlineOf(areas: readonly Quartier[]): Quartier["rings"]
         ends.set(other, [...(ends.get(other) ?? []), one]);
     }
 
+    if (ends.size === 0)
+    {
+        throw new OutlineError("the areas cover each other and leave no outline");
+    }
+
     const loose = [...ends].find(([, next]) => next.length !== 2);
     if (loose !== undefined)
     {
