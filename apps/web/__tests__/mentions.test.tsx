@@ -5,6 +5,7 @@ import { AddressStep } from "../components/AddressStep";
 import { DpeFindStep } from "../components/DpeFindStep";
 import { Home } from "../components/Home";
 import { Mentions } from "../components/Mentions";
+import { software } from "../lib/software";
 
 const page = renderToStaticMarkup(<Mentions />);
 
@@ -44,3 +45,12 @@ test("the notice says the plan of each city comes from the Géoplateforme too, w
     expect(page).toContain("sans l&#x27;adresse");
 });
 
+test("the notice lists the software and fonts the site ships, each with its licence, and links their full texts", () =>
+{
+    for (const item of software)
+    {
+        expect(page, item.name).toContain(`${item.name}, licence ${item.licence}`);
+    }
+
+    expect(page).toMatch(/<a[^>]*href="\.\.\/licences\.txt"[^>]*>/);
+});
