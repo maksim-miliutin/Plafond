@@ -9,7 +9,7 @@ export function Home({ shapes }: { shapes: Record<City, string> })
         <main className="screen">
             <Brand />
             <p className="lead">
-                Sept vérifications gratuites pour les locataires. Chacune se termine par une lettre prête à envoyer au propriétaire.
+                Sept vérifications gratuites pour les locataires. Quand votre cas le justifie, Plafond prépare la lettre au propriétaire ou à l'agence.
             </p>
             <h1 className="title">Où se trouve votre logement ?</h1>
             <nav className="checks cities" aria-label="Villes">

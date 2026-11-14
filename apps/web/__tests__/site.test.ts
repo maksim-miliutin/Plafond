@@ -65,3 +65,8 @@ test("the site's address is always https once deployed, while a local run keeps 
     expect(siteFrom("http://localhost:3000")).toBe("http://localhost:3000");
     expect(siteFrom(undefined)).toBe("http://localhost:3000");
 });
+
+test("the home page's description promises a letter only when the case calls for one", () =>
+{
+    expect(pages.find((page) => page.path === "")!.description).toMatch(/la lettre quand votre cas la justifie\.$/);
+});

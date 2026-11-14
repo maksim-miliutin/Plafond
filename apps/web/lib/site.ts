@@ -35,7 +35,7 @@ export const pages: readonly Page[] = [
     {
         path: "",
         title: "Plafond\u00A0: vérifiez vos droits de locataire",
-        description: "Sept vérifications gratuites pour locataires\u00A0: loyer encadré, hausse annuelle, DPE, dépôt de garantie, charges, préavis et frais d'agence, avec la lettre.",
+        description: "Sept vérifications gratuites pour locataires\u00A0: loyer encadré, hausse, DPE, dépôt, charges, préavis, frais d'agence, et la lettre quand votre cas la justifie.",
     },
     {
         path: "paris/",

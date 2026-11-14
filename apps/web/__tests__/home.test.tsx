@@ -24,9 +24,13 @@ test("the first screen asks where the home is and keeps no check or guide", () =
     expect(page).not.toMatch(/href="(loyer|depot|guides)\//);
 });
 
-test("the welcome says every check ends with a letter to send", () =>
+// The agency fees letter goes to the agency, and a check that finds nothing to claim offers no letter at all.
+test("the welcome promises a letter only when the case calls for one, to the landlord or to the agency", () =>
 {
-    expect(page).toContain("lettre prête à envoyer");
+    const text = page.replaceAll("&#x27;", "'");
+
+    expect(text).toContain("Quand votre cas le justifie, Plafond prépare la lettre au propriétaire ou à l'agence.");
+    expect(text).not.toContain("Chacune se termine par une lettre");
 });
 
 test("under the two cities, a calm link leads the tenants of every other town to the checks that hold everywhere", () =>
