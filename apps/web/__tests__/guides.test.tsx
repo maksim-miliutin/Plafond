@@ -242,3 +242,12 @@ test("the revision guide shows the index of the last three years from the seed, 
     expect(rows[12]).toContain("4e trimestre 2023");
     expect(page).toMatch(/<a[^>]*href="https:\/\/anil.org\/outils\/indices-et-plafonds\/tableau-de-lirl"/);
 });
+
+// The prefecture announced an appeal against the 2023 Lyon judgment; no appeal decision is known, so the guide claims no more.
+test("the Lyon guide reports the appeal the prefecture announced, not one it has won or lost", () =>
+{
+    const text = JSON.stringify(guides.find((guide) => guide.slug === "encadrement-des-loyers-lyon"));
+
+    expect(text).toContain("La préfecture a annoncé faire appel");
+    expect(text).not.toContain("La préfecture a fait appel");
+});

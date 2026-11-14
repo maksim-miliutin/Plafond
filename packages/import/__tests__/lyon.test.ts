@@ -106,13 +106,19 @@ test("the Lyon decrees follow each other without a gap, the last one ending afte
     expect(decrees.at(-1)).toMatchObject({ title: "Arrêté préfectoral n° DDT 69-2026-10-23-00004", until: "2026-11-24", contest: null });
 });
 
-// Tribunal administratif de Lyon, 14 octobre 2025: the decree of 29 September 2023 was annulled for an unreadable map,
-// and the prefecture appealed; how far back the annulment reaches is not settled, so the screen must say so.
-test("the decree of 2023 carries its annulment, so no cap from it is shown without that warning", async () =>
+// Tribunal administratif de Lyon, 14 octobre 2025, n° 2309987: the decree of 29 September 2023 was annulled for an unreadable map,
+// with no limit in time; the prefecture announced an appeal, so the screen must say the annulment and send the tenant to the ADIL.
+test("the decree of 2023 carries its annulment as the judgment itself states it, so no cap from it is shown without that warning", async () =>
 {
     const { decreesOf } = await import("../src/decrees.js");
 
-    expect(decreesOf(lyonDecrees).get(2023)?.contest).toMatchObject({ outcome: "annulled", court: "tribunal administratif de Lyon", decidedOn: "2025-10-14" });
+    expect(decreesOf(lyonDecrees).get(2023)?.contest).toEqual({
+        outcome: "annulled",
+        court: "tribunal administratif de Lyon",
+        decidedOn: "2025-10-14",
+        claimsBy: null,
+        source: "https://lyon.tribunal-administratif.fr/content/download/232594/file/2309987%20UNPI%2069.pdf",
+    });
 });
 
 test("the seed joins each year's table to its decree and draws the outlines from the latest file that has them", async () =>

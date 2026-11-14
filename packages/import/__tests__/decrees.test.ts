@@ -99,3 +99,16 @@ test("the seed covers every day from July 2019 to the end of the experiment with
     expect(decrees.at(-1)?.until).toBe("2026-11-25");
     decrees.slice(1).forEach((decree, i) => expect(decree.from).toBe(decrees[i]?.until));
 });
+
+// Conseil d'État, 18 novembre 2024, n° 489856: it set aside the appeal judgment on the decree of 28 May 2019 and sent the case
+// back to the cour administrative d'appel de Paris, so the validity of that decree is still before the courts.
+test("the 2019 Paris decree is still contested, as the Conseil d'État decision itself says", () =>
+{
+    expect(decreesOf(seed).get(2019)?.contest).toEqual({
+        outcome: "pending",
+        court: "Conseil d'État",
+        decidedOn: "2024-11-18",
+        claimsBy: null,
+        source: "https://www.conseil-etat.fr/fr/arianeweb/CE/decision/2024-11-18/489856",
+    });
+});
