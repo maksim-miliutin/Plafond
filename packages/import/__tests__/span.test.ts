@@ -38,3 +38,32 @@ test("a lease signed under the annulled decree of 2023 is priced, and carries th
 
     expect(check(claim, lyon.rates, lawOf(lawSeed))).toMatchObject({ kind: "checked", rate: { decree: { from: "2023-11-01", contest: { outcome: "annulled" } } } });
 });
+
+// Article 3 of each Lyon decree and article 140 of the ELAN law set these edges; the 2026 decree stops a day before the law.
+test("a Lyon lease is priced by the decree in force on the day it was signed, edge days included", () =>
+{
+    const { lyon } = seedsFrom(read);
+    const law = lawOf(lawSeed);
+    const flat = { city: "lyon" as const, quartier: lyon.outlines[0]!.number, rooms: 1 as const, period: "before-1946" as const, furnished: false };
+    const signed = (day: string) =>
+    {
+        const result = check({ flat, surface: 2500, signedOn: day, startsOn: day, rent: 60000, complement: 0, on: "2026-11-13" }, lyon.rates, law);
+        if (result.kind === "checked")
+        {
+            return `decree from ${result.rate.decree.from}`;
+        }
+
+        return result.kind === "no-rate" ? `no rate, ${result.side}` : result.kind;
+    };
+
+    expect(signed("2021-10-31")).toBe("no rate, before");
+    expect(signed("2021-11-01")).toBe("decree from 2021-11-01");
+    expect(signed("2022-10-31")).toBe("decree from 2021-11-01");
+    expect(signed("2022-11-01")).toBe("decree from 2022-11-01");
+    expect(signed("2026-10-31")).toBe("decree from 2025-11-01");
+    expect(signed("2026-11-01")).toBe("decree from 2026-11-01");
+    expect(signed("2026-11-23")).toBe("decree from 2026-11-01");
+    expect(signed("2026-11-24")).toBe("no rate, after");
+    expect(signed("2026-11-25")).toBe("lapsed");
+});
+
