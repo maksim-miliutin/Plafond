@@ -795,6 +795,15 @@ a:hover
     font-size: 14px;
 }
 
+.map-failed
+{
+    margin: 0;
+    padding: 16px;
+    border: 1.5px dashed var(--line);
+    border-radius: 16px;
+    color: var(--muted);
+}
+
 .elsewhere
 {
     margin: 16px 0 0;
