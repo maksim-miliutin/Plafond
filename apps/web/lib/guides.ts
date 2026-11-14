@@ -297,7 +297,7 @@ export const guides: readonly GuideText[] = [
             {
                 heading: "L'arrêté de 2023 annulé",
                 paragraphs: [
-                    "Le 14 octobre 2025, le tribunal administratif de Lyon a annulé l'arrêté du 29 septembre 2023, qui s'appliquait aux baux signés entre le 1er novembre 2023 et le 31 octobre 2024, parce que sa carte ne permettait pas de situer précisément les zones. La préfecture a fait appel, et la portée de cette annulation pour les baux déjà signés n'est pas tranchée. Pour un bail de cette période, renseignez-vous auprès de l'ADIL du Rhône avant d'agir.",
+                    "Le 14 octobre 2025, le tribunal administratif de Lyon a annulé l'arrêté du 29 septembre 2023, qui s'appliquait aux baux signés entre le 1er novembre 2023 et le 31 octobre 2024, parce que sa carte ne permettait pas de situer précisément les zones. La préfecture a annoncé faire appel, et la portée de cette annulation pour les baux déjà signés n'est pas tranchée. Pour un bail de cette période, renseignez-vous auprès de l'ADIL du Rhône avant d'agir.",
                 ],
             },
             {
