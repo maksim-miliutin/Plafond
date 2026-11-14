@@ -1,5 +1,6 @@
 import { euros, ordinal } from "@plafond/domain";
 
+import { cityCopy } from "../lib/city-copy";
 import type { DistrictPage as District } from "../lib/places";
 import { Brand } from "./Brand";
 
@@ -9,7 +10,7 @@ export function DistrictPage({ district }: { district: District })
 
     return (
         <main className="screen guide">
-            <a className="back" href="../../">Accueil</a>
+            <a className="back" href="../../paris/">{cityCopy.paris.name}</a>
             <Brand />
             <h1 className="title">Encadrement des loyers dans le {name}</h1>
             <p className="lead">

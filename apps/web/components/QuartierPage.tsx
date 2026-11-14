@@ -1,5 +1,6 @@
 import { dayBefore, euros, frenchDay, ordinal, periods, periodsOf, rooms } from "@plafond/domain";
 
+import { cityCopy } from "../lib/city-copy";
 import { districtSlug, type PlacePage } from "../lib/places";
 import { Brand } from "./Brand";
 import { RentGrid } from "./RentGrid";
@@ -13,7 +14,7 @@ export function QuartierPage({ place }: { place: PlacePage })
 
     return (
         <main className="screen guide">
-            <a className="back" href="../../">Accueil</a>
+            <a className="back" href="../../paris/">{cityCopy.paris.name}</a>
             <Brand />
             <h1 className="title">Loyer de référence à {place.name}</h1>
             <p className="lead">

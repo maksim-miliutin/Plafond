@@ -46,3 +46,8 @@ test("its title and description fit what search engines show", () =>
     expect(String(described.description).length).toBeLessThanOrEqual(160);
     expect(described.alternates?.canonical).toMatch(/\/arrondissements\/paris-5e\/$/);
 });
+
+test("an arrondissement page goes back to the plan of Paris, not to the choice of city", () =>
+{
+    expect(page).toMatch(/<a class="back" href="\.\.\/\.\.\/paris\/">Paris<\/a>/);
+});
