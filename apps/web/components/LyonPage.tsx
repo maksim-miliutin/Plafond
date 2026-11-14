@@ -1,5 +1,6 @@
 import { dayBefore, frenchDay, periodsOf } from "@plafond/domain";
 
+import { cityCopy } from "../lib/city-copy";
 import type { CommunePage } from "../lib/places";
 import { Brand } from "./Brand";
 import { RentGrid } from "./RentGrid";
@@ -15,7 +16,7 @@ export function LyonPage({ commune }: { commune: CommunePage })
 
     return (
         <main className="screen guide">
-            <a className="back" href="../../">Accueil</a>
+            <a className="back" href="../">{cityCopy.lyon.name}</a>
             <Brand />
             <h1 className="title">Loyer de référence à {shortName(commune.name)}</h1>
             <p className="lead">

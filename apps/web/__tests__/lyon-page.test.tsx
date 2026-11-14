@@ -47,3 +47,8 @@ test("its title and description fit what search engines show", () =>
     expect(String(described.description).length).toBeLessThanOrEqual(160);
     expect(described.alternates?.canonical).toMatch(/\/lyon\/lyon-3e-arrondissement\/$/);
 });
+
+test("a commune page goes back to the plan of Lyon and Villeurbanne, not to the choice of city", () =>
+{
+    expect(page).toMatch(/<a class="back" href="\.\.\/">Lyon et Villeurbanne<\/a>/);
+});
