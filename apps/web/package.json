@@ -4,8 +4,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "node scripts/tables.ts && next dev",
-        "build": "tsc --noEmit -p . && node scripts/tables.ts && next build",
+        "dev": "node scripts/tables.ts && node scripts/licences.ts && next dev",
+        "build": "tsc --noEmit -p . && node scripts/tables.ts && node scripts/licences.ts && next build",
         "start": "serve out --listen 3000"
     },
     "dependencies": {

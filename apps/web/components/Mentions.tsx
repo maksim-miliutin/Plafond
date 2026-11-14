@@ -1,3 +1,5 @@
+import { licencesFile, software } from "../lib/software";
+
 export function Mentions()
 {
     return (
@@ -43,6 +45,17 @@ export function Mentions()
                     Loyers de référence de la Ville de Paris et arrêtés du préfet de la région Île-de-France, loyers de référence de
                     la Métropole de Lyon et arrêtés du préfet du Rhône, adresses et plan de
                     l'IGN, diagnostics de performance énergétique publiés par l'ADEME.
+                </p>
+            </section>
+            <section className="findings">
+                <h2>Logiciels et polices</h2>
+                <p>Plafond est construit avec ces logiciels libres et ces polices, chacun sous sa licence&nbsp;:</p>
+                <ul className="references">
+                    {software.map((item) => <li key={item.name}>{item.name}, licence {item.licence}</li>)}
+                </ul>
+                <p>
+                    Leurs mentions de droit d'auteur et le texte entier de leurs licences sont dans{" "}
+                    <a href={`../${licencesFile}`}>{licencesFile}</a>.
                 </p>
             </section>
             <p className="fine">
