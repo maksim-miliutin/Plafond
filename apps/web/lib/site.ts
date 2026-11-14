@@ -83,6 +83,11 @@ export const pages: readonly Page[] = [
         description: "Vérifiez si la révision annuelle de votre loyer respecte l'indice de référence des loyers et les délais, et préparez la lettre au propriétaire.",
     },
     {
+        path: "ailleurs/",
+        title: "Locataires ailleurs en France\u00A0: six vérifications | Plafond",
+        description: "Hausse annuelle, DPE, dépôt de garantie, charges, préavis et frais d'agence\u00A0: six vérifications gratuites qui ne dépendent pas de votre ville.",
+    },
+    {
         path: "mentions/",
         title: "Mentions légales et données | Plafond",
         description: "Qui publie Plafond, qui l'héberge, et ce que deviennent vos données\u00A0: rien n'est enregistré, le calcul se fait sur votre appareil.",

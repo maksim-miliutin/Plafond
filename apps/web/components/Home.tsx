@@ -27,6 +27,9 @@ export function Home({ shapes }: { shapes: Record<City, string> })
                     </a>
                 ))}
             </nav>
+            <p className="elsewhere">
+                <a href="ailleurs/">Autre ville en France</a>&nbsp;: les six vérifications qui valent partout.
+            </p>
             <div className="grow" />
             <p className="fine">
                 Le calcul se fait sur votre appareil, sans compte. Une estimation, pas un conseil juridique.{" "}

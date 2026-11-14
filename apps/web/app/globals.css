@@ -795,6 +795,13 @@ a:hover
     font-size: 14px;
 }
 
+.elsewhere
+{
+    margin: 16px 0 0;
+    font-size: 15px;
+    color: var(--muted);
+}
+
 .helpers
 {
     margin: 0;

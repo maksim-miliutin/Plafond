@@ -107,11 +107,11 @@ const rent: Omit<Check, "reach"> = {
     ),
 };
 
-export function CheckList({ base, rentReach }: { base: string; rentReach: string })
+export function CheckList({ base, rentReach }: { base: string; rentReach: string | null })
 {
     return (
         <nav className="checks" aria-label="Vérifications">
-            {[{ ...rent, reach: rentReach }, ...everywhere].map((check) => (
+            {[...(rentReach === null ? [] : [{ ...rent, reach: rentReach }]), ...everywhere].map((check) => (
                 <a key={check.href} href={base + check.href} className="check">
                     <span className="drawing">
                         <svg

@@ -28,3 +28,8 @@ test("the welcome says every check ends with a letter to send", () =>
 {
     expect(page).toContain("lettre prête à envoyer");
 });
+
+test("under the two cities, a calm link leads the tenants of every other town to the checks that hold everywhere", () =>
+{
+    expect(page).toMatch(/<a href="ailleurs\/">Autre ville en France<\/a>/);
+});
