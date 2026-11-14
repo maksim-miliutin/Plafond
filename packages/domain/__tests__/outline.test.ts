@@ -59,3 +59,22 @@ test("no area at all is a breakage", () =>
 {
     expect(() => outlineOf([])).toThrow(OutlineError);
 });
+
+test("a ring drawn the other way round gives the same outline", () =>
+{
+    const turned = square(1, 0);
+    const reversed: Quartier = { ...turned, rings: [[...turned.rings[0]!].reverse()] };
+
+    expect(corners(outlineOf([square(0, 0), reversed])[0]!)).toEqual(corners(outlineOf([square(0, 0), square(1, 0)])[0]!));
+});
+
+test("areas that only touch at a corner are a breakage, not two outlines joined at a point", () =>
+{
+    expect(() => outlineOf([square(0, 0), square(1, 1)])).toThrow(OutlineError);
+});
+
+// Two copies of one area share every side, so every side was dropped and an empty outline came back without a word.
+test("areas that cancel each other out, such as one area given twice, are a breakage", () =>
+{
+    expect(() => outlineOf([square(0, 0), square(0, 0)])).toThrow(OutlineError);
+});
