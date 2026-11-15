@@ -60,7 +60,7 @@ test("the whole of Paris is in view when the page opens, even on a 320 px phone"
     }
 });
 
-test("without the IGN plan the zone is still drawn", async ({ page }) =>
+test("without the IGN plan the zone is still drawn, and the page says why the ground is blank", async ({ page }) =>
 {
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
@@ -68,6 +68,7 @@ test("without the IGN plan the zone is still drawn", async ({ page }) =>
     await page.goto("/paris/");
 
     await expect(page.locator("path.zone")).toHaveCount(1);
+    await expect(page.locator(".city-block").getByRole("status")).toContainText("Le fond de plan IGN ne s'est pas chargé");
     await expect(page.getByText("Fond de carte")).toBeVisible();
     expect(errors).toEqual([]);
 });
