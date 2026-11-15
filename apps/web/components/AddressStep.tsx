@@ -6,7 +6,7 @@ import type { Problem } from "../lib/flow";
 import { LocalForm } from "./LocalForm";
 import { Brand } from "./Brand";
 import { Progress } from "./Progress";
-import { guideFor } from "../lib/guides";
+import { guideFor, guides } from "../lib/guides";
 
 export interface AddressProps
 {
@@ -62,6 +62,26 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
                     {busy ? "Recherche du quartier…" : "Trouver le quartier"}
                 </button>
             </LocalForm>
+            <section className="findings" aria-labelledby="rent-check">
+                <h2 id="rent-check">Ce que vérifie Plafond</h2>
+                <p>
+                    Chaque année, un arrêté du préfet fixe un loyer de référence au mètre carré selon le secteur, le nombre de
+                    pièces, l'époque de construction et le type de location. Le loyer de base ne peut pas dépasser le loyer de
+                    référence majoré de l'arrêté en vigueur le jour de la signature du bail. Un complément de loyer peut s'y
+                    ajouter quand le logement présente des caractéristiques de localisation ou de confort qui le justifient,
+                    par comparaison avec les logements de la même catégorie du secteur.
+                </p>
+                <p>
+                    Gardez votre bail sous la main&nbsp;: il vous faudra la date de signature, la surface habitable, le nombre de
+                    pièces, l'époque de construction de l'immeuble, si le logement est meublé, le loyer hors charges et
+                    l'éventuel complément de loyer.
+                </p>
+                <ul className="references">
+                    {guides.filter((guide) => guide.check.href === "loyer/").map((guide) => (
+                        <li key={guide.slug}><a href={`../guides/${guide.slug}/`}>{guide.label}</a></li>
+                    ))}
+                </ul>
+            </section>
             <div className="grow" />
             <aside className="note">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
