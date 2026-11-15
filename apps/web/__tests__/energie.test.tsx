@@ -3,7 +3,8 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, expect, test } from "vitest";
 
-import type { Listing } from "@plafond/ademe";
+import { AdemeError, type Listing } from "@plafond/ademe";
+import { AddressError } from "@plafond/address";
 
 import { Energie, type EnergyNeeds } from "../components/Energie";
 
@@ -91,4 +92,23 @@ test("a search that finds nothing stays on the first screen and says why", async
     await act_(() => host.querySelector("form")!.requestSubmit());
 
     expect(host.querySelector("#dpe-search-error")?.textContent).toContain("Aucun DPE");
+});
+
+// The bug this guards: a reply in a shape the geocoder or ADEME never sent before threw out of the search and left its button spinning.
+test("a reply from the geocoder or ADEME the search cannot read says the service fails and frees the button", async () =>
+{
+    const garbled: Partial<EnergyNeeds>[] = [
+        { geocoder: { locate: async () => { throw new AddressError("the geocoder replied without a list of features"); } } },
+        { source: { byNumber: async () => [g], atAddress: async () => { throw new AdemeError("the ADEME replied without a list of results"); } } },
+    ];
+    for (const change of garbled)
+    {
+        const host = await open(needs(change));
+
+        host.querySelector<HTMLInputElement>("#dpe-search")!.value = "7 place du Panthéon";
+        await act_(() => host.querySelector("form")!.requestSubmit());
+
+        expect(host.querySelector("#dpe-search-error")?.textContent).toContain("ne répond pas");
+        expect(host.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled).toBe(false);
+    }
 });

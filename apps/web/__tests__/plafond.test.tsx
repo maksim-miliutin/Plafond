@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import { afterEach, expect, test } from "vitest";
 
 import type { Quartier } from "@plafond/domain";
-import type { Lookup } from "@plafond/address";
+import { AddressError, type Lookup } from "@plafond/address";
 
 import { Plafond, type Needs } from "../components/Plafond";
 import { law, rate } from "./fixtures";
@@ -135,6 +135,18 @@ test("a search the geocoder cannot answer stays on the address and says why", as
     await search(host, "4 place du louvre");
 
     expect(host.querySelector("#address-error")?.textContent).toContain("géocodage ne répond pas");
+});
+
+// The bug this guards: a reply in a shape the geocoder never sent before threw out of the search and left its button spinning.
+test("a geocoder reply the search cannot read says the service fails and frees the button", async () =>
+{
+    const garbled = { locate: async (): Promise<Lookup> => { throw new AddressError("the geocoder replied without a list of features"); } };
+    const host = await open(needs({ geocoder: garbled }));
+
+    await search(host, "4 place du louvre");
+
+    expect(host.querySelector("#address-error")?.textContent).toContain("géocodage ne répond pas");
+    expect(host.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled).toBe(false);
 });
 
 test("tables that do not load are said so instead of leaving a screen that cannot work", async () =>
