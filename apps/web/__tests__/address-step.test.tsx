@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
 import { AddressStep, problems } from "../components/AddressStep";
+import { guides } from "../lib/guides";
 
 const page = renderToStaticMarkup(<AddressStep />);
 
@@ -96,4 +97,32 @@ test("the rent check says it covers Paris, Lyon and Villeurbanne, and a refusal 
 {
     expect(page).toContain("Lyon et Villeurbanne");
     expect(problems["not-paris"]).toContain("Lyon");
+});
+
+function told(): string
+{
+    return (page.match(/<section[^>]*aria-labelledby="rent-check"[^>]*>.*?<\/section>/s)?.[0] ?? "").replaceAll("&#x27;", "'");
+}
+
+// The page that crawlers and tenants land on showed an address field and little else: not what the check compares, nor what it asks.
+test("under the address form, the screen says what the cap is, which day counts and what the lease must give", () =>
+{
+    expect(page.indexOf('id="rent-check"')).toBeGreaterThan(page.indexOf("Trouver le quartier"));
+    expect(told()).toContain('<h2 id="rent-check">Ce que vérifie Plafond</h2>');
+    expect(told()).toContain("loyer de référence majoré de l'arrêté en vigueur le jour de la signature du bail");
+    for (const asked of ["la date de signature", "la surface habitable", "le nombre de pièces", "l'époque de construction", "meublé", "le loyer hors charges", "complément de loyer"])
+    {
+        expect(told()).toContain(asked);
+    }
+});
+
+test("the screen links every guide that explains the rent cap, from the guides' own list", () =>
+{
+    const explaining = guides.filter((guide) => guide.check.href === "loyer/");
+
+    expect(explaining.map((guide) => guide.slug)).toEqual(["encadrement-des-loyers-paris", "complement-de-loyer", "encadrement-des-loyers-lyon"]);
+    for (const guide of explaining)
+    {
+        expect(told()).toContain(`<a href="../guides/${guide.slug}/">${guide.label}</a>`);
+    }
 });
