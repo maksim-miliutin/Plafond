@@ -68,6 +68,19 @@ export function DpeFindStep({ typed = "", problem = null, busy = false, onSearch
                     {busy ? "Recherche du DPE\u2026" : "Trouver le DPE"}
                 </button>
             </LocalForm>
+            <section className="findings" aria-labelledby="dpe-check">
+                <h2 id="dpe-check">Ce que vérifie Plafond</h2>
+                <p>
+                    Plafond retrouve le DPE dans la base publique de l'ADEME, qui recense les diagnostics établis depuis juillet
+                    2021. Avec les dates de votre bail, il dit si le loyer pouvait augmenter et si la classe énergétique rend le
+                    logement non décent, puis prépare la lettre à votre bailleur quand votre cas le justifie.
+                </p>
+                <p>
+                    Le numéro du DPE, sur le diagnostic annexé au bail, mène droit au bon diagnostic. Par l'adresse, Plafond
+                    montre les DPE enregistrés à cette adresse pour que vous choisissiez le vôtre, mais il arrive qu'aucun n'y
+                    figure. Il vous faudra aussi la date de signature du bail et, si le loyer a augmenté, la date de la hausse.
+                </p>
+            </section>
             <div className="grow" />
             <aside className="note">
                 <p>
