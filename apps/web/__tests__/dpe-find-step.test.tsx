@@ -48,3 +48,17 @@ test("the screen says which of the four steps it is", () =>
     expect(page).toContain("Étape 1 sur 4\u00A0: le diagnostic");
     expect(page.match(/class="segment done"/g)).toHaveLength(1);
 });
+
+// The page that crawlers and tenants land on showed a search field and little else: not what the check finds, nor that a search can come back empty.
+test("under the search, the screen says where the diagnosis comes from, what the check tells and that an address may hold none", () =>
+{
+    const told = (page.match(/<section[^>]*aria-labelledby="dpe-check"[^>]*>.*?<\/section>/s)?.[0] ?? "").replaceAll("&#x27;", "'");
+
+    expect(page.indexOf('id="dpe-check"')).toBeGreaterThan(page.indexOf("Trouver le DPE"));
+    expect(told).toContain('<h2 id="dpe-check">Ce que vérifie Plafond</h2>');
+    expect(told).toContain("la base publique de l'ADEME, qui recense les diagnostics établis depuis juillet 2021");
+    expect(told).toContain("si le loyer pouvait augmenter");
+    expect(told).toContain("non décent");
+    expect(told).toContain("la date de signature du bail");
+    expect(told).toContain("il arrive qu'aucun n'y figure");
+});
