@@ -138,7 +138,7 @@ test("the Lyon page draws Lyon and Villeurbanne apart and leads to each commune"
     await expect(page).toHaveURL(/\/lyon\/villeurbanne\/$/);
 });
 
-test("the first screen offers only the two cities and fetches nothing from another site", async ({ page, baseURL }) =>
+test("the first screen offers the two cities and fetches nothing from another site", async ({ page, baseURL }) =>
 {
     const elsewhere: string[] = [];
     page.on("request", (request) =>
@@ -165,5 +165,20 @@ test("a tenant reaches the rent check through the city", async ({ page }) =>
     await page.getByRole("link", { name: "Mon loyer dépasse-t-il le plafond légal ?" }).click();
 
     await expect(page.getByLabel("Adresse du logement")).toBeVisible();
+});
+
+test("each check the first screen lists opens on its own page", async ({ page }) =>
+{
+    await page.goto("/");
+    const links = page.getByRole("region", { name: "Les sept vérifications" }).getByRole("link");
+    await expect(links).toHaveCount(7);
+
+    for (const href of await links.evaluateAll((anchors) => anchors.map((anchor) => (anchor as HTMLAnchorElement).href)))
+    {
+        const reply = await page.goto(href);
+
+        expect(reply?.status()).toBe(200);
+        await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    }
 });
 
