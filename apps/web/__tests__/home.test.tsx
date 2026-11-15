@@ -33,15 +33,15 @@ test("under the cities, the first screen links the seven checks by their questio
 
     expect(page.indexOf("home-checks")).toBeGreaterThan(page.indexOf('href="lyon/"'));
     expect(links).toEqual([
-        ["loyer/", "Mon loyer dépasse-t-il le plafond légal ?"],
-        ["revision/", "Ma hausse de loyer respecte-t-elle l'indice ?"],
-        ["dpe/", "Mon logement est-il une passoire thermique ?"],
-        ["depot/", "Mon dépôt de garantie m'a-t-il été rendu à temps ?"],
-        ["charges/", "Ma régularisation de charges est-elle juste ?"],
-        ["preavis/", "Combien de temps dure mon préavis ?"],
-        ["frais-agence/", "Mes frais d'agence dépassent-ils le plafond ?"],
+        ["loyer/", "Mon loyer dépasse-t-il le plafond légal\u00A0?"],
+        ["revision/", "Ma hausse de loyer respecte-t-elle l'indice\u00A0?"],
+        ["dpe/", "Mon logement est-il une passoire thermique\u00A0?"],
+        ["depot/", "Mon dépôt de garantie m'a-t-il été rendu à temps\u00A0?"],
+        ["charges/", "Ma régularisation de charges est-elle juste\u00A0?"],
+        ["preavis/", "Combien de temps dure mon préavis\u00A0?"],
+        ["frais-agence/", "Mes frais d'agence dépassent-ils le plafond\u00A0?"],
     ]);
-    expect(listed).toMatch(/plafond légal \?<\/a><span class="reach">À Paris, Lyon et Villeurbanne\.<\/span>/);
+    expect(listed).toMatch(/plafond légal\u00A0\?<\/a><span class="reach">À Paris, Lyon et Villeurbanne\.<\/span>/);
 });
 
 test("the home names the very checks a city page offers, from the same list", () =>
@@ -65,4 +65,14 @@ test("the welcome promises a letter only when the case calls for one, to the lan
 test("under the two cities, a calm link leads the tenants of every other town to the checks that hold everywhere", () =>
 {
     expect(page).toMatch(/<a href="ailleurs\/">Autre ville en France<\/a>/);
+});
+
+// On a phone the list of checks broke two questions before their question mark, which then stood alone on a line.
+test("no question of a check can break before its question mark, in the list or in the cards", () =>
+{
+    const city = renderToStaticMarkup(<CheckList base="" rentReach="Partout." />);
+    const questions = [...`${page}${city}`.matchAll(/(?:<strong>|<a href="[^"]+">)([^<]*\?)<\/(?:strong|a)>/g)].map(([, question]) => question);
+
+    expect(questions.length).toBe(14);
+    expect(questions.filter((question) => !question!.endsWith(" ?"))).toEqual([]);
 });

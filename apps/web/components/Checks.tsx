@@ -12,7 +12,7 @@ interface Check
 const everywhere: Check[] = [
     {
         href: "revision/",
-        question: "Ma hausse de loyer respecte-t-elle l'indice ?",
+        question: "Ma hausse de loyer respecte-t-elle l'indice\u00A0?",
         reach: "En France hexagonale, d'après l'indice de l'Insee.",
         needs: "Le bail et la demande du propriétaire, environ 2 minutes.",
         drawing: (
@@ -25,7 +25,7 @@ const everywhere: Check[] = [
     },
     {
         href: "dpe/",
-        question: "Mon logement est-il une passoire thermique ?",
+        question: "Mon logement est-il une passoire thermique\u00A0?",
         reach: "En France métropolitaine, d'après le DPE.",
         needs: "L'adresse ou le numéro du DPE, environ 2 minutes.",
         drawing: (
@@ -39,7 +39,7 @@ const everywhere: Check[] = [
     },
     {
         href: "depot/",
-        question: "Mon dépôt de garantie m'a-t-il été rendu à temps ?",
+        question: "Mon dépôt de garantie m'a-t-il été rendu à temps\u00A0?",
         reach: "Partout en France, d'après la loi du 6 juillet 1989.",
         needs: "Les dates et les montants, environ 2 minutes.",
         drawing: (
@@ -52,7 +52,7 @@ const everywhere: Check[] = [
     },
     {
         href: "charges/",
-        question: "Ma régularisation de charges est-elle juste ?",
+        question: "Ma régularisation de charges est-elle juste\u00A0?",
         reach: "Partout en France, d'après le décret du 26 août 1987.",
         needs: "Votre décompte annuel, environ 5 minutes.",
         drawing: (
@@ -66,7 +66,7 @@ const everywhere: Check[] = [
     },
     {
         href: "preavis/",
-        question: "Combien de temps dure mon préavis ?",
+        question: "Combien de temps dure mon préavis\u00A0?",
         reach: "Partout en France, d'après la loi du 6 juillet 1989.",
         needs: "La date de réception de votre lettre, environ 2 minutes.",
         drawing: (
@@ -79,7 +79,7 @@ const everywhere: Check[] = [
     },
     {
         href: "frais-agence/",
-        question: "Mes frais d'agence dépassent-ils le plafond ?",
+        question: "Mes frais d'agence dépassent-ils le plafond\u00A0?",
         reach: "Partout en France, d'après la loi du 6 juillet 1989.",
         needs: "Le bail et la facture de l'agence, environ 2 minutes.",
         drawing: (
@@ -95,7 +95,7 @@ const everywhere: Check[] = [
 // The rent check is the one whose reach depends on the city page that offers it.
 const rent: Omit<Check, "reach"> = {
     href: "loyer/",
-    question: "Mon loyer dépasse-t-il le plafond légal ?",
+    question: "Mon loyer dépasse-t-il le plafond légal\u00A0?",
     needs: "Votre bail sous la main, environ 3 minutes.",
     drawing: (
         <>
