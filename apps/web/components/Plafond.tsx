@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { geoplateforme, type Geocoder } from "@plafond/address";
+import { AddressError, geoplateforme, type Geocoder } from "@plafond/address";
 import type { City, LawPeriod } from "@plafond/domain";
 
 import { next, start, type Event, type Step } from "../lib/flow";
@@ -74,11 +74,26 @@ export function Plafond({ law, needs = live }: { law: readonly LawPeriod[]; need
     async function find(typed: string)
     {
         setBusy(true);
-        const lookup = await needs.geocoder.locate(typed);
-        const city = lookup.kind === "located" ? cityOf(lookup.citycode) : "paris";
-        const ready = await loaded(city);
-        setBusy(false);
-        go({ type: "located", typed, lookup: "kind" in ready ? { kind: "unreachable" } : lookup }, city, "kind" in ready ? none : ready);
+        try
+        {
+            const lookup = await needs.geocoder.locate(typed);
+            const city = lookup.kind === "located" ? cityOf(lookup.citycode) : "paris";
+            const ready = await loaded(city);
+            go({ type: "located", typed, lookup: "kind" in ready ? { kind: "unreachable" } : lookup }, city, "kind" in ready ? none : ready);
+        }
+        catch (err)
+        {
+            if (!(err instanceof AddressError))
+            {
+                throw err;
+            }
+
+            go({ type: "located", typed, lookup: { kind: "unreachable" } }, "paris", none);
+        }
+        finally
+        {
+            setBusy(false);
+        }
     }
 
     const paris = worlds.paris;

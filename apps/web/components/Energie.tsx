@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import { ademe, type DpeSource } from "@plafond/ademe";
-import { geoplateforme, type Geocoder } from "@plafond/address";
+import { AdemeError, ademe, type DpeSource } from "@plafond/ademe";
+import { AddressError, geoplateforme, type Geocoder } from "@plafond/address";
 
 import { dpeStart, nextDpe, type DpeEvent, type DpeStep } from "../lib/dpe-flow";
 import { search } from "../lib/dpe-search";
@@ -47,9 +47,23 @@ export function Energie({ needs = live }: { needs?: EnergyNeeds })
     async function find(typed: string)
     {
         setBusy(true);
-        const outcome = await search(typed, needs);
-        setBusy(false);
-        go({ type: "searched", typed, outcome });
+        try
+        {
+            go({ type: "searched", typed, outcome: await search(typed, needs) });
+        }
+        catch (err)
+        {
+            if (!(err instanceof AddressError || err instanceof AdemeError))
+            {
+                throw err;
+            }
+
+            go({ type: "searched", typed, outcome: { kind: "refused", problem: "unreachable" } });
+        }
+        finally
+        {
+            setBusy(false);
+        }
     }
 
     const back = () => go({ type: "back" });
