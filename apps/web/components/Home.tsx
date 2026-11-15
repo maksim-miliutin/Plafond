@@ -2,6 +2,7 @@ import type { City } from "@plafond/domain";
 
 import { cityCopy } from "../lib/city-copy";
 import { Brand } from "./Brand";
+import { CheckLinks } from "./Checks";
 
 export function Home({ shapes }: { shapes: Record<City, string> })
 {
@@ -30,6 +31,10 @@ export function Home({ shapes }: { shapes: Record<City, string> })
             <p className="elsewhere">
                 <a href="ailleurs/">Autre ville en France</a>&nbsp;: les six vérifications qui valent partout.
             </p>
+            <section className="findings" aria-labelledby="home-checks">
+                <h2 id="home-checks">Les sept vérifications</h2>
+                <CheckLinks base="" rentReach="À Paris, Lyon et Villeurbanne." />
+            </section>
             <div className="grow" />
             <p className="fine">
                 Le calcul se fait sur votre appareil, sans compte. Une estimation, pas un conseil juridique.{" "}

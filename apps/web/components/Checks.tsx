@@ -138,3 +138,16 @@ export function CheckList({ base, rentReach }: { base: string; rentReach: string
         </nav>
     );
 }
+
+export function CheckLinks({ base, rentReach }: { base: string; rentReach: string })
+{
+    return (
+        <ul className="references">
+            <li>
+                <a href={base + rent.href}>{rent.question}</a>
+                <span className="reach">{rentReach}</span>
+            </li>
+            {everywhere.map((check) => <li key={check.href}><a href={base + check.href}>{check.question}</a></li>)}
+        </ul>
+    );
+}

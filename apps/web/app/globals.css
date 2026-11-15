@@ -979,6 +979,13 @@ a:hover
     gap: 6px;
 }
 
+.references .reach
+{
+    display: block;
+    font-size: 14px;
+    color: var(--muted);
+}
+
 .rule
 {
     align-self: flex-start;
