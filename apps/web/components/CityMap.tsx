@@ -12,6 +12,7 @@ export function CityMap({ outlines, label }: { outlines: readonly Quartier["ring
 {
     const box = useRef<HTMLDivElement>(null);
     const [failed, setFailed] = useState(false);
+    const [blank, setBlank] = useState(false);
 
     useEffect(() =>
     {
@@ -29,7 +30,13 @@ export function CityMap({ outlines, label }: { outlines: readonly Quartier["ring
                 const map = leaflet.map(box.current, { zoomControl: false, attributionControl: false, scrollWheelZoom: false, zoomSnap: 0.25, minZoom: 10, maxZoom: deepest });
                 shown = map;
                 leaflet.control.zoom({ zoomInTitle: "Zoom avant", zoomOutTitle: "Zoom arrière" }).addTo(map);
-                leaflet.tileLayer(planIgnTemplate, { maxZoom: deepest }).addTo(map);
+                const tiles = leaflet.tileLayer(planIgnTemplate, { maxZoom: deepest }).addTo(map);
+                let arrived = false;
+                tiles.on("tileload", () =>
+                {
+                    arrived = true;
+                });
+                tiles.on("load", () => setBlank(!arrived));
                 const zones = outlines.map((rings) => leaflet.polygon(rings.map((ring) => ring.map(([lon, lat]) => leaflet.latLng(lat, lon))), { className: "zone" }).addTo(map));
                 const bounds = leaflet.featureGroup(zones).getBounds();
                 map.fitBounds(bounds);
@@ -59,5 +66,15 @@ export function CityMap({ outlines, label }: { outlines: readonly Quartier["ring
         return <p className="map-failed" role="status">Le plan n'a pas pu s'afficher. Rechargez la page, ou passez par la liste plus bas.</p>;
     }
 
-    return <div ref={box} className="city-map" role="region" aria-label={label} />;
+    return (
+        <>
+            <div ref={box} className="city-map" role="region" aria-label={label} />
+            {blank && (
+                <p className="map-failed" role="status">
+                    Le fond de plan IGN ne s'est pas chargé&nbsp;: seuls les contours s'affichent. Rechargez la page, ou passez par la
+                    liste plus bas.
+                </p>
+            )}
+        </>
+    );
 }
