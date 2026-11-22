@@ -224,6 +224,25 @@ test("the guides put the complement in the terms of the law, with the floor the 
     }
 });
 
+// The law of 21 November 2026 turned three months into a year: a guide still saying three months would make a tenant
+// give up on a complement that can still be contested.
+test("the guides give a year to contest a complement, say which leases it reaches, and cite the law that set it", () =>
+{
+    const complement = guides.find((guide) => guide.slug === "complement-de-loyer")!;
+    const said = complement.sections.flatMap((section) => section.paragraphs).join(" ");
+
+    expect(said).toContain("Vous disposez d'un an après la signature du bail pour contester le complément");
+    expect(said).toContain("aux baux signés à partir du 23 août 2026");
+    expect(complement.description).toContain("le contester dans l'année qui suit la signature");
+    expect(complement.sources.map((source) => source.href)).toContain("https://www.legifrance.gouv.fr/jorf/jo/2026/11/22/0273");
+    for (const guide of guides)
+    {
+        const text = [guide.description, ...guide.sections.flatMap((section) => section.paragraphs)].join(" ");
+
+        expect(text, guide.slug).not.toMatch(/trois mois après la signature|dans les trois mois après/);
+    }
+});
+
 test("the revision guide shows the index of the last three years from the seed, newest first, with its source", async () =>
 {
     const { IndexTable } = await import("../components/IndexTable");
