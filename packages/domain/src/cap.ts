@@ -40,7 +40,8 @@ export interface Invalid
     field: keyof Claim;
 }
 
-export type Gap = { side: "before"; from: Day } | { side: "after"; until: Day } | { side: "between" };
+// After the known decrees, the latest one is named and linked: the official source that says where the rates stop.
+export type Gap = { side: "before"; from: Day } | { side: "after"; until: Day; title: string; url: string } | { side: "between" };
 
 export type Unpriced = { kind: "no-rate" } & Gap;
 
@@ -135,10 +136,11 @@ function gapOf(claim: Claim, rates: readonly Rate[]): Gap
         return { side: "before", from: since };
     }
 
-    const last = rates.filter((rate) => rate.flat.city === claim.flat.city).map((rate) => rate.decree.until).sort().at(-1);
-    if (last !== undefined && claim.signedOn >= last)
+    const latest = rates.filter((rate) => rate.flat.city === claim.flat.city).map((rate) => rate.decree)
+        .sort((a, b) => a.until.localeCompare(b.until)).at(-1);
+    if (latest !== undefined && claim.signedOn >= latest.until)
     {
-        return { side: "after", until: dayBefore(last) };
+        return { side: "after", until: dayBefore(latest.until), title: latest.title, url: latest.url };
     }
 
     return { side: "between" };

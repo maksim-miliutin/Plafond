@@ -75,10 +75,12 @@ test("the lease form sends nothing anywhere, even before the page wakes up", () 
     expect(page()).toMatch(/<form[^>]*method="dialog"/);
 });
 
+const pastParis = { kind: "no-rate", side: "after", until: "2026-11-24", title: "Arrêté préfectoral n° IDF-2026-06-12-00003", url: "https://example.org/decree" } as const;
+
 test("a lease signed on a day no rate covers is told so, above the button, and only then", () =>
 {
-    const refused = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />);
-    const notice = refused.match(/<p[^>]*role="alert"[^>]*>([^<]*)<\/p>/)?.[1] ?? "";
+    const refused = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={pastParis} />);
+    const notice = refused.match(/<p[^>]*role="alert"[^>]*>(.*?)<\/p>/)?.[1] ?? "";
 
     expect(notice).toContain("Aucun loyer de référence");
     expect(refused.indexOf("Aucun loyer de référence")).toBeLessThan(refused.indexOf("Vérifier mon loyer"));
@@ -89,11 +91,19 @@ test("a lease signed on a day no rate covers is told so, above the button, and o
 test("the notice says why no rate applies: too early for the scheme, or past the latest known decree", () =>
 {
     const early = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "before", from: "2019-07-01" }} />);
-    const late = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />);
+    const late = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={pastParis} />);
 
     expect(early).toContain("aux baux signés à partir du 1er juillet 2019");
-    expect(late).toContain("le plus récent s&#x27;applique jusqu&#x27;au 24 novembre 2026");
+    expect(late).toContain(") s&#x27;applique jusqu&#x27;au 24 novembre 2026");
     expect(late).not.toContain("1er juillet 2019");
+});
+
+// A notice that no rate applies leads to its official source: the latest decree, whose last day it states.
+test("past the latest known decree, the notice links that decree by its title", () =>
+{
+    const late = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={pastParis} />);
+
+    expect(late).toMatch(/le plus récent \(<a[^>]*href="https:\/\/example.org\/decree"[^>]*>Arrêté préfectoral n° IDF-2026-06-12-00003<\/a>\)/);
 });
 
 test("a lapsed law is named with its last day, and nothing says the rent is free", () =>

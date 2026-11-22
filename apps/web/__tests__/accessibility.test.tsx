@@ -100,7 +100,7 @@ const screens: Record<string, ReactElement> = {
     "refused address": <AddressStep typed="4 place du louvre" problem="street-only" />,
     "quartier": <QuartierStep quartier={quartier} around={[]} address="4 Place du Louvre 75001 Paris" point={{ lon: 2.342, lat: 48.861 }} />,
     "lease": <LeaseStep fields={blank} errors={{}} />,
-    "refused lease": <LeaseStep fields={blank} errors={questions} unchecked={{ kind: "no-rate", side: "after", until: "2026-11-24" }} />,
+    "refused lease": <LeaseStep fields={blank} errors={questions} unchecked={{ kind: "no-rate", side: "after", until: "2026-11-24", title: "Arrêté préfectoral n° IDF-2026-06-12-00003", url: "https://example.org/decree" }} />,
     "lapsed lease": <LeaseStep fields={blank} errors={{}} unchecked={{ kind: "lapsed", lastDay: "2026-11-24", title: law[0]!.title, url: law[0]!.url }} />,
     "result": <ResultStep check={checked} claim={claim} quartier="Saint-Germain-l'Auxerrois" writable />,
     "letter": <LetterStep letter={written} />,

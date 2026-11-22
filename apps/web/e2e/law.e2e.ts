@@ -53,8 +53,13 @@ test("a lease signed after the last Paris decree, while the law runs on, is told
     await leaseSignedOn(page, "2026-11-25");
 
     await expect(page.getByText("Aucun loyer de référence n'est disponible pour cette date de signature.")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Arrêté préfectoral n° IDF-2026-06-12-00003" }))
+        .toHaveAttribute("href", "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/renouvellement-2026-de-l-arrete-annuel-d-a1512.html?lang=fr");
     await expect(page.getByText("Plafond ne peut pas vérifier un bail signé après")).toHaveCount(0);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ce que dit votre bail");
+
+    const found = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
+    expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
 });
 
 // 40 m² at 33,00 €, the 2026 majored rent of sector 2 for three furnished rooms built 1946-1970, caps the base rent at 1 320,00 €.
