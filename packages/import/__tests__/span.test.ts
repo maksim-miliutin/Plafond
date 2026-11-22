@@ -39,7 +39,8 @@ test("a lease signed under the annulled decree of 2023 is priced, and carries th
     expect(check(claim, lyon.rates, lawOf(lawSeed))).toMatchObject({ kind: "checked", rate: { decree: { from: "2023-11-01", contest: { outcome: "annulled" } } } });
 });
 
-// Article 3 of each Lyon decree and article 140 of the ELAN law set these edges; the 2026 decree stops a day before the law.
+// Article 3 of each Lyon decree sets these edges. The 2026 decree stops on 23 November 2026, while the law of
+// 21 November 2026 runs the control on to 24 November 2028: between the two a lease finds no rate, not a lapsed law.
 test("a Lyon lease is priced by the decree in force on the day it was signed, edge days included", () =>
 {
     const { lyon } = seedsFrom(read);
@@ -64,6 +65,34 @@ test("a Lyon lease is priced by the decree in force on the day it was signed, ed
     expect(signed("2026-11-01")).toBe("decree from 2026-11-01");
     expect(signed("2026-11-23")).toBe("decree from 2026-11-01");
     expect(signed("2026-11-24")).toBe("no rate, after");
-    expect(signed("2026-11-25")).toBe("lapsed");
+    expect(signed("2026-11-25")).toBe("no rate, after");
+    expect(signed("2028-11-24")).toBe("no rate, after");
+    expect(signed("2028-11-25")).toBe("lapsed");
+});
+
+// The bug this guards: the law of 21 November 2026 extended the control to 24 November 2028, yet a Paris lease signed
+// on 25 November 2026 was still told that no published text extends it. The 2026 decree itself stops on 24 November.
+test("a Paris lease signed after the 2026 decree finds no rate under the extended law, and lapses only after 24 November 2028", () =>
+{
+    const { paris } = seedsFrom(read);
+    const law = lawOf(lawSeed);
+    const flat = paris.find((rate) => rate.decree.from === "2026-07-01")!.flat;
+    const signed = (day: string) =>
+    {
+        const result = check({ flat, surface: 2500, signedOn: day, startsOn: day, rent: 60000, complement: 0, on: "2026-11-22" }, paris, law);
+        if (result.kind === "checked")
+        {
+            return `decree from ${result.rate.decree.from}`;
+        }
+
+        return result.kind === "no-rate" ? `no rate, ${result.side}` : result.kind;
+    };
+
+    expect(signed("2026-06-30")).toBe("decree from 2025-07-01");
+    expect(signed("2026-07-01")).toBe("decree from 2026-07-01");
+    expect(signed("2026-11-24")).toBe("decree from 2026-07-01");
+    expect(signed("2026-11-25")).toBe("no rate, after");
+    expect(signed("2028-11-24")).toBe("no rate, after");
+    expect(signed("2028-11-25")).toBe("lapsed");
 });
 
