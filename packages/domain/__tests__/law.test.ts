@@ -37,7 +37,7 @@ function signed(city: City, signedOn: string, rates: readonly Rate[] = decrees, 
     return check(claim, rates, periods);
 }
 
-test("each signing day around the end of 2026 gets the answer the texts in force give it", () =>
+test("each signing day around the end of 2026 gets the answer a law ending on 24 November 2026 gives it", () =>
 {
     const lapsed = { kind: "lapsed", lastDay: "2026-11-24", title: law[0]!.title, url: law[0]!.url };
 
@@ -48,8 +48,10 @@ test("each signing day around the end of 2026 gets the answer the texts in force
 
     expect(signed("paris", "2026-11-25")).toEqual(lapsed);
     expect(signed("lyon", "2026-10-31")).toMatchObject({ kind: "checked" });
-    expect(signed("lyon", "2026-11-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-10-31" });
-    expect(signed("lyon", "2026-11-24")).toEqual({ kind: "no-rate", side: "after", until: "2026-10-31" });
+    const lyonDecree = { title: "fixture decree of lyon from 2025-11-01", url: "https://example.org/decree" };
+
+    expect(signed("lyon", "2026-11-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-10-31", ...lyonDecree });
+    expect(signed("lyon", "2026-11-24")).toEqual({ kind: "no-rate", side: "after", until: "2026-10-31", ...lyonDecree });
     expect(signed("lyon", "2026-11-25")).toEqual(lapsed);
 });
 
@@ -67,7 +69,13 @@ test("an extension is one more row: the day after the old end is no longer lapse
 {
     const extended = [...law, { from: "2026-11-25", until: "2028-11-25", title: "fixture extension", url: "https://example.org/extension" }];
 
-    expect(signed("paris", "2026-11-25", decrees, extended)).toEqual({ kind: "no-rate", side: "after", until: "2026-11-24" });
+    expect(signed("paris", "2026-11-25", decrees, extended)).toEqual({
+        kind: "no-rate",
+        side: "after",
+        until: "2026-11-24",
+        title: "fixture decree of paris from 2026-07-01",
+        url: "https://example.org/decree",
+    });
 });
 
 test("checking without any period of the law is a breakage", () =>

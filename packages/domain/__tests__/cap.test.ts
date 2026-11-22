@@ -116,10 +116,13 @@ test("a lease without a complement has none to show", () =>
 test("a missing rate says on which side of the known decrees the lease falls", () =>
 {
     const signed = (signedOn: string, city: City = "paris") => check({ ...claim, flat: { ...flat, city }, signedOn, startsOn: signedOn }, rates, law);
+    const latest = { title: "fixture decree from 2025-07-01", url: "https://example.org/decree" };
 
     expect(signed("2019-06-01")).toEqual({ kind: "no-rate", side: "before", from: "2019-07-01" });
-    expect(signed("2026-07-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-06-30" });
-    expect(signed("2026-08-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-06-30" });
+    expect(signed("2026-07-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-06-30", ...latest });
+    expect(signed("2026-08-01")).toEqual({ kind: "no-rate", side: "after", until: "2026-06-30", ...latest });
+    expect(check({ ...claim, signedOn: "2026-08-01", startsOn: "2026-08-01" }, [...rates].reverse(), law))
+        .toEqual({ kind: "no-rate", side: "after", until: "2026-06-30", ...latest });
     expect(signed("2022-03-01")).toEqual({ kind: "no-rate", side: "between" });
     expect(signed("2021-06-01", "lyon")).toEqual({ kind: "no-rate", side: "before", from: "2021-11-01" });
     expect(signed("2026-08-01", "lyon")).toEqual({ kind: "no-rate", side: "between" });

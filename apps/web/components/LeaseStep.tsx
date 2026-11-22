@@ -78,12 +78,12 @@ function lapsedText(lapsed: Lapsed): ReactNode
     );
 }
 
-function noRateText(gap: Gap): string
+function noRateText(gap: Gap): ReactNode
 {
-    return `Aucun loyer de référence n'est disponible pour cette date de signature. ${gapText(gap)}`;
+    return <>Aucun loyer de référence n'est disponible pour cette date de signature. {gapText(gap)}</>;
 }
 
-function gapText(gap: Gap): string
+function gapText(gap: Gap): ReactNode
 {
     switch (gap.side)
     {
@@ -91,7 +91,12 @@ function gapText(gap: Gap): string
             return `L'encadrement des loyers s'applique aux baux signés à partir du ${frenchDay(gap.from)}.`;
 
         case "after":
-            return `Plafond ne connaît pas encore d'arrêté pour cette date\u00A0: le plus récent s'applique jusqu'au ${frenchDay(gap.until)}.`;
+            return (
+                <>
+                    Plafond ne connaît pas encore d'arrêté pour cette date&nbsp;: le plus récent (<a href={gap.url}>{gap.title}</a>)
+                    s'applique jusqu'au {frenchDay(gap.until)}.
+                </>
+            );
 
         case "between":
             return "Plafond ne dispose pas encore des loyers de référence de cette période.";
