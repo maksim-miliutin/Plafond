@@ -58,10 +58,16 @@ export class CapError extends Error
     }
 }
 
-// Overpaid rent can be claimed back for three years; a complement can be contested
-// before the conciliation commission only within three months of signing.
+// Overpaid rent can be claimed back for three years.
 const recoverableMonths = 36;
-const contestMonths = 3;
+
+// Loi n° 2026-1072 of 21 November 2026, published the next day and dated by nothing else, takes effect on
+// 23 November 2026 (article 1 of the Code civil). It gives a year instead of three months to bring a complement
+// before the conciliation commission. Under article 2222 of the Code civil a longer deadline reaches every window
+// still open that day, counted from the same signing, and leaves a closed one closed.
+const reformedOn: Day = "2026-11-23";
+const contestMonthsBefore = 3;
+const contestMonths = 12;
 
 const demands: readonly { field: keyof Claim; met: (claim: Claim) => boolean }[] = [
     { field: "surface", met: (c) => Number.isInteger(c.surface) && c.surface > 0 },
@@ -123,9 +129,20 @@ function complementOf(claim: Claim, cap: number): Complement | null
     return {
         amount: claim.complement,
         share: rounded(claim.complement * 10000, cap),
-        contestUntil: addMonths(claim.signedOn, contestMonths),
+        contestUntil: contestUntil(claim.signedOn),
         shortOfCap: Math.max(0, cap - claim.rent),
     };
+}
+
+function contestUntil(signedOn: Day): Day
+{
+    const before = addMonths(signedOn, contestMonthsBefore);
+    if (before < reformedOn)
+    {
+        return before;
+    }
+
+    return addMonths(signedOn, contestMonths);
 }
 
 function gapOf(claim: Claim, rates: readonly Rate[]): Gap

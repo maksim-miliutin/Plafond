@@ -108,6 +108,28 @@ test("the window to contest a complement ends on the last day of a shorter month
     expect(check(lateInMonth, rates, law)).toMatchObject({ complement: { contestUntil: "2025-02-28" } });
 });
 
+// Loi n° 2026-1072 of 21 November 2026 gives a year instead of three months, from 23 November 2026. Under article 2222
+// of the Code civil a longer deadline reaches every window still open that day, counted from the same signing; one
+// already closed stays closed.
+test("the year to contest a complement reaches every lease whose three months were still running on 23 November 2026", () =>
+{
+    const extended = [...law, { from: "2026-11-25", until: "2028-11-25", title: "fixture extension", url: "https://example.org/extension" }];
+    const current = [...rates, rate("2026-07-01", "2027-07-01", 3220)];
+    const until = (signedOn: string, startsOn = signedOn) =>
+    {
+        const result = check({ ...claim, signedOn, startsOn, complement: 20000, on: "2026-11-23" }, current, extended);
+
+        return result.kind === "checked" ? result.complement?.contestUntil : result.kind;
+    };
+
+    expect(until("2026-08-22")).toBe("2026-11-22");
+    expect(until("2026-08-23")).toBe("2027-08-23");
+    expect(until("2026-08-31")).toBe("2027-08-31");
+    expect(until("2026-11-23")).toBe("2027-11-23");
+    expect(until("2027-02-28")).toBe("2028-02-28");
+    expect(until("2026-08-23", "2026-09-15")).toBe("2027-08-23");
+});
+
 test("a lease without a complement has none to show", () =>
 {
     expect(check(claim, rates, law)).toMatchObject({ complement: null });

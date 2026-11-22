@@ -131,7 +131,7 @@ export const guides: readonly GuideText[] = [
                 heading: "Le complément de loyer",
                 paragraphs: [
                     "Un complément peut s'ajouter au loyer de base, s'il est mentionné au bail, pour un logement dont la localisation ou le confort le justifient par comparaison avec les logements de la même catégorie du même secteur. Il est interdit pour un logement classé F ou G au DPE dans les baux signés depuis le 18 août 2022.",
-                    "Vous disposez de trois mois après la signature du bail pour le contester devant la commission départementale de conciliation.",
+                    "Vous disposez d'un an après la signature du bail pour le contester devant la commission départementale de conciliation. La loi du 21 novembre 2026 a porté ce délai de trois mois à un an, et Plafond l'applique aux baux signés à partir du 23 août 2026, dont les trois mois n'étaient pas écoulés quand la loi est entrée en vigueur.",
                 ],
             },
             {
@@ -251,7 +251,7 @@ export const guides: readonly GuideText[] = [
         slug: "complement-de-loyer",
         label: "Le complément de loyer",
         title: "Complément de loyer à Paris\u00A0: le contester | Plafond",
-        description: "Quand un complément de loyer peut s'ajouter au plafond à Paris, quand il est interdit, et comment le contester dans les trois mois après la signature.",
+        description: "Quand un complément de loyer peut s'ajouter au plafond à Paris, quand il est interdit, et comment le contester dans l'année qui suit la signature.",
         heading: "Complément de loyer\u00A0: quand il est permis, comment le contester",
         intro: "Dans les villes où les loyers sont encadrés, le propriétaire peut ajouter au loyer de base un complément, à des conditions strictes.",
         check: { text: "Vérifier mon loyer", href: "loyer/" },
@@ -266,12 +266,14 @@ export const guides: readonly GuideText[] = [
             {
                 heading: "Le contester",
                 paragraphs: [
-                    "Vous disposez de trois mois après la signature du bail pour contester le complément devant la commission départementale de conciliation. C'est gratuit, et c'est au propriétaire de démontrer que les caractéristiques du logement justifient le complément.",
+                    "Vous disposez d'un an après la signature du bail pour contester le complément devant la commission départementale de conciliation. C'est gratuit, et c'est au propriétaire de démontrer que les caractéristiques du logement justifient le complément.",
+                    "Ce délai était de trois mois jusqu'à la loi du 21 novembre 2026, entrée en vigueur le 23 novembre 2026. Comme un délai allongé profite à ceux dont le délai court encore (article 2222 du Code civil), Plafond applique l'année aux baux signés à partir du 23 août 2026. Pour un bail plus ancien, le délai de trois mois était déjà écoulé.",
                 ],
             },
         ],
         sources: [
             { text: "Complément de loyer\u00A0: les règles (service-public.fr)", href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F34413" },
+            { text: "Loi n°\u00A02026-1072 du 21 novembre 2026, Journal officiel du 22 novembre (Légifrance)", href: "https://www.legifrance.gouv.fr/jorf/jo/2026/11/22/0273" },
             { text: "Cour de cassation, 4 décembre 2025, n°\u00A024-17.930 (Légifrance)", href: "https://www.legifrance.gouv.fr/juri/id/JURITEXT000053135178" },
             { text: "Dépliant pour les locataires (DRIHL)", href: "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/IMG/pdf/flyer-locataire.pdf" },
             conciliation,
