@@ -35,6 +35,35 @@ test("the claim back says how far it reaches and why it stops there", () =>
     expect(page()).toContain("trois dernières années");
 });
 
+// The law of 21 November 2026 gives a year to claim a lower rent, and a letter to the landlord does not stop that clock.
+test("an excess comes with the last day to claim it, counted from signing, and with what stops the clock", () =>
+{
+    const open = page();
+
+    expect(open).toContain("agissez au plus tard le 23 novembre 2027");
+    expect(open).toContain("saisir la commission départementale de conciliation le suspend");
+    expect(open).toContain("ou depuis le 23 novembre 2026 pour un bail signé avant");
+    expect(open).toContain("saisissez la commission sans attendre la réponse du propriétaire");
+    expect(page({ on: "2027-11-23" })).toContain("agissez au plus tard le 23 novembre 2027");
+    expect(page({ rent: 120000 }, [rate], false)).not.toContain("au plus tard le");
+});
+
+// Plafond only knows the signing day; the year runs from when the tenant knew or should have known, so a date
+// counted from signing must not read as a closed door.
+test("past the day counted from signing, the claim is not called lost: the notice says when the year really starts", () =>
+{
+    const past = page({ on: "2027-11-24" });
+
+    expect(past).toContain("Si vous connaissiez le dépassement dès la signature du bail, le délai pour demander la baisse du loyer a pris fin le 23 novembre 2027");
+    expect(past).toContain("connu ou auriez dû connaître le dépassement");
+    expect(past).toContain("le propriétaire pourra soutenir que vous le connaissiez plus tôt");
+    expect(past).not.toContain("au plus tard le");
+    for (const word of ["perdu", "trop tard", "impossible"])
+    {
+        expect(past).not.toContain(word);
+    }
+});
+
 test("every figure shows where it came from", () =>
 {
     const sources = page();

@@ -25,6 +25,11 @@ export interface GuideText
 
 const adil: Link = { text: "Trouver l'ADIL de votre département", href: "https://www.anil.org/lanil-et-les-adil/votre-adil/" };
 const conciliation: Link = { text: "Saisir la commission départementale de conciliation", href: "https://www.service-public.fr/particuliers/vosdroits/F1216" };
+const reform: Link = { text: "Loi n°\u00A02026-1072 du 21 novembre 2026, Journal officiel du 22 novembre (Légifrance)", href: "https://www.legifrance.gouv.fr/jorf/jo/2026/11/22/0273" };
+
+// Both city guides say it the same way. Article 2222 of the Code civil re-dates only a deadline already running on
+// 23 November 2026, so the guides tie it to when the tenant knew, not to when the lease was signed.
+const claimWithinAYear = "Depuis la loi du 21 novembre 2026, la demande de baisse du loyer se prescrit par un an à partir du jour où vous avez connu ou auriez dû connaître le dépassement. Si vous connaissiez ou auriez dû connaître le dépassement avant le 23 novembre 2026, cette année court depuis cette date, sans dépasser les trois ans de l'ancienne règle. Une lettre au propriétaire ne suffit pas à arrêter ce délai\u00A0: saisir la commission départementale de conciliation le suspend jusqu'à son avis.";
 
 export const guides: readonly GuideText[] = [
     {
@@ -138,10 +143,11 @@ export const guides: readonly GuideText[] = [
                 heading: "Si votre loyer dépasse le plafond",
                 paragraphs: [
                     "Vous pouvez demander au propriétaire de ramener le loyer au plafond et de vous rembourser le trop-perçu, dans la limite des trois dernières années. La Ville de Paris peut aussi infliger une amende administrative au propriétaire.",
+                    claimWithinAYear,
                 ],
             },
         ],
-        sources: [{ text: "Carte officielle des loyers de référence (DRIHL)", href: "http://www.referenceloyer.drihl.ile-de-france.developpement-durable.gouv.fr/" }, conciliation, adil],
+        sources: [{ text: "Carte officielle des loyers de référence (DRIHL)", href: "http://www.referenceloyer.drihl.ile-de-france.developpement-durable.gouv.fr/" }, conciliation, adil, reform],
     },
     {
         slug: "dpe-passoire-thermique",
@@ -273,7 +279,7 @@ export const guides: readonly GuideText[] = [
         ],
         sources: [
             { text: "Complément de loyer\u00A0: les règles (service-public.fr)", href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F34413" },
-            { text: "Loi n°\u00A02026-1072 du 21 novembre 2026, Journal officiel du 22 novembre (Légifrance)", href: "https://www.legifrance.gouv.fr/jorf/jo/2026/11/22/0273" },
+            reform,
             { text: "Cour de cassation, 4 décembre 2025, n°\u00A024-17.930 (Légifrance)", href: "https://www.legifrance.gouv.fr/juri/id/JURITEXT000053135178" },
             { text: "Dépliant pour les locataires (DRIHL)", href: "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/IMG/pdf/flyer-locataire.pdf" },
             conciliation,
@@ -306,10 +312,11 @@ export const guides: readonly GuideText[] = [
                 heading: "Si votre loyer dépasse le plafond",
                 paragraphs: [
                     "Vous pouvez demander au propriétaire de ramener le loyer au plafond et de vous rembourser le trop-perçu, dans la limite des trois dernières années. Le préfet du Rhône peut aussi mettre le propriétaire en demeure et lui infliger une amende administrative.",
+                    claimWithinAYear,
                 ],
             },
         ],
-        sources: [{ text: "Encadrement des loyers (préfecture du Rhône)", href: "https://www.rhone.gouv.fr/Actions-de-l-Etat/Amenagement-du-territoire-urbanisme-construction-logement/Logement/Encadrement-des-loyers" }, conciliation, adil],
+        sources: [{ text: "Encadrement des loyers (préfecture du Rhône)", href: "https://www.rhone.gouv.fr/Actions-de-l-Etat/Amenagement-du-territoire-urbanisme-construction-logement/Logement/Encadrement-des-loyers" }, conciliation, adil, reform],
     },
     {
         slug: "frais-d-agence",

@@ -31,6 +31,7 @@ export interface Check
     months: number;
     sinceStart: number;   // cents
     recoverable: number;  // cents
+    claimBy: Day | null;  // last day, inclusive, to claim a lower rent, taking signing as the day the tenant knew; null when within the cap
     complement: Complement | null;
 }
 
@@ -58,7 +59,8 @@ export class CapError extends Error
     }
 }
 
-// Overpaid rent can be claimed back for three years.
+// Overpaid rent can be claimed back for three years. The one-year deadline below is on bringing the claim: no source
+// yet says it shortens how far back the refund reaches, so this stays at three years on purpose.
 const recoverableMonths = 36;
 
 // Loi n° 2026-1072 of 21 November 2026, published the next day and dated by nothing else, takes effect on
@@ -68,6 +70,12 @@ const recoverableMonths = 36;
 const reformedOn: Day = "2026-11-23";
 const contestMonthsBefore = 3;
 const contestMonths = 12;
+
+// The same law makes the claim for a lower rent lapse a year, not three (article 7-1 of loi n° 89-462), after the
+// tenant knew or should have known the excess. Signing is the earliest such day a landlord can argue. A shorter
+// deadline runs from the day it took effect and never past the old one (article 2222 of the Code civil).
+const claimMonthsBefore = 36;
+const claimMonths = 12;
 
 const demands: readonly { field: keyof Claim; met: (claim: Claim) => boolean }[] = [
     { field: "surface", met: (c) => Number.isInteger(c.surface) && c.surface > 0 },
@@ -115,6 +123,7 @@ export function check(claim: Claim, rates: readonly Rate[], law: readonly LawPer
         months,
         sinceStart: excess * months,
         recoverable: excess * Math.min(months, recoverableMonths),
+        claimBy: excess > 0 ? claimBy(claim.signedOn) : null,
         complement: complementOf(claim, cap),
     };
 }
@@ -143,6 +152,14 @@ function contestUntil(signedOn: Day): Day
     }
 
     return addMonths(signedOn, contestMonths);
+}
+
+function claimBy(signedOn: Day): Day
+{
+    const before = addMonths(signedOn, claimMonthsBefore);
+    const after = addMonths(signedOn < reformedOn ? reformedOn : signedOn, claimMonths);
+
+    return before < after ? before : after;
 }
 
 function gapOf(claim: Claim, rates: readonly Rate[]): Gap
