@@ -140,5 +140,8 @@ function isQuartier(value: unknown): value is Quartier
         Array.isArray(ring) && ring.every((at: unknown) =>
             Array.isArray(at) && at.length === 2 && at.every((degrees: unknown) => Number.isFinite(degrees))));
 
-    return Number.isInteger(value.number) && typeof value.name === "string" && value.name !== "" && ringsRead;
+    const commune = "commune" in value ? value.commune : undefined;
+
+    return Number.isInteger(value.number) && typeof value.name === "string" && value.name !== "" && ringsRead
+        && (commune === undefined || (typeof commune === "string" && /^\d[\dAB]\d{3}$/.test(commune)));
 }

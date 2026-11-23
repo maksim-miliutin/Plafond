@@ -11,6 +11,7 @@ export interface Quartier
     number: number;
     name: string;
     rings: readonly (readonly Position[])[];  // outer rings and holes of every piece, as GeoJSON [lon, lat]
+    commune?: string;  // the INSEE code of the commune it lies in, where a decree places addresses by commune
 }
 
 export interface Found
