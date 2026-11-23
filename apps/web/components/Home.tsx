@@ -1,10 +1,8 @@
-import type { City } from "@plafond/domain";
-
-import { cityCopy } from "../lib/city-copy";
+import { cityCopy, type MappedCity } from "../lib/city-copy";
 import { Brand } from "./Brand";
 import { CheckLinks } from "./Checks";
 
-export function Home({ shapes }: { shapes: Record<City, string> })
+export function Home({ shapes }: { shapes: Record<MappedCity, string> })
 {
     return (
         <main className="screen">
@@ -14,7 +12,7 @@ export function Home({ shapes }: { shapes: Record<City, string> })
             </p>
             <h1 className="title">Où se trouve votre logement ?</h1>
             <nav className="checks cities" aria-label="Villes">
-                {(Object.keys(cityCopy) as City[]).map((city) => (
+                {(Object.keys(cityCopy) as MappedCity[]).map((city) => (
                     <a key={city} href={`${city}/`} className="check">
                         <span className="drawing">
                             <svg aria-hidden="true" viewBox="0 0 32 32" width="34" height="34">

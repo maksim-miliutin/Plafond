@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
 import { feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
 
+import type { MappedCity } from "./city-copy";
 import { arrondissementPages, communePages, placePages, type CommunePage, type DistrictPage, type PlacePage } from "./places";
 
 export interface Places
@@ -61,7 +62,7 @@ export function lawFromDisk(): LawPeriod[]
     return lawOf(JSON.parse(readFileSync(join(seed, "rent-control-law.json"), "utf8")));
 }
 
-export function outlinesFromDisk(): Record<City, Quartier["rings"][]>
+export function outlinesFromDisk(): Record<MappedCity, Quartier["rings"][]>
 {
     const { quartiers, lyon } = seeds();
 
@@ -73,8 +74,12 @@ export function outlinesFromDisk(): Record<City, Quartier["rings"][]>
 
 export function spansFromDisk(): Record<City, Span[]>
 {
-    const { paris, lyon } = seeds();
+    const { paris, lyon, estEnsemble } = seeds();
     const law = lawFromDisk();
 
-    return { paris: checkedSpans("paris", paris, law), lyon: checkedSpans("lyon", lyon.rates, law) };
+    return {
+        paris: checkedSpans("paris", paris, law),
+        lyon: checkedSpans("lyon", lyon.rates, law),
+        "est-ensemble": checkedSpans("est-ensemble", estEnsemble.rates, law),
+    };
 }
