@@ -87,6 +87,8 @@ const outlines: Quartier[] = [
 test("packed outlines unpack to the very quartiers they were made from, through json as well", () =>
 {
     expect(unpackQuartiers(JSON.parse(JSON.stringify(packQuartiers(outlines))))).toEqual(outlines);
+    const placed: Quartier[] = [{ number: 308, name: "Pantin", rings: [], commune: "93055" }, { number: 1, name: "Ajaccio", rings: [], commune: "2A004" }];
+    expect(unpackQuartiers(JSON.parse(JSON.stringify(packQuartiers(placed))))).toEqual(placed);
 });
 
 test("outlines that cannot be read back are a breakage", () =>
@@ -99,6 +101,8 @@ test("outlines that cannot be read back are a breakage", () =>
     expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: [[[2.3, "48.8"]]] }] })).toThrow(/quartier 0/);
     expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: "rings" }] })).toThrow(PackedError);
     expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], rings: [[[2.3, 48.8, 35]]] }] })).toThrow(PackedError);
+    expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], commune: 93048 }] })).toThrow(PackedError);
+    expect(() => unpackQuartiers({ ...packed, quartiers: [{ ...outlines[0], commune: "Montreuil" }] })).toThrow(PackedError);
 });
 
 test("a row keeps its city through packing", () =>

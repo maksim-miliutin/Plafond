@@ -1,13 +1,14 @@
 /// <reference types="vite/client" />
 import { expect, test } from "vitest";
 
-import { check, type Decree, type Dwelling, type Period, type Rooms } from "@plafond/domain";
+import { check, quartierAt, type Decree, type Dwelling, type Period, type Rooms } from "@plafond/domain";
 
 import lawSeed from "../../../db/seed/rent-control-law.json" with { type: "json" };
 import decreeSeed from "../../../db/seed/est-ensemble-decrees.json" with { type: "json" };
 import { decreesOf } from "../src/decrees.js";
 import { lawOf } from "../src/law.js";
-import { TerritoryError, territoryRates } from "../src/territories.js";
+import { seedsFrom } from "../src/seed.js";
+import { TerritoryError, territoryAreas, territoryRates } from "../src/territories.js";
 
 import table from "../../../db/seed/grand-paris-rates.csv?raw";
 
@@ -117,4 +118,77 @@ test("a whole sector reads, and a missing category, a repeated one or rents off 
     expect(() => territoryRates(sector((line) => [...line.slice(0, 11), "26.0", ...line.slice(12)]), "est-ensemble", one)).toThrow(/plus 20/);
     expect(() => territoryRates(sector((line) => [...line.slice(0, 3), "2026-12-01", ...line.slice(4)]), "est-ensemble", one)).toThrow(TerritoryError);
     expect(() => territoryRates(sector(), "est-ensemble", new Map([...one, [2025, { ...decree, from: "2025-06-01", until: "2026-06-01" }]]))).toThrow(/prices no rent/);
+});
+
+const files = import.meta.glob("../../../db/seed/*", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+const seeds = seedsFrom((name) => files[`../../../db/seed/${name}`]!);
+
+// Annex 1 of the decree: nine communes, Montreuil twice as its two infra-communal sectors.
+test("each Est Ensemble commune is one area in its sector, and only Montreuil's two are outlined", () =>
+{
+    const areas = seeds.estEnsemble.areas;
+
+    expect(areas.map((area) => `${area.name} ${area.number}`)).toEqual([
+        "Bagnolet 308", "Bobigny 315", "Bondy 318", "Les Lilas 307", "Montreuil 307", "Montreuil 308",
+        "Noisy-le-Sec 311", "Pantin 308", "Le Pré-Saint-Gervais 308", "Romainville 313",
+    ]);
+    expect(areas.filter((area) => area.rings.length > 0).map((area) => area.number)).toEqual([307, 308]);
+});
+
+// Points read off the detail sheets of annex 5 on each side of the 307/308 line, at least 25 m from it, and the five
+// Montreuil addresses the national address base places there, each put in its sector by the DRIHL's simulator.
+const montreuil = [
+    { sheet: "B4", at: { lon: 2.43406892, lat: 48.85954018 }, sector: 307 },
+    { sheet: "B4", at: { lon: 2.43338256, lat: 48.85998661 }, sector: 308 },
+    { sheet: "C4", at: { lon: 2.44953115, lat: 48.86033575 }, sector: 307 },
+    { sheet: "C4", at: { lon: 2.4495378, lat: 48.85970624 }, sector: 308 },
+    { sheet: "D3", at: { lon: 2.46292355, lat: 48.86390935 }, sector: 307 },
+    { sheet: "D3", at: { lon: 2.46293004, lat: 48.86327984 }, sector: 308 },
+    { sheet: "29 Rue Parmentier", at: { lon: 2.434058, lat: 48.859669 }, sector: 307 },
+    { sheet: "4 Sentier du Tourniquet", at: { lon: 2.433312, lat: 48.860537 }, sector: 308 },
+    { sheet: "13 Rue Eugène Varlin", at: { lon: 2.448212, lat: 48.861085 }, sector: 307 },
+    { sheet: "25 Avenue Jean Moulin", at: { lon: 2.449468, lat: 48.859624 }, sector: 308 },
+    { sheet: "110 Rue Pierre de Montreuil", at: { lon: 2.463048, lat: 48.86344 }, sector: 308 },
+];
+
+test("a point in Montreuil falls in the sector the decree's maps give it, on both sides of the line", () =>
+{
+    const split = seeds.estEnsemble.areas.filter((area) => area.commune === "93048");
+
+    for (const { sheet, at, sector } of montreuil)
+    {
+        expect(quartierAt(at, split), sheet).toEqual({ kind: "found", quartier: sector });
+    }
+});
+
+test("an Est Ensemble commune of one sector is one area without outline, under its INSEE code, and no other commune is one", () =>
+{
+    expect(seeds.estEnsemble.areas.find((area) => area.commune === "93055")).toEqual({ number: 308, name: "Pantin", rings: [], commune: "93055" });
+    expect(seeds.estEnsemble.areas.some((area) => area.commune === "93070")).toBe(false);
+});
+
+test("a commune put twice in one sector, a split commune missing an outline, or an outline of an unsplit commune is refused", () =>
+{
+    const outlines = files["../../../db/seed/est-ensemble-sectors.geojson"]!;
+    const listed = (...lines: string[]) => ["code;name;sector", ...lines].join("\n");
+    const empty = JSON.stringify({ type: "FeatureCollection", features: [] });
+
+    expect(territoryAreas(listed("93055;Pantin;308"), empty)).toEqual([{ number: 308, name: "Pantin", rings: [], commune: "93055" }]);
+    expect(() => territoryAreas(listed("93055;Pantin;308", "93055;Pantin;308"), empty)).toThrow(/twice/);
+    expect(() => territoryAreas(listed("93048;Montreuil;307", "93048;Montreuil;308"), empty)).toThrow(/0 outlines/);
+    expect(() => territoryAreas(listed("93048;Montreuil;307"), outlines)).toThrow(/does not split/);
+    expect(() => territoryAreas("code;nom;secteur\n93055;Pantin;308", empty)).toThrow(TerritoryError);
+});
+
+// The first publication of the 2024 decree left out the two Bondy grids; a table copied from it must not pass.
+test("a decree that leaves out the sector of one commune is refused, as the first 2024 publication left out Bondy", () =>
+{
+    const withoutBondy = (name: string) =>
+    {
+        const text = files[`../../../db/seed/${name}`]!;
+
+        return name === "grand-paris-rates.csv" ? text.split("\n").filter((line) => !line.startsWith("est-ensemble,2024,") || !line.includes(",318,")).join("\n") : text;
+    };
+
+    expect(() => seedsFrom(withoutBondy)).toThrow(/Bondy lies in sector 318, which Arrêté préfectoral n° IDF-2024-05-02-00006 does not price/);
 });

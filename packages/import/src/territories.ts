@@ -1,4 +1,4 @@
-import type { City, Decree, Dwelling, Period, Rate, Rooms } from "@plafond/domain";
+import type { City, Decree, Dwelling, Period, Quartier, Rate, Rooms } from "@plafond/domain";
 
 import { readRows } from "./csv.js";
 
@@ -131,4 +131,103 @@ function rentsOf(reference: string, majored: string, minored: string, where: str
     }
 
     return { reference: ref * 10, majored: high * 10, minored: low * 10 };
+}
+
+type Position = [number, number];
+
+interface Outline
+{
+    commune: string;
+    sector: number;
+    rings: Position[][];
+}
+
+const commune = /^\d[\dAB]\d{3}$/;
+
+// Annex 1 of each decree puts every commune in a sector, and names a commune twice or more where its annex 5 splits it
+// between sectors. Only the split communes have outlines: the DRIHL publishes them as a layer of its simulator.
+export function territoryAreas(communes: string, outlines: string): Quartier[]
+{
+    const [names = [], ...lines] = readRows(communes.trimEnd() + "\n").filter((line) => line.some((field) => field !== ""));
+    if (names.join(";") !== "code;name;sector")
+    {
+        throw new TerritoryError("the communes' first line is not code;name;sector");
+    }
+
+    const placed = lines.map(([code = "", name = "", sector = ""], index) =>
+    {
+        if (!commune.test(code) || name.trim() === "" || !/^\d+$/.test(sector))
+        {
+            throw new TerritoryError(`commune line ${index + 2} is not an INSEE code, a name and a sector`);
+        }
+
+        return { code, name, sector: Number(sector) };
+    });
+
+    const twice = placed.find((area, index) => placed.findIndex((other) => other.code === area.code && other.sector === area.sector) !== index);
+    if (twice !== undefined)
+    {
+        throw new TerritoryError(`${twice.name} is put in sector ${twice.sector} twice`);
+    }
+
+    const drawn = outlinesOf(outlines);
+    const split = (code: string) => placed.filter((area) => area.code === code).length > 1;
+    const stray = drawn.find((outline) => !split(outline.commune) || !placed.some((area) => area.code === outline.commune && area.sector === outline.sector));
+    if (stray !== undefined)
+    {
+        throw new TerritoryError(`an outline draws sector ${stray.sector} of ${stray.commune}, which annex 1 does not split that way`);
+    }
+
+    return placed.map(({ code, name, sector }) =>
+    {
+        if (!split(code))
+        {
+            return { number: sector, name, rings: [], commune: code };
+        }
+
+        const own = drawn.filter((outline) => outline.commune === code && outline.sector === sector);
+        if (own.length !== 1)
+        {
+            throw new TerritoryError(`${name} is split between sectors, but ${own.length} outlines draw its sector ${sector}`);
+        }
+
+        return { number: sector, name, rings: own[0]!.rings, commune: code };
+    });
+}
+
+function outlinesOf(text: string): Outline[]
+{
+    const collection = JSON.parse(text) as { features?: { properties?: Record<string, unknown>; geometry?: { type?: string; coordinates?: unknown } }[] };
+    if (!Array.isArray(collection.features))
+    {
+        throw new TerritoryError("the outlines hold no features");
+    }
+
+    return collection.features.map((feature, index) =>
+    {
+        const code = feature.properties?.["commune"];
+        const sector = feature.properties?.["secteur"];
+        const geometry = feature.geometry;
+        if (typeof code !== "string" || !commune.test(code) || !Number.isInteger(sector))
+        {
+            throw new TerritoryError(`outline ${index} names no commune and sector`);
+        }
+
+        const polygons = geometry?.type === "Polygon" ? [geometry.coordinates] : geometry?.type === "MultiPolygon" ? geometry.coordinates : null;
+        if (!Array.isArray(polygons) || !polygons.every((polygon) => isRings(polygon)))
+        {
+            throw new TerritoryError(`outline ${index} is not a polygon of closed rings`);
+        }
+
+        return { commune: code, sector: sector as number, rings: (polygons as Position[][][]).flat() };
+    });
+}
+
+function isRings(value: unknown): value is Position[][]
+{
+    return Array.isArray(value) && value.length > 0 && value.every((ring) =>
+        Array.isArray(ring)
+        && ring.length >= 4
+        && ring.every((at) => Array.isArray(at) && at.length === 2 && at.every((degrees) => Number.isFinite(degrees)))
+        && ring[0][0] === ring.at(-1)[0] && ring[0][1] === ring.at(-1)[1]);
 }

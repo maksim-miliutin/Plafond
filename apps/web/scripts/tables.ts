@@ -15,3 +15,4 @@ writeFileSync(new URL(quartiersFile, site), JSON.stringify(packQuartiers(quartie
 writeFileSync(new URL(tableFiles.lyon.rates, site), JSON.stringify(pack(lyon.rates)));
 writeFileSync(new URL(tableFiles.lyon.areas, site), JSON.stringify(packQuartiers(lyon.outlines)));
 writeFileSync(new URL(tableFiles["est-ensemble"].rates, site), JSON.stringify(pack(estEnsemble.rates)));
+writeFileSync(new URL(tableFiles["est-ensemble"].areas, site), JSON.stringify(packQuartiers(estEnsemble.areas)));

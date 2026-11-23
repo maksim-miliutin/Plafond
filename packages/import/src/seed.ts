@@ -1,11 +1,11 @@
-import type { Decree, Quartier, Rate } from "@plafond/domain";
+import type { City, Decree, Quartier, Rate } from "@plafond/domain";
 
 import { annexRates, lyonAnnexRates, lyonSectors } from "./annex.js";
 import { decreesOf } from "./decrees.js";
 import { lyonOutlines, lyonRates, lyonTable } from "./lyon.js";
 import { parseParis } from "./paris.js";
 import { quartiersOf } from "./quartiers.js";
-import { territoryRates } from "./territories.js";
+import { territoryAreas, territoryRates } from "./territories.js";
 
 export class SeedError extends Error
 {
@@ -114,6 +114,25 @@ export function lyonSeed({ tables, annexes, decrees }: LyonSeed): LyonRates
 export interface TerritorySeed
 {
     rates: Rate[];
+    areas: Quartier[];  // a commune and its sector each, outlined where the decree splits the commune
+}
+
+function territorySeed(city: City, read: (name: string) => string): TerritorySeed
+{
+    const rates = territoryRates(read("grand-paris-rates.csv"), city, decreesOf(JSON.parse(read(`${city}-decrees.json`))));
+    const areas = territoryAreas(read(`${city}-communes.csv`), read(`${city}-sectors.geojson`));
+    // A publication can leave a sector out, as the first one of 2024 did Bondy's: each decree must price every sector.
+    for (const decree of new Set(rates.map((rate) => rate.decree)))
+    {
+        const priced = new Set(rates.filter((rate) => rate.decree === decree).map((rate) => rate.flat.quartier));
+        const unpriced = areas.find((area) => !priced.has(area.number));
+        if (unpriced !== undefined)
+        {
+            throw new SeedError(`${unpriced.name} lies in sector ${unpriced.number}, which ${decree.title} does not price`);
+        }
+    }
+
+    return { rates, areas };
 }
 
 export interface Seeds
@@ -152,6 +171,6 @@ export function seedsFrom(read: (name: string) => string): Seeds
             annexes: new Map([...lyonAnnexes].map(([year, files]) => [year, { annex: read(files.annex), sectors: read(files.sectors) }])),
             decrees: decreesOf(JSON.parse(read("lyon-decrees.json"))),
         }),
-        estEnsemble: { rates: territoryRates(read("grand-paris-rates.csv"), "est-ensemble", decreesOf(JSON.parse(read("est-ensemble-decrees.json")))) },
+        estEnsemble: territorySeed("est-ensemble", read),
     };
 }
