@@ -4,6 +4,7 @@ import { expect, test } from "vitest";
 import { check, checkedSpans, quartierAt } from "@plafond/domain";
 
 import lawSeed from "../../../db/seed/rent-control-law.json" with { type: "json" };
+import { lyonSectors } from "../src/annex.js";
 import { lawOf } from "../src/law.js";
 import { seedsFrom } from "../src/seed.js";
 
@@ -142,4 +143,44 @@ test("the rents copied from the scanned 2021 decree agree with the two cases the
 
     expect(signed(693810101, 1, "before-1946", true, 1500)).toMatchObject({ kind: "checked", cap: 30750 });
     expect(signed(692660101, 3, "1971-1990", false, 6000)).toMatchObject({ kind: "checked", rate: { majored: 1220, minored: 710 } });
+});
+
+// A second reader, shown only the decrees' maps and their legends and not these files, placed twelve IRIS: five on the
+// map of the decree of 23 October 2026, seven on the map of the 2021 decree.
+const readBlind = [
+    { year: 2026, iris: 693820504, sector: 3 },
+    { year: 2026, iris: 692661101, sector: 3 },
+    { year: 2026, iris: 693890605, sector: 5 },
+    { year: 2026, iris: 693820501, sector: 3 },
+    { year: 2026, iris: 692661401, sector: 5 },
+    { year: 2021, iris: 693810302, sector: 1 },
+    { year: 2021, iris: 693810304, sector: 1 },
+    { year: 2021, iris: 693880503, sector: 3 },
+    { year: 2021, iris: 692661802, sector: 4 },
+    { year: 2021, iris: 693880301, sector: 2 },
+    { year: 2021, iris: 693880203, sector: 3 },
+    { year: 2021, iris: 693880404, sector: 3 },
+];
+
+test("the twelve IRIS read blind off the decrees' maps lie in the sectors the seeds give them", () =>
+{
+    const sectors = new Map([2021, 2026].map((year) => [year, lyonSectors(read(`lyon-sectors-${year}.csv`))]));
+
+    for (const { year, iris, sector } of readBlind)
+    {
+        expect(sectors.get(year)!.get(iris), `${year}, IRIS ${iris}`).toBe(sector);
+    }
+});
+
+// Lyon and Villeurbanne share one decree, so both stop on its last day, 23 November 2026.
+test("a Villeurbanne lease finds the 2026 decree on 23 November 2026 and no rate from the day after", () =>
+{
+    const { lyon } = seedsFrom(read);
+    const law = lawOf(lawSeed);
+    const flat = { city: "lyon" as const, quartier: 692660201, rooms: 1 as const, period: "before-1946" as const, furnished: false };
+    const signed = (day: string) => check({ flat, surface: 2500, signedOn: day, startsOn: day, rent: 60000, complement: 0, on: "2026-11-22" }, lyon.rates, law);
+
+    expect(signed("2026-11-23")).toMatchObject({ kind: "checked", rate: { decree: { title: "Arrêté préfectoral n° DDT 69-2026-10-23-00004" } } });
+    expect(signed("2026-11-24")).toMatchObject({ kind: "no-rate", side: "after", until: "2026-11-23" });
+    expect(signed("2026-11-25")).toMatchObject({ kind: "no-rate", side: "after", until: "2026-11-23" });
 });
