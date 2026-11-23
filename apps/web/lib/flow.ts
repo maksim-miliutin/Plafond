@@ -1,6 +1,6 @@
-import { check, letter, quartierAt } from "@plafond/domain";
-import type { City, Check, Claim, Day, LawPeriod, Letter, Point, Quartier, Rate, Unchecked } from "@plafond/domain";
-import type { Lookup } from "@plafond/address";
+import { areaIn, check, letter, placing, quartierAt } from "@plafond/domain";
+import type { Border, City, Check, Claim, Day, LawPeriod, Letter, Outside, Placed, Point, Quartier, Rate, Unchecked } from "@plafond/domain";
+import type { Located, Lookup } from "@plafond/address";
 
 import { leaseFrom, questions, type FieldErrors, type LeaseFields } from "./lease";
 
@@ -47,7 +47,7 @@ interface Checked extends Found
 }
 
 export type Step =
-    | { at: "address"; typed: string; problem: Problem | null }
+    | { at: "address"; typed: string; problem: Problem | null; city?: City }
     | ({ at: "quartier" } & Found)
     | ({ at: "lease"; fields: LeaseFields; errors: FieldErrors; unchecked: Unchecked | null } & Found)
     | ({ at: "result"; letter: Letter | null } & Checked)
@@ -97,10 +97,30 @@ function located(typed: string, lookup: Lookup, world: World): Step
         return { at: "address", typed, problem: lookup.kind };
     }
 
+    const where = placeOf(lookup, world);
+    if (where.kind !== "placed")
+    {
+        return { at: "address", typed, problem: where.kind, city: world.city };
+    }
+
+    // The map shows the neighbours of the same commune: every quartier of Paris or IRIS of Lyon, the other sector of Montreuil.
+    const quartier = where.area;
+    const around = world.quartiers.filter((candidate) => candidate !== quartier && candidate.commune === quartier.commune);
+
+    return { at: "quartier", typed, place: { city: world.city, label: lookup.label, point: lookup.point, quartier, around } };
+}
+
+function placeOf(lookup: Located, world: World): Placed | Border | Outside
+{
+    if (placing[world.city] === "commune")
+    {
+        return areaIn(lookup.citycode, lookup.point, world.quartiers);
+    }
+
     const where = quartierAt(lookup.point, world.quartiers);
     if (where.kind !== "found")
     {
-        return { at: "address", typed, problem: where.kind };
+        return where;
     }
 
     const quartier = world.quartiers.find((candidate) => candidate.number === where.quartier);
@@ -109,9 +129,7 @@ function located(typed: string, lookup: Lookup, world: World): Step
         throw new FlowError(`quartier ${where.quartier} was found but is not among the outlines`);
     }
 
-    const around = world.quartiers.filter((candidate) => candidate !== quartier);
-
-    return { at: "quartier", typed, place: { city: world.city, label: lookup.label, point: lookup.point, quartier, around } };
+    return { kind: "placed", area: quartier };
 }
 
 function answered(step: Extract<Step, { at: "lease" }>, fields: LeaseFields, world: World): Step

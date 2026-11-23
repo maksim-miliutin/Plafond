@@ -1,10 +1,11 @@
+import type { City } from "@plafond/domain";
 import type { MetropoleCommune, Territory } from "@plafond/import";
 
 // The territories around Paris whose rents a decree caps.
 export type Outer = Exclude<Territory, "paris">;
 
 // Those whose leases Plafond checks, as Paris; tenants in the others are sent to the prefecture's own simulator.
-export const checkedTerritories: readonly Outer[] = [];
+export const checkedTerritories: readonly Outer[] = ["est-ensemble"];
 
 export const territoryNames: Record<Outer, string> = {
     "est-ensemble": "Est Ensemble",
@@ -16,6 +17,12 @@ export const simulators: Record<Outer, string> = {
     "est-ensemble": "https://www.service-public.gouv.fr/particuliers/vosdroits/R61539",
     "plaine-commune": "https://www.service-public.gouv.fr/particuliers/vosdroits/R59027",
 };
+
+// The official check for an address Plafond could not place in its territory's sectors.
+export function simulatorOf(city: City | undefined): string | undefined
+{
+    return city === "est-ensemble" ? simulators[city] : undefined;
+}
 
 // Service Public's simulator tells, commune by commune, whether the rents are capped and whether their rise is limited.
 export const applicability = "https://www.service-public.gouv.fr/simulateur/calcul/encadrementDesLoyers";

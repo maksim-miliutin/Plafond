@@ -1,5 +1,5 @@
-import { dayBefore, euros, frenchDay, letting, percent, periods, rooms, squareMetres } from "@plafond/domain";
-import type { Check, Claim, Complement, Day } from "@plafond/domain";
+import { dayBefore, dwellings, euros, frenchDay, letting, percent, periods, placing, rooms, squareMetres } from "@plafond/domain";
+import type { Check, Claim, Complement, Day, Flat } from "@plafond/domain";
 
 import { ComplementBars } from "./ComplementBars";
 import { ContestNote } from "./ContestNote";
@@ -168,13 +168,19 @@ function Sources({ check, claim, quartier }: Pick<ResultProps, "check" | "claim"
                     <dt>{claim.flat.city === "paris" ? "Quartier" : "Commune"}</dt>
                     <dd>{quartier}</dd>
                 </div>
+                {placing[claim.flat.city] === "commune" && (
+                    <div>
+                        <dt>Secteur</dt>
+                        <dd>{flat.quartier}</dd>
+                    </div>
+                )}
                 <div>
                     <dt>Bail</dt>
                     <dd>signé le {frenchDay(claim.signedOn)}, pris effet le {frenchDay(claim.startsOn)}</dd>
                 </div>
                 <div>
                     <dt>Logement</dt>
-                    <dd>{rooms[flat.rooms]}, construit {periods[flat.period]}, {letting(flat.furnished)}</dd>
+                    <dd>{described(flat)}</dd>
                 </div>
                 <div>
                     <dt>Loyer de référence majoré</dt>
@@ -190,4 +196,13 @@ function Sources({ check, claim, quartier }: Pick<ResultProps, "check" | "claim"
             </dl>
         </section>
     );
+}
+
+// A house, une maison, takes the feminine.
+function described(flat: Flat): string
+{
+    const built = `construit${flat.dwelling === "house" ? "e" : ""} ${periods[flat.period]}`;
+    const what = flat.dwelling === undefined ? rooms[flat.rooms] : `${dwellings[flat.dwelling]} de ${rooms[flat.rooms]}`;
+
+    return `${what}, ${built}, ${letting(flat.furnished, flat.dwelling)}`;
 }

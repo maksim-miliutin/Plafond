@@ -156,3 +156,16 @@ test("a silhouette drops corners closer than half a pixel", () =>
     expect(pointsOf(silhouette([[circle]], 32)).length).toBeLessThanOrEqual(170);
 });
 
+
+// A commune placed by its code alone has no outline: the frame then centres the pin with about a kilometre around it.
+test("an area with no outline frames the streets around the address, the pin in the middle", () =>
+{
+    const bare: Quartier = { number: 308, name: "Pantin", rings: [], commune: "93055" };
+    const drawn = drawing(bare, [], { lon: 2.404, lat: 48.894 }, frame);
+
+    expect(drawn.pin.x).toBeCloseTo(frame.width / 2, 5);
+    expect(drawn.pin.y).toBeCloseTo(frame.height / 2, 5);
+    expect(drawn.paths).toEqual([{ number: 308, own: true, d: "" }]);
+    expect(drawn.tiles.length).toBeGreaterThan(0);
+    expect(new Set(drawn.tiles.map((tile) => tile.z))).toEqual(new Set([15]));
+});

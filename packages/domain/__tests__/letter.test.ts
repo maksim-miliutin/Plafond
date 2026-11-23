@@ -275,3 +275,24 @@ test("a letter for a flat in Est Ensemble names the prefect of the region for th
     expect(text).toContain("amende administrative prononcée par le préfet de la région d'Île-de-France");
     expect(text).not.toContain("Ville de Paris");
 });
+
+// The Est Ensemble decree prices by sector and by dwelling, so the letter names both, and a house takes the feminine.
+test("a letter for a house in Est Ensemble names its sector and speaks of it in the feminine", () =>
+{
+    const houseRate: Rate = { ...rate, flat: { ...rate.flat, city: "est-ensemble", quartier: 311, dwelling: "house" } };
+    const lease = { ...claim, flat: houseRate.flat };
+    const sent = letter({ check: check(lease, [houseRate], law) as Check, claim: lease, address: "3 Rue Jean Jaurès 93130 Noisy-le-Sec", quartier: "Noisy-le-Sec", stated: true }) as Letter;
+
+    expect(sent.opening[0]).toContain("situé au 3 Rue Jean Jaurès, 93130 Noisy-le-Sec, dans le secteur géographique 311 de l'arrêté.");
+    expect(sent.opening[0]).toContain("Il s'agit d'une maison de 3 pièces, louée meublée, construite entre 1946 et 1970,");
+    expect(sent.opening[0]).not.toContain("immeuble");
+});
+
+test("a letter for a flat in Est Ensemble calls it an apartment in a building, as before", () =>
+{
+    const flatRate: Rate = { ...rate, flat: { ...rate.flat, city: "est-ensemble", quartier: 308, dwelling: "flat" } };
+    const lease = { ...claim, flat: flatRate.flat };
+    const sent = letter({ check: check(lease, [flatRate], law) as Check, claim: lease, address: "12 Rue Hoche 93500 Pantin", quartier: "Pantin", stated: true }) as Letter;
+
+    expect(sent.opening[0]).toContain("Il s'agit d'un appartement de 3 pièces, loué meublé, dans un immeuble construit entre 1946 et 1970,");
+});

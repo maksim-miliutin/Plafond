@@ -31,6 +31,12 @@ export interface Outside
     kind: "outside";
 }
 
+export interface Placed
+{
+    kind: "placed";
+    area: Quartier;
+}
+
 // Published outlines of neighbouring quartiers leave gaps and overlaps well under a metre;
 // a point that close to an outline is taken to lie on it.
 const tolerance = 1;
@@ -60,6 +66,25 @@ export function quartierAt(point: Point, quartiers: readonly Quartier[]): Found 
     }
 
     return { kind: "border", quartiers: holding };
+}
+
+// The decrees for Est Ensemble and Plaine Commune put most communes in one sector each, so the geocoder's commune code
+// places an address there; only a commune split between sectors needs the point and the outlines.
+export function areaIn(citycode: string, point: Point, areas: readonly Quartier[]): Placed | Border | Outside
+{
+    const own = areas.filter((area) => area.commune === citycode);
+    if (own.length <= 1)
+    {
+        return own.length === 0 ? { kind: "outside" } : { kind: "placed", area: own[0]! };
+    }
+
+    const where = quartierAt(point, own);
+    if (where.kind !== "found")
+    {
+        return where;
+    }
+
+    return { kind: "placed", area: own.find((area) => area.number === where.quartier)! };
 }
 
 function contains(quartier: Quartier, point: Point): boolean

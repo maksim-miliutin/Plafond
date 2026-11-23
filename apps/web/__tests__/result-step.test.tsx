@@ -191,3 +191,17 @@ test("a contested decree sends the reader to the ADIL of the flat's own city", a
     expect(renderToStaticMarkup(<ContestNote contest={contest} city="lyon" />)).toContain("ADIL du Rhône");
     expect(renderToStaticMarkup(<ContestNote contest={contest} city="paris" />)).toContain("ADIL de Paris");
 });
+
+// The Est Ensemble decree prices by sector and by dwelling, so both stand among the sources, and a house is feminine.
+test("an Est Ensemble result names the commune, its sector and the dwelling, in the gender of the dwelling", () =>
+{
+    const houseRate: Rate = { ...rate, flat: { city: "est-ensemble", quartier: 311, rooms: 3, period: "after-1990", furnished: false, dwelling: "house" } };
+    const lease = { ...claim, flat: houseRate.flat };
+    const html = renderToStaticMarkup(<ResultStep check={check(lease, [houseRate], law) as Check} claim={lease} quartier="Noisy-le-Sec" writable={false} />);
+    const sources = html.slice(html.indexOf("D&#x27;où viennent ces chiffres"));
+
+    expect(sources).toMatch(/<dt>Commune<\/dt><dd>Noisy-le-Sec<\/dd>/);
+    expect(sources).toMatch(/<dt>Secteur<\/dt><dd>311<\/dd>/);
+    expect(sources).toContain("maison de 3 pièces, construite après 1990, louée vide");
+    expect(page()).not.toContain("<dt>Secteur</dt>");
+});

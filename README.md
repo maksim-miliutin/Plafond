@@ -2,7 +2,7 @@
 
 Plafond is a set of free checks for tenants in France. When the tenant's case calls for it, a check ends with a letter to send to the landlord, or to the estate agent for agency fees, most often a formal notice (lettre de mise en demeure).
 
-- **Rent cap.** Whether a rent in a city under rent control (encadrement des loyers) is above the legal cap, and the overpayment since the lease began. Paris, Lyon and Villeurbanne for now; other cities follow as their data is published.
+- **Rent cap.** Whether a rent in a city under rent control (encadrement des loyers) is above the legal cap, and the overpayment since the lease began. Paris, Lyon, Villeurbanne and the nine communes of Est Ensemble for now; other cities follow as their data is published.
 - **Deposit.** Whether the deposit came back within the month, or two, that the law allows after the keys, and the penalty of a tenth of the rent for each month started late.
 - **Service charges.** Which lines of the yearly statement of charges the landlord may pass on under the decree of 26 August 1987, and what was charged wrongly.
 - **Notice to leave.** When the tenant's notice ends, one month or three by the letting and the reasons the law accepts, what the last month costs, and the letter giving notice (lettre de congé).
@@ -49,7 +49,7 @@ The app is live at https://maksim-miliutin.com/Plafond/ and can be added to the 
 ## Layout
 
 - `packages/domain`: the calculation, the letter and the rules of law, in plain TypeScript with no framework, so that the web app and a later mobile app share them.
-- `packages/import`: reads the published tables (the rents of Paris and Lyon, the annexes of the decrees, the outlines of the quartiers and of Lyon's areas) and checks them line by line.
+- `packages/import`: reads the published tables (the rents of Paris, Lyon and the territories around Paris, the annexes of the decrees, the outlines of the quartiers, of Lyon's areas and of the split communes) and checks them line by line.
 - `packages/address`: the client of the Géoplateforme geocoder.
 - `packages/ademe`: the client of the ADEME open data on energy diagnoses.
 - `apps/web`: the Next.js app, exported as plain files and published on GitHub Pages; `e2e` holds the tests that run in real browsers, iPhones included. The pages of Paris and Lyon draw the plan of the city with Leaflet over Plan IGN; the limit drawn on it is the union, computed at build time, of the same outlines of quartiers and areas the rent check searches. The first screen asks for Paris or Lyon, then links each of the seven checks by its question; a tenant of any other town reaches the six checks that do not depend on the city through `ailleurs/`, which offers no rent cap. The legal notice lists the code and the fonts written by others that the site ships, as read off the browser source maps of a production build; the build writes their licence texts in full to `licences.txt`.

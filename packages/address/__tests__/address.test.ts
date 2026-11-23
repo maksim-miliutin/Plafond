@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { AddressError, geoplateforme, type Fetcher } from "../src/address.js";
+import { AddressError, estEnsemble, geoplateforme, type Fetcher } from "../src/address.js";
 
 interface Match
 {
@@ -166,4 +166,16 @@ test("asked for the rent check, an address in Lyon or Villeurbanne is located wi
     expect(await geoplateforme(answering(reply([louvre])), "rent").locate("4 place du Louvre")).toMatchObject({ kind: "located", citycode: "75101" });
     expect(await geoplateforme(answering(reply([marseille])), "rent").locate("1 la Canebière")).toMatchObject({ kind: "not-paris" });
     expect(await geoplateforme(answering(reply([lyon]))).locate("10 rue de la Part-Dieu Lyon")).toMatchObject({ kind: "not-paris" });
+});
+
+test("asked for the rent check, an address in an Est Ensemble commune is located, and one in Saint-Ouen or Vincennes is not yet", async () =>
+{
+    const pantin: Match = { id: "93055_1234_00012", type: "housenumber", citycode: "93055", label: "12 Rue Hoche 93500 Pantin", coordinates: [2.404, 48.894] };
+    const saintOuen: Match = { ...pantin, id: "93070_1234_00001", citycode: "93070", label: "1 Rue Kléber 93400 Saint-Ouen-sur-Seine" };
+    const vincennes: Match = { ...pantin, id: "94080_1234_00001", citycode: "94080", label: "1 Rue de Fontenay 94300 Vincennes" };
+
+    expect(await geoplateforme(answering(reply([pantin])), "rent").locate("12 rue Hoche Pantin")).toMatchObject({ kind: "located", citycode: "93055" });
+    expect(await geoplateforme(answering(reply([saintOuen])), "rent").locate("1 rue Kléber Saint-Ouen")).toMatchObject({ kind: "not-paris" });
+    expect(await geoplateforme(answering(reply([vincennes])), "rent").locate("1 rue de Fontenay Vincennes")).toMatchObject({ kind: "not-paris" });
+    expect(estEnsemble).toHaveLength(9);
 });

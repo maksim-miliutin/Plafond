@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import type { Quartier } from "@plafond/domain";
+import type { Quartier, Rate } from "@plafond/domain";
 import type { Lookup } from "@plafond/address";
 
 import type { LeaseFields } from "../lib/lease";
@@ -23,6 +23,7 @@ const two = square(2, "Halles", 2.34 + side);
 const world: World = { city: "paris", rates: [rate], quartiers: [one, two], on: "2026-09-29", law };
 
 const filled: LeaseFields = {
+    dwelling: "",
     rooms: "3",
     period: "1946-1970",
     furnished: "yes",
@@ -190,4 +191,54 @@ test("a lease signed after the city's control began but before the first table P
 
     expect(signed("2022-03-01")).toMatchObject({ at: "lease", unchecked: { side: "between" } });
     expect(signed("2021-06-01")).toMatchObject({ at: "lease", unchecked: { side: "before", from: "2021-11-01" } });
+});
+
+// Est Ensemble: Pantin lies whole in sector 308 and has no outline; Montreuil is split, here as two squares side by side.
+const pantin: Quartier = { number: 308, name: "Pantin", rings: [], commune: "93055" };
+const infraOne: Quartier = { ...square(307, "Montreuil", 2.44), commune: "93048" };
+const infraTwo: Quartier = { ...square(308, "Montreuil", 2.44 + side), commune: "93048" };
+const decree2026 = { title: "Arrêté préfectoral n° IDF-2026-04-28-00032", url: "https://example.org/ee", from: "2026-06-01", until: "2026-11-25", contest: null };
+const pantinFlat: Rate = { flat: { city: "est-ensemble", quartier: 308, rooms: 2, period: "1946-1970", furnished: false, dwelling: "flat" }, reference: 1900, majored: 2280, minored: 1330, decree: decree2026 };
+const east: World = { city: "est-ensemble", rates: [pantinFlat], quartiers: [pantin, infraOne, infraTwo], on: "2026-09-29", law };
+
+function eastWalk(...events: Parameters<typeof next>[1][]): Step
+{
+    return events.reduce((step, event) => next(step, event, east), start);
+}
+
+const inPantin: Lookup = { kind: "located", id: "93055_1234_00012", citycode: "93055", label: "12 Rue Hoche 93500 Pantin", point: { lon: 2.404, lat: 48.894 } };
+
+test("an Est Ensemble address is placed by its commune, and the map shows no other commune's sector", () =>
+{
+    const step = eastWalk({ type: "located", typed: "12 rue hoche pantin", lookup: inPantin });
+
+    expect(step).toMatchObject({ at: "quartier", place: { city: "est-ensemble", quartier: { name: "Pantin", number: 308 }, around: [] } });
+});
+
+test("a Montreuil address is placed by its point, beside the other Montreuil sector", () =>
+{
+    const inMontreuil: Lookup = { ...inPantin, citycode: "93048", label: "1 Rue de Paris 93100 Montreuil", point: { lon: 2.44 + side * 1.5, lat: 48.8625 } };
+    const step = eastWalk({ type: "located", typed: "1 rue de paris montreuil", lookup: inMontreuil });
+
+    expect(step).toMatchObject({ at: "quartier", place: { quartier: { name: "Montreuil", number: 308 } } });
+    expect(step.at === "quartier" && step.place.around).toEqual([infraOne]);
+});
+
+// An address the outlines cannot place goes back to the first step, which links the territory's official simulator.
+test("a Montreuil address off both outlines is sent back with the territory it was looked for in", () =>
+{
+    const astray: Lookup = { ...inPantin, citycode: "93048", label: "200 Rue de Paris 93100 Montreuil", point: { lon: 2.5, lat: 48.8625 } };
+
+    expect(eastWalk({ type: "located", typed: "200 rue de paris montreuil", lookup: astray })).toEqual({ at: "address", typed: "200 rue de paris montreuil", problem: "outside", city: "est-ensemble" });
+});
+
+// 38 m² at 22,80 €, the majored rent of sector 308 for an empty flat of two rooms built 1946-1970 under the 2026 decree.
+test("an Est Ensemble lease names its dwelling and is capped by its own grid", () =>
+{
+    const lease = { ...filled, dwelling: "flat", rooms: "2", furnished: "no", surface: "38", rent: "900", signedOn: "2026-07-15", startsOn: "2026-07-15" };
+    const asked = eastWalk({ type: "located", typed: "12 rue hoche pantin", lookup: inPantin }, { type: "confirmed" }, { type: "answered", fields: { ...lease, dwelling: "" } });
+    const done = eastWalk({ type: "located", typed: "12 rue hoche pantin", lookup: inPantin }, { type: "confirmed" }, { type: "answered", fields: lease });
+
+    expect(asked).toMatchObject({ at: "lease", errors: { dwelling: expect.any(String) } });
+    expect(done).toMatchObject({ at: "result", check: { cap: 86640, excess: 3360 }, claim: { flat: { dwelling: "flat", quartier: 308 } } });
 });

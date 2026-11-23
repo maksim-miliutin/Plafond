@@ -1,8 +1,8 @@
 import type { Check, Claim } from "./cap.js";
 import { addMonths, type Day } from "./day.js";
 import { euros, frenchDay, squareMetres } from "./format.js";
-import { letting, periods, rooms } from "./labels.js";
-import type { City, Contest } from "./rates.js";
+import { dwellings, letting, periods, rooms } from "./labels.js";
+import { placing, type City, type Contest, type Flat } from "./rates.js";
 
 export type Ground = "excess" | "unstated" | "complement" | "freeze" | "decency" | "deposit" | "charges" | "twelfths" | "proofs" | "fees" | "revision";
 
@@ -152,8 +152,7 @@ function opening({ check, claim, address, quartier }: LetterInput): string[]
     const effect = claim.startsOn === claim.signedOn ? "le même jour" : `le ${frenchDay(claim.startsOn)}`;
 
     return [
-        `Vous me louez le logement situé ${at}${postal(address)}${claim.flat.city === "paris" ? `, dans le quartier ${quartier}` : ""}. Il s'agit d'un logement de `
-            + `${rooms[flat.rooms]}, ${letting(flat.furnished)}, dans un immeuble construit ${periods[flat.period]}, `
+        `Vous me louez le logement situé ${at}${postal(address)}${whereIn(flat, quartier)}. Il s'agit ${kindOf(flat)}, `
             + `d'une surface habitable de ${squareMetres(claim.surface)}. Le bail a été signé le ${frenchDay(claim.signedOn)} `
             + `et a pris effet ${effect}.`,
         `Ce logement est soumis à l'encadrement des loyers prévu par ${law}. Pour cette catégorie de logement, le loyer `
@@ -161,6 +160,29 @@ function opening({ check, claim, address, quartier }: LetterInput): string[]
             + `(${decree.title}, applicable à la date de signature du bail). Le loyer de base ne peut donc pas dépasser `
             + `${euros(majored)} × ${squareMetres(claim.surface)}, soit ${euros(check.cap)} par mois.`,
     ];
+}
+
+function whereIn(flat: Flat, quartier: string): string
+{
+    if (flat.city === "paris")
+    {
+        return `, dans le quartier ${quartier}`;
+    }
+
+    return placing[flat.city] === "commune" ? `, dans le secteur géographique ${flat.quartier} de l'arrêté` : "";
+}
+
+function kindOf(flat: Flat): string
+{
+    const size = rooms[flat.rooms];
+    const leased = letting(flat.furnished, flat.dwelling);
+    const built = periods[flat.period];
+    if (flat.dwelling === "house")
+    {
+        return `d'une ${dwellings.house} de ${size}, ${leased}, construite ${built}`;
+    }
+
+    return `d'un ${flat.dwelling === undefined ? "logement" : dwellings.flat} de ${size}, ${leased}, dans un immeuble construit ${built}`;
 }
 
 function excess({ check, claim }: LetterInput): Demand | null

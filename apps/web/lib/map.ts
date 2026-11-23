@@ -53,9 +53,14 @@ export function mercator(lon: number, lat: number): Unit
     };
 }
 
+// A commune placed by its code alone has no outline to frame: the map then shows the streets around the address.
+const aroundAddress = 0.00004;  // share of the world's width, about a kilometre across near Paris
+
 export function drawing(own: Quartier, around: readonly Quartier[], point: Point, frame: Frame): Drawing
 {
-    const corners = own.rings.flat().map(([lon, lat]) => mercator(lon, lat));
+    const pin = mercator(point.lon, point.lat);
+    const drawn = own.rings.flat().map(([lon, lat]) => mercator(lon, lat));
+    const corners = drawn.length > 0 ? drawn : [{ x: pin.x - aroundAddress / 2, y: pin.y - aroundAddress / 2 }, { x: pin.x + aroundAddress / 2, y: pin.y + aroundAddress / 2 }];
     const west = Math.min(...corners.map((c) => c.x));
     const east = Math.max(...corners.map((c) => c.x));
     const north = Math.min(...corners.map((c) => c.y));
@@ -76,7 +81,7 @@ export function drawing(own: Quartier, around: readonly Quartier[], point: Point
 
     return {
         paths: [own, ...around].map(outline),
-        pin: place(mercator(point.lon, point.lat)),
+        pin: place(pin),
         tiles: tilesFor(scale, corner, frame),
     };
 }

@@ -8,16 +8,20 @@ export interface ChoiceProps
 {
     name: string;
     legend: string;
+    hint?: string;
     options: [string, string][];
     value: string;
     error: string | undefined;
 }
 
-export function Choice({ name, legend, options, value, error }: ChoiceProps)
+export function Choice({ name, legend, hint, options, value, error }: ChoiceProps)
 {
+    const described = [hint === undefined ? null : `${name}-hint`, error === undefined ? null : `${name}-error`].filter((id) => id !== null).join(" ");
+
     return (
-        <fieldset className="choice" aria-describedby={error === undefined ? undefined : `${name}-error`}>
+        <fieldset className="choice" aria-describedby={described === "" ? undefined : described}>
             <legend className="label">{legend}</legend>
+            {hint !== undefined && <p id={`${name}-hint`} className="hint">{hint}</p>}
             <div className="options">
                 {options.map(([option, text]) => (
                     <label key={option} className="option">
