@@ -48,6 +48,11 @@ export const pages: readonly Page[] = [
         description: "Le plan de Lyon et Villeurbanne avec les limites de l'encadrement des loyers, les loyers de référence par commune et la vérification de votre loyer.",
     },
     {
+        path: "grand-paris/",
+        title: "Encadrement des loyers dans le Grand Paris | Plafond",
+        description: "Les 130 communes de la Métropole du Grand Paris\u00A0: où le loyer est plafonné, ce que Plafond vérifie et le simulateur officiel pour les autres.",
+    },
+    {
         path: "loyer/",
         title: "Loyer plafonné à Paris et Lyon\u00A0: vérifiez le vôtre | Plafond",
         description: "Vérifiez si votre loyer respecte l'encadrement des loyers à Paris, Lyon et Villeurbanne, calculez le trop-perçu et préparez la lettre au propriétaire.",

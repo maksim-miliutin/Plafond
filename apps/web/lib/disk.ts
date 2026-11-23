@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
-import { feeCapsOf, indexOf, lawOf, seedsFrom, type RentIndex, type Seeds } from "@plafond/import";
+import { feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
 
 import { arrondissementPages, communePages, placePages, type CommunePage, type DistrictPage, type PlacePage } from "./places";
 
@@ -49,6 +49,11 @@ export function feeCapsFromDisk(): FeeCaps[]
 export function indexFromDisk(): RentIndex
 {
     return indexOf(JSON.parse(readFileSync(join(seed, "irl.json"), "utf8")));
+}
+
+export function metropoleFromDisk(): MetropoleCommune[]
+{
+    return metropoleOf(readFileSync(join(seed, "grand-paris-communes.csv"), "utf8"));
 }
 
 export function lawFromDisk(): LawPeriod[]

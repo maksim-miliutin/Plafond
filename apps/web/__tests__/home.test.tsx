@@ -65,6 +65,7 @@ test("the welcome promises a letter only when the case calls for one, to the lan
 test("under the two cities, a calm link leads the tenants of every other town to the checks that hold everywhere", () =>
 {
     expect(page).toMatch(/<a href="ailleurs\/">Autre ville en France<\/a>/);
+    expect(page).toMatch(/<a href="grand-paris\/">Autre commune du Grand Paris<\/a>/);
 });
 
 // On a phone the list of checks broke two questions before their question mark, which then stood alone on a line.
