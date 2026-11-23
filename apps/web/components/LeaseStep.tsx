@@ -78,9 +78,14 @@ function lapsedText(lapsed: Lapsed): ReactNode
     );
 }
 
+// Past the latest decree the law still runs: what is missing is the next decree's table, not the control itself.
 function noRateText(gap: Gap): ReactNode
 {
-    return <>Aucun loyer de référence n'est disponible pour cette date de signature. {gapText(gap)}</>;
+    const missing = gap.side === "after"
+        ? "Données officielles indisponibles pour cette date de bail."
+        : "Aucun loyer de référence n'est disponible pour cette date de signature.";
+
+    return <>{missing} {gapText(gap)}</>;
 }
 
 function gapText(gap: Gap): ReactNode

@@ -79,12 +79,23 @@ const pastParis = { kind: "no-rate", side: "after", until: "2026-11-24", title: 
 
 test("a lease signed on a day no rate covers is told so, above the button, and only then", () =>
 {
-    const refused = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={pastParis} />);
+    const refused = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={{ kind: "no-rate", side: "between" }} />);
     const notice = refused.match(/<p[^>]*role="alert"[^>]*>(.*?)<\/p>/)?.[1] ?? "";
 
     expect(notice).toContain("Aucun loyer de référence");
     expect(refused.indexOf("Aucun loyer de référence")).toBeLessThan(refused.indexOf("Vérifier mon loyer"));
     expect(page()).not.toContain("Aucun loyer de référence");
+});
+
+// Past the latest decree the law runs on and only the next table is missing, so the notice says the official data
+// is not out yet rather than that no reference rent exists.
+test("a lease signed past the latest known decree is told the official data for its date is not available", () =>
+{
+    const late = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} unchecked={pastParis} />);
+    const notice = late.match(/<p[^>]*role="alert"[^>]*>(.*?)<\/p>/)?.[1] ?? "";
+
+    expect(notice).toMatch(/^Données officielles indisponibles pour cette date de bail\. /);
+    expect(notice).not.toContain("Aucun loyer de référence");
 });
 
 // After 24 November 2026 the old notice blamed a missing update for what may be the end of the experiment itself.
