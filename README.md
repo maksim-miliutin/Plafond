@@ -36,6 +36,8 @@ Two years have no table from the Métropole, so their rents are copied from the 
 
 `db/seed/irl.json` holds the reference rent index (IRL) of mainland France, quarter by quarter from 2017, as the ANIL publishes it from INSEE: each value in hundredths of a point, the day INSEE published it, and the change over the same quarter a year before in hundredths of a percent. The import recomputes each change from the values and refuses the table if one disagrees, which catches a value typed wrong. A new quarter is added by hand when INSEE publishes it, about the middle of the month after each quarter.
 
+`db/seed/grand-paris-communes.csv` lists the 130 communes of the Métropole du Grand Paris as [INSEE](https://www.insee.fr/fr/metadonnees/geographie/intercommunalite/200054781-le-grand-paris) counts them, Paris as one commune, each with the territory whose decree caps its rents, if any, and the communes merged into it that tenants still name: Pierrefitte-sur-Seine joined Saint-Denis on 1 January 2025. The page `grand-paris/` reads it to tell each commune what Plafond checks there.
+
 ## Status
 
 The app is live at https://maksim-miliutin.com/Plafond/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. The rents of Paris were checked against the official map of reference rents of the DRIHL Île-de-France; those of Lyon are still to be checked against the Métropole's own simulator.

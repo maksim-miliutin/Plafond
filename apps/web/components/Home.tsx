@@ -29,6 +29,9 @@ export function Home({ shapes }: { shapes: Record<City, string> })
                 ))}
             </nav>
             <p className="elsewhere">
+                <a href="grand-paris/">Autre commune du Grand Paris</a>&nbsp;: où le loyer est plafonné autour de Paris.
+            </p>
+            <p className="elsewhere">
                 <a href="ailleurs/">Autre ville en France</a>&nbsp;: les six vérifications qui valent partout.
             </p>
             <section className="findings" aria-labelledby="home-checks">
