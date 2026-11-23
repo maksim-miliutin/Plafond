@@ -18,6 +18,12 @@ export const periodsOf: Record<City, readonly Period[]> = {
 // and for Est Ensemble the first decree of the prefect under the décret n° 2021-688 of 28 May 2021.
 export const controlledSince: Record<City, Day> = { paris: "2019-07-01", lyon: "2021-11-01", "est-ensemble": "2021-12-01" };
 
+// Paris and Lyon publish an outline for every area. The Est Ensemble decree names communes, each in one sector, and
+// outlines only the commune it splits, so there an address finds its area by its commune code first.
+export const placing: Record<City, "outline" | "commune"> = { paris: "outline", lyon: "outline", "est-ensemble": "commune" };
+
+export const dwellingsApart: Record<City, boolean> = { paris: false, lyon: false, "est-ensemble": true };
+
 // The decrees for Est Ensemble and Plaine Commune price houses and flats apart, the other decrees do not.
 export type Dwelling = "flat" | "house";
 

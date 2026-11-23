@@ -31,15 +31,15 @@ test("every commune is listed before anything is typed, each with what Plafond c
     expect(itemOf("Vincennes")).toMatch(/<a href="\.\.\/ailleurs\/">/);
 });
 
-// The decrees of Est Ensemble and Plaine Commune cap the rents there; until Plafond prices them, it sends the tenant
-// to the prefecture's simulator for that territory rather than saying nothing is capped.
-test("a capped commune Plafond does not check yet is sent to its territory's official simulator", () =>
+// The decree of Plaine Commune caps the rents there too; until Plafond prices them, it sends the tenant to the
+// prefecture's simulator for that territory rather than saying nothing is capped.
+test("an Est Ensemble commune leads to the check, and a capped commune Plafond does not check yet to its official simulator", () =>
 {
-    expect(itemOf("Montreuil")).toContain("Est Ensemble");
-    expect(itemOf("Montreuil")).toContain('href="https://www.service-public.gouv.fr/particuliers/vosdroits/R61539"');
+    expect(itemOf("Montreuil")).toMatch(/<a href="\.\.\/loyer\/">vérifier mon loyer<\/a>/);
+    expect(itemOf("Saint-Denis")).toContain("Plaine Commune");
     expect(itemOf("Saint-Denis")).toContain('href="https://www.service-public.gouv.fr/particuliers/vosdroits/R59027"');
     expect(itemOf("Saint-Denis")).not.toContain("../loyer/");
-    expect(reachOf(communes[1]!, ["est-ensemble"])).toEqual({ kind: "checked" });
+    expect(reachOf(communes[1]!, [])).toEqual({ kind: "capped", territory: "est-ensemble" });
 });
 
 test("the page names the official check of each commune's rules and has one heading of the first level", () =>

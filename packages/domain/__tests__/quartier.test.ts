@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { arrondissementOf, quartierAt, type Quartier } from "../src/quartier.js";
+import { areaIn, arrondissementOf, quartierAt, type Quartier } from "../src/quartier.js";
 
 type Position = readonly [number, number];
 
@@ -105,4 +105,28 @@ test("each arrondissement holds four quartiers numbered in turn", () =>
     expect(arrondissementOf(5)).toBe(2);
     expect(arrondissementOf(17)).toBe(5);
     expect(arrondissementOf(80)).toBe(20);
+});
+
+// Pantin lies whole in sector 308 and has no outline; Montreuil is split between 307 and 308, drawn as the two squares.
+const pantin: Quartier = { number: 308, name: "Pantin", rings: [], commune: "93055" };
+const infraOne: Quartier = { ...one, number: 307, name: "Montreuil", commune: "93048" };
+const infraTwo: Quartier = { ...two, number: 308, name: "Montreuil", commune: "93048" };
+const communes = [pantin, infraOne, infraTwo];
+
+test("an address in a commune of one sector is placed by its commune code alone, wherever its point", () =>
+{
+    expect(areaIn("93055", { lon: 0, lat: 0 }, communes)).toEqual({ kind: "placed", area: pantin });
+});
+
+test("an address in a split commune is placed by its point, and a point on the line or off both outlines is not", () =>
+{
+    expect(areaIn("93048", { lon: west + 0.005, lat: south + 0.005 }, communes)).toEqual({ kind: "placed", area: infraOne });
+    expect(areaIn("93048", { lon: west + 0.015, lat: south + 0.005 }, communes)).toEqual({ kind: "placed", area: infraTwo });
+    expect(areaIn("93048", { lon: west + side, lat: south + 0.005 }, communes)).toEqual({ kind: "border", quartiers: [307, 308] });
+    expect(areaIn("93048", { lon: west + 0.05, lat: south + 0.005 }, communes)).toEqual({ kind: "outside" });
+});
+
+test("an address in a commune the decree does not name is outside, even where an outline of another commune covers it", () =>
+{
+    expect(areaIn("93070", { lon: west + 0.005, lat: south + 0.005 }, communes)).toEqual({ kind: "outside" });
 });

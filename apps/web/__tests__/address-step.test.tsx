@@ -126,3 +126,19 @@ test("the screen links every guide that explains the rent cap, from the guides' 
         expect(told()).toContain(`<a href="../guides/${guide.slug}/">${guide.label}</a>`);
     }
 });
+
+// Plafond cannot place every Montreuil address; the prefecture's simulator can, so the refusal links it.
+test("an address that falls on no sector of a territory with an official simulator links that simulator", () =>
+{
+    const simulator = "https://www.service-public.gouv.fr/particuliers/vosdroits/R61539";
+    const outside = renderToStaticMarkup(<AddressStep problem="outside" simulator={simulator} />);
+    const border = renderToStaticMarkup(<AddressStep problem="border" simulator={simulator} />);
+    const unknown = renderToStaticMarkup(<AddressStep problem="not-found" simulator={simulator} />);
+
+    expect(outside).toMatch(/id="address-error"[^>]*>.*<a href="https:\/\/www\.service-public\.gouv\.fr\/particuliers\/vosdroits\/R61539">simulateur officiel<\/a>/s);
+    expect(outside).toContain("dans l&#x27;un des secteurs de sa commune");
+    expect(outside).not.toContain("couvert par l&#x27;encadrement");
+    expect(border).toContain(`href="${simulator}"`);
+    expect(unknown).not.toContain(`href="${simulator}"`);
+    expect(renderToStaticMarkup(<AddressStep problem="outside" />)).not.toContain("simulateur officiel");
+});

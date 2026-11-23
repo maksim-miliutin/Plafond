@@ -62,9 +62,12 @@ const arrondissement = /^751(0[1-9]|1[0-9]|20)$/;
 // Lyon's nine arrondissements and Villeurbanne, the two communes its rent control covers.
 const lyon = /^(6938[1-9]|69266)$/;
 
+// The nine communes of Est Ensemble, each named in annex 1 of the decree that caps their rents.
+export const estEnsemble: readonly string[] = ["93006", "93008", "93010", "93045", "93048", "93053", "93055", "93061", "93063"];
+
 const areas: Record<Area, { holds: (citycode: string) => boolean; refusal: "not-paris" | "overseas" }> = {
     paris: { holds: (citycode) => arrondissement.test(citycode), refusal: "not-paris" },
-    rent: { holds: (citycode) => arrondissement.test(citycode) || lyon.test(citycode), refusal: "not-paris" },
+    rent: { holds: (citycode) => arrondissement.test(citycode) || lyon.test(citycode) || estEnsemble.includes(citycode), refusal: "not-paris" },
     mainland: { holds: (citycode) => !citycode.startsWith("97"), refusal: "overseas" },
 };
 

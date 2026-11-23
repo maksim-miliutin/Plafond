@@ -29,7 +29,10 @@ export const feeZones: Record<FeeZone, string> = {
     other: "hors zone tendue",
 };
 
-export function letting(furnished: boolean): string
+// A house, une maison, takes the feminine.
+export function letting(furnished: boolean, dwelling?: Dwelling): string
 {
-    return furnished ? "loué meublé" : "loué vide";
+    const ending = dwelling === "house" ? "e" : "";
+
+    return furnished ? `loué${ending} meublé${ending}` : `loué${ending} vide`;
 }

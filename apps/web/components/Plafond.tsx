@@ -8,6 +8,7 @@ import type { City, LawPeriod } from "@plafond/domain";
 import { next, start, type Event, type Step } from "../lib/flow";
 import { loadCity, type Tables, type Unreachable } from "../lib/load";
 import { cityOf } from "../lib/cities";
+import { simulatorOf } from "../lib/metropole";
 import { todayInParis } from "../lib/today";
 import { helpers, parisRent } from "../lib/help";
 import { AddressStep } from "./AddressStep";
@@ -110,7 +111,7 @@ export function Plafond({ law, needs = live }: { law: readonly LawPeriod[]; need
     switch (step.at)
     {
         case "address":
-            return <AddressStep typed={step.typed} problem={step.problem} busy={busy} onFind={find} />;
+            return <AddressStep typed={step.typed} problem={step.problem} simulator={simulatorOf(step.city)} busy={busy} onFind={find} />;
 
         case "quartier":
             return (

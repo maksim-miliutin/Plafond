@@ -5,6 +5,7 @@ import { LeaseStep } from "../components/LeaseStep";
 import type { LeaseFields } from "../lib/lease";
 
 const blank: LeaseFields = {
+    dwelling: "",
     rooms: "",
     period: "",
     furnished: "",
@@ -169,4 +170,18 @@ test("a gap in the tables says Plafond lacks that period, without blaming the de
 
     expect(gap).toContain("Plafond ne dispose pas encore des loyers de référence de cette période");
     expect(gap).not.toContain("Aucun arrêté");
+});
+
+// The Est Ensemble decree prices houses and flats apart; the Paris and Lyon ones do not, so there the question is not asked.
+test("the form asks whether the home is a flat or a house only where the decree prices them apart", () =>
+{
+    const east = renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} city="est-ensemble" />);
+
+    expect(east.match(/name="dwelling"/g)).toHaveLength(2);
+    expect(east).toMatch(/<legend[^>]*>Type de logement<\/legend>/);
+    expect(east.indexOf('name="dwelling"')).toBeLessThan(east.indexOf('name="rooms"'));
+    expect(east).toMatch(/<fieldset[^>]*aria-describedby="dwelling-hint"[^>]*><legend[^>]*>Type de logement<\/legend><p id="dwelling-hint"[^>]*>Une maison est un bâtiment qui ne compte qu&#x27;un seul logement/);
+    expect(east).toContain("Construction du bâtiment");
+    expect(page()).not.toContain('name="dwelling"');
+    expect(renderToStaticMarkup(<LeaseStep fields={blank} errors={{}} city="lyon" />)).not.toContain('name="dwelling"');
 });

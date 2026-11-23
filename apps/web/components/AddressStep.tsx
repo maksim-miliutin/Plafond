@@ -12,13 +12,14 @@ export interface AddressProps
 {
     typed?: string;
     problem?: Problem | null;
+    simulator?: string;  // the official check of the territory where the address could not be placed, if it has one
     busy?: boolean;
     onFind?: (typed: string) => void;
 }
 
 export const problems: Record<Problem, string> = {
     "not-found": "Cette adresse n'a pas été trouvée. Vérifiez le numéro, la rue et l'arrondissement.",
-    "not-paris": "Cette adresse n'est ni à Paris, ni à Lyon ou Villeurbanne, les villes que Plafond couvre pour l'instant.",
+    "not-paris": "Cette adresse n'est ni à Paris, ni à Lyon ou Villeurbanne, ni dans une commune d'Est Ensemble, les territoires que Plafond couvre pour l'instant.",
     "overseas": "Cette adresse est outre-mer, où ces règles s'appliquent à d'autres dates. Plafond ne les couvre pas encore.",
     "street-only": "Seule la rue a été trouvée. Ajoutez le numéro de l'immeuble.",
     "unreachable": "Le service public de géocodage ne répond pas. Réessayez dans un instant.",
@@ -26,7 +27,10 @@ export const problems: Record<Problem, string> = {
     "outside": "Cette adresse n'a pas pu être placée dans un secteur couvert par l'encadrement.",
 };
 
-export function AddressStep({ typed = "", problem = null, busy = false, onFind }: AddressProps)
+// The commune is covered, only its sector is unknown: the address fell between the outlines that split the commune.
+const unplaced = "Plafond n'a pas pu placer cette adresse dans l'un des secteurs de sa commune.";
+
+export function AddressStep({ typed = "", problem = null, simulator, busy = false, onFind }: AddressProps)
 {
     function find(event: FormEvent<HTMLFormElement>)
     {
@@ -43,7 +47,8 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
             <h1 className="title">Votre loyer dépasse-t-il le plafond légal ?</h1>
             <p className="lead">
                 Le loyer au mètre carré est plafonné à Paris depuis le 1er juillet 2019, à Lyon et Villeurbanne depuis le
-                1er novembre 2021. Le plafond dépend du secteur&nbsp;: commencez par l'adresse du logement.
+                1er novembre 2021, dans les communes d'Est Ensemble depuis le 1er décembre 2021. Le plafond dépend du
+                secteur&nbsp;: commencez par l'adresse du logement.
             </p>
             <a className="rule" href={`../guides/${guideFor("loyer/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack" onSubmit={find}>
@@ -57,7 +62,14 @@ export function AddressStep({ typed = "", problem = null, busy = false, onFind }
                     aria-invalid={problem === null ? undefined : true}
                     aria-describedby={problem === null ? undefined : "address-error"}
                 />
-                {problem !== null && <p id="address-error" className="error">{problems[problem]}</p>}
+                {problem !== null && (
+                    <p id="address-error" className="error">
+                        {simulator !== undefined && problem === "outside" ? unplaced : problems[problem]}
+                        {simulator !== undefined && (problem === "border" || problem === "outside") && (
+                            <> Le <a href={simulator}>simulateur officiel</a> place chaque adresse dans son secteur.</>
+                        )}
+                    </p>
+                )}
                 <button type="submit" className="primary" disabled={busy}>
                     {busy ? "Recherche du quartier…" : "Trouver le quartier"}
                 </button>

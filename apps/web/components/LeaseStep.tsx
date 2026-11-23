@@ -2,7 +2,7 @@
 
 import type { FormEvent, ReactNode } from "react";
 
-import { frenchDay, periods, periodsOf, rooms } from "@plafond/domain";
+import { dwellingsApart, frenchDay, periods, periodsOf, rooms } from "@plafond/domain";
 import type { City, Gap, Lapsed, Unchecked } from "@plafond/domain";
 
 import { fieldsFrom, type FieldErrors, type LeaseFields } from "../lib/lease";
@@ -19,6 +19,16 @@ export interface LeaseProps
     onAnswer?: (fields: LeaseFields) => void;
     onBack?: () => void;
 }
+
+const kinds: [string, string][] = [
+    ["flat", "appartement"],
+    ["house", "maison"],
+];
+
+// Article 2 of the decrees for Est Ensemble and Plaine Commune: a house is a building with a single dwelling, any other
+// dwelling is a flat, and semi-detached buildings or a building divided vertically count as separate buildings.
+const houseIs = "Une maison est un bâtiment qui ne compte qu'un seul logement\u00A0; tout autre logement est un appartement. Deux "
+    + "maisons mitoyennes comptent comme deux bâtiments.";
 
 const lettings: [string, string][] = [
     ["no", "vide"],
@@ -45,8 +55,9 @@ export function LeaseStep({ fields, errors, unchecked = null, city = "paris", on
             <h1 className="title">Ce que dit votre bail</h1>
             <p className="lead">Tout figure dans le contrat de location, le plus souvent sur la première page.</p>
             <LocalForm className="stack form" noValidate onSubmit={answer}>
+                {dwellingsApart[city] && <Choice name="dwelling" legend="Type de logement" hint={houseIs} options={kinds} value={fields.dwelling} error={errors.dwelling} />}
                 <Choice name="rooms" legend="Pièces principales" options={Object.entries(rooms)} value={fields.rooms} error={errors.rooms} />
-                <Choice name="period" legend="Construction de l'immeuble" options={periodsOf[city].map((period) => [period, periods[period]])} value={fields.period} error={errors.period} />
+                <Choice name="period" legend={dwellingsApart[city] ? "Construction du bâtiment" : "Construction de l'immeuble"} options={periodsOf[city].map((period) => [period, periods[period]])} value={fields.period} error={errors.period} />
                 <Choice name="furnished" legend="Location" options={lettings} value={fields.furnished} error={errors.furnished} />
                 <Typed id="surface" label="Surface habitable" hint="En m², telle qu'indiquée au bail." value={fields.surface} error={errors.surface} />
                 <Typed id="rent" label="Loyer de base" hint="Par mois, hors charges, tel qu'il figure au bail." value={fields.rent} error={errors.rent} />

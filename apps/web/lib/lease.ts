@@ -1,10 +1,11 @@
-import { centsFrom, hundredthsFrom, isDay, periodsOf, rooms } from "@plafond/domain";
-import type { City, Claim, Day, Period, Rooms, Unreadable } from "@plafond/domain";
+import { centsFrom, dwellings, dwellingsApart, hundredthsFrom, isDay, periodsOf, rooms } from "@plafond/domain";
+import type { City, Claim, Day, Dwelling, Flat, Period, Rooms, Unreadable } from "@plafond/domain";
 
 import { readForm } from "./forms";
 
 export interface LeaseFields
 {
+    dwelling: string;
     rooms: string;
     period: string;
     furnished: string;
@@ -38,8 +39,9 @@ export interface Context
 }
 
 export const questions: Record<keyof LeaseFields, string> = {
+    dwelling: "Indiquez si le logement est un appartement ou une maison.",
     rooms: "Choisissez le nombre de pièces principales.",
-    period: "Choisissez l'époque de construction de l'immeuble.",
+    period: "Choisissez l'époque de construction du bâtiment.",
     furnished: "Indiquez si le logement est loué vide ou meublé.",
     surface: "Indiquez la surface habitable en m², par exemple 32,5.",
     rent: "Indiquez le loyer hors charges en euros, par exemple 1\u202F250,50.",
@@ -70,15 +72,19 @@ export function leaseFrom(fields: LeaseFields, context: Context): Lease | Unansw
         stated: yesOrNo(fields.stated),
     };
 
-    if (!complete(read))
-    {
-        const missing = (Object.keys(read) as (keyof LeaseFields)[]).filter((key) => read[key] === null);
+    // Asked only where the decree prices houses and flats apart; elsewhere the answer stays out of the claim.
+    const dwelling = !dwellingsApart[context.city] ? undefined : Object.hasOwn(dwellings, fields.dwelling) ? (fields.dwelling as Dwelling) : null;
 
-        return { kind: "unanswered", fields: Object.fromEntries(missing.map((key) => [key, questions[key]])) };
+    if (!complete(read) || dwelling === null)
+    {
+        const missing: (keyof LeaseFields)[] = (Object.keys(read) as (keyof typeof read)[]).filter((key) => read[key] === null);
+
+        return { kind: "unanswered", fields: Object.fromEntries([...(dwelling === null ? ["dwelling" as const] : []), ...missing].map((key) => [key, questions[key]])) };
     }
 
+    const flat: Flat = { city: context.city, quartier: context.quartier, rooms: read.rooms, period: read.period, furnished: read.furnished };
     const claim = {
-        flat: { city: context.city, quartier: context.quartier, rooms: read.rooms, period: read.period, furnished: read.furnished },
+        flat: dwelling === undefined ? flat : { ...flat, dwelling },
         surface: read.surface,
         signedOn: read.signedOn,
         startsOn: read.startsOn,

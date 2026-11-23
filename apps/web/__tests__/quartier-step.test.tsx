@@ -53,3 +53,19 @@ test("the screen says which of the four steps it is", () =>
     expect(page(1)).toContain("Étape 2 sur 4\u00A0: votre quartier");
     expect(page(1).match(/class="segment done"/g)).toHaveLength(2);
 });
+
+// Pantin lies whole in sector 308: the decree gives no outline, so the map shows the streets around the address.
+test("an Est Ensemble address is named by its commune and sector, over a map of the streets around it", () =>
+{
+    const pantin: Quartier = { number: 308, name: "Pantin", rings: [], commune: "93055" };
+    const html = renderToStaticMarkup(
+        <QuartierStep city="est-ensemble" quartier={pantin} around={[]} address="12 Rue Hoche 93500 Pantin" point={{ lon: 2.404, lat: 48.894 }} />,
+    );
+
+    expect(html).toMatch(/<h1[^>]*>.*Secteur 308.*Pantin.*<\/h1>/s);
+    expect(html).not.toContain("arrondissement");
+    expect(html).toContain('aria-label="Plan des rues autour de l&#x27;adresse trouvée à Pantin"');
+    expect(html).toMatch(/<image[^>]*href="https:\/\/data\.geopf\.fr\/wmts\?/);
+    expect(html).toContain("annexe 1 de l&#x27;arrêté");
+    expect(html).not.toContain("Métropole de Lyon");
+});

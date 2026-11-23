@@ -1,4 +1,4 @@
-import { arrondissementOf, ordinal } from "@plafond/domain";
+import { arrondissementOf, ordinal, placing } from "@plafond/domain";
 import type { City } from "@plafond/domain";
 import type { Point, Quartier } from "@plafond/domain";
 
@@ -18,6 +18,13 @@ export interface QuartierProps
 
 const frame = { width: 382, height: 300 };
 
+// Where the outlines come from, under the map.
+const drawnBy: Record<City, string> = {
+    paris: "Les limites des quartiers viennent du plan officiel de la Ville de Paris.",
+    lyon: "Les limites des secteurs viennent des données publiées par la Métropole de Lyon.",
+    "est-ensemble": "Le secteur vient de l'annexe 1 de l'arrêté du préfet et, à Montreuil, du découpage publié par la DRIHL d'Île-de-France.",
+};
+
 export function QuartierStep({ city = "paris", quartier, around, address, point, onConfirm, onBack }: QuartierProps)
 {
     const map = drawing(quartier, around, point, frame);
@@ -28,13 +35,14 @@ export function QuartierStep({ city = "paris", quartier, around, address, point,
             <p className="step">{city === "paris" ? "Votre logement se trouve dans le quartier" : "Votre logement se trouve à"}</p>
             <h1 className="plaque">
                 {city === "paris" && <span className="plaque-arr">{ordinal(arrondissementOf(quartier.number))} arrondissement</span>}
+                {placing[city] === "commune" && <span className="plaque-arr">Secteur {quartier.number}</span>}
                 <span className="plaque-name">{quartier.name}</span>
             </h1>
             <svg
                 className="map"
                 viewBox={`0 0 ${frame.width} ${frame.height}`}
                 role="img"
-                aria-label={`Plan du quartier ${quartier.name} avec l'adresse trouvée`}
+                aria-label={labelOf(city, quartier)}
             >
                 {map.tiles.map((tile) => (
                     <image
@@ -63,11 +71,19 @@ export function QuartierStep({ city = "paris", quartier, around, address, point,
                 <button type="button" className="primary" onClick={onConfirm}>C'est bien ça</button>
                 <button type="button" className="secondary" onClick={onBack}>Corriger l'adresse</button>
             </div>
-            <p className="fine">
-                {city === "paris"
-                    ? "Les limites des quartiers viennent du plan officiel de la Ville de Paris."
-                    : "Les limites des secteurs viennent des données publiées par la Métropole de Lyon."}
-            </p>
+            <p className="fine">{drawnBy[city]}</p>
         </main>
     );
+}
+
+function labelOf(city: City, quartier: Quartier): string
+{
+    if (quartier.rings.length === 0)
+    {
+        return `Plan des rues autour de l'adresse trouvée à ${quartier.name}`;
+    }
+
+    return placing[city] === "commune"
+        ? `Plan du secteur ${quartier.number} de ${quartier.name} avec l'adresse trouvée`
+        : `Plan du quartier ${quartier.name} avec l'adresse trouvée`;
 }

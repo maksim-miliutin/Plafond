@@ -3,6 +3,7 @@ import { expect, test } from "vitest";
 import { fieldsFrom, leaseFrom, type LeaseFields } from "../lib/lease";
 
 const filled: LeaseFields = {
+    dwelling: "",
     rooms: "3",
     period: "1946-1970",
     furnished: "yes",
@@ -93,3 +94,15 @@ test("each city takes its own construction periods: after 2005 exists in Lyon, n
     expect(leaseFrom({ ...filled, period: "after-1990" }, lyon)).toMatchObject({ kind: "unanswered", fields: { period: expect.any(String) } });
 });
 
+
+// Only the decrees around Paris price houses and flats apart: there the question is asked, elsewhere its answer is ignored.
+test("in Est Ensemble the lease names its dwelling, which must be answered; in Paris the answer is left out", () =>
+{
+    const east = { city: "est-ensemble" as const, quartier: 308, on: "2026-09-29" };
+
+    expect(leaseFrom({ ...filled, dwelling: "house" }, east)).toMatchObject({ claim: { flat: { city: "est-ensemble", quartier: 308, dwelling: "house" } } });
+    expect(leaseFrom(filled, east)).toEqual({ kind: "unanswered", fields: { dwelling: "Indiquez si le logement est un appartement ou une maison." } });
+    expect(leaseFrom({ ...filled, dwelling: "castle" }, east)).toMatchObject({ kind: "unanswered", fields: { dwelling: expect.any(String) } });
+    expect(leaseFrom({ ...filled, dwelling: "house" }, context)).toMatchObject({ claim: { flat: { city: "paris" } } });
+    expect("dwelling" in ((leaseFrom({ ...filled, dwelling: "house" }, context) as { claim: { flat: object } }).claim.flat)).toBe(false);
+});
