@@ -48,11 +48,11 @@ test("a lease signed the day after the last day of the law gets no verdict, and 
 
 // The bug this guards: once the law was extended, a lease signed after the 2026 decree was still told the law had
 // lapsed. The decree of 12 June 2026 stops on 24 November 2026, and no later one is published yet.
-test("a lease signed after the last Paris decree, while the law runs on, is told no reference rent is known yet", async ({ page }) =>
+test("a lease signed after the last Paris decree, while the law runs on, is told the official data is not out yet", async ({ page }) =>
 {
     await leaseSignedOn(page, "2026-11-25");
 
-    await expect(page.getByText("Aucun loyer de référence n'est disponible pour cette date de signature.")).toBeVisible();
+    await expect(page.getByText("Données officielles indisponibles pour cette date de bail.")).toBeVisible();
     await expect(page.getByRole("link", { name: "Arrêté préfectoral n° IDF-2026-06-12-00003" }))
         .toHaveAttribute("href", "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/renouvellement-2026-de-l-arrete-annuel-d-a1512.html?lang=fr");
     await expect(page.getByText("Plafond ne peut pas vérifier un bail signé après")).toHaveCount(0);
