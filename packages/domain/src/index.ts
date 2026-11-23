@@ -3,7 +3,7 @@ export { DayError, dayBefore, isDay, type Day } from "./day.js";
 export { LawError, type Lapsed, type LawPeriod } from "./law.js";
 export { OutlineError, outlineOf } from "./outline.js";
 export { SpanError, checkedSpans, type Span } from "./span.js";
-export { RatesError, periodsOf, type City, type Contest, type Decree, type Flat, type NoRate, type Period, type Rate, type Rooms } from "./rates.js";
+export { RatesError, periodsOf, type City, type Contest, type Decree, type Dwelling, type Flat, type NoRate, type Period, type Rate, type Rooms } from "./rates.js";
 export { arrondissementOf, quartierAt, type Border, type Found, type Outside, type Point, type Quartier } from "./quartier.js";
 export { FormatError, euros, frenchDay, indexPoints, ordinal, percent, squareMetres } from "./format.js";
 export { centsFrom, hundredthsFrom, type Unreadable } from "./input.js";

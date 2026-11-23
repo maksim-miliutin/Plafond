@@ -87,3 +87,16 @@ test("each city's rent control has the day it began: Paris in July 2019, Lyon in
 {
     expect(controlledSince).toEqual({ paris: "2019-07-01", lyon: "2021-11-01" });
 });
+
+// Where a decree prices houses and flats apart, each finds its own grid and no other: the same rooms, period and
+// letting in a house of sector 318 cost 18,80 € a m² against 17,30 € in a flat under the Est Ensemble decree of 2024.
+test("a house and a flat of the same category find their own rates where the decree prices them apart", () =>
+{
+    const priced = (dwelling: "flat" | "house", majored: number): Rate => ({ ...rate("2024-06-01", "2025-06-01", majored), flat: { ...flat, dwelling } });
+    const split = [priced("flat", 1730), priced("house", 1880)];
+
+    expect(rateOn(split, { ...flat, dwelling: "house" }, "2024-06-01")).toBe(split[1]);
+    expect(rateOn(split, { ...flat, dwelling: "flat" }, "2024-06-01")).toBe(split[0]);
+    expect(rateOn(split, flat, "2024-06-01")).toEqual({ kind: "no-rate" });
+    expect(rateOn(rates, { ...flat, dwelling: "house" }, "2025-03-10")).toEqual({ kind: "no-rate" });
+});

@@ -38,6 +38,18 @@ test("a packed table unpacks to the very rates it was made from, through json as
     expect(unpack(JSON.parse(JSON.stringify(pack(rates))))).toEqual(rates);
 });
 
+// The Paris and Lyon tables carry no dwelling: their rows keep nine fields, so a page cached before the change reads them.
+test("a dwelling travels as a tenth field, and only on the rows that have one", () =>
+{
+    const house: Rate = { flat: { city: "paris", quartier: 318, rooms: 2, period: "1946-1970", furnished: false, dwelling: "house" }, reference: 1570, majored: 1880, minored: 1100, decree: standing };
+    const packed = pack([...rates, house]);
+
+    expect(packed.rows.map((row) => row.length)).toEqual([9, 9, 9, 10]);
+    expect(packed.rows[3]![9]).toBe("house");
+    expect(unpack(JSON.parse(JSON.stringify(packed)))).toEqual([...rates, house]);
+    expect(() => unpack({ ...packed, rows: [[...packed.rows[0]!, "castle"]] })).toThrow(/row 0/);
+});
+
 test("a decree shared by many rows is written once", () =>
 {
     expect(pack(rates).decrees).toEqual([standing, annulled]);

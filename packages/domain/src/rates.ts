@@ -16,6 +16,9 @@ export const periodsOf: Record<City, readonly Period[]> = {
 // The first day a lease falls under each city's control: the décrets of 2019 for Paris and of 2 September 2021 for Lyon.
 export const controlledSince: Record<City, Day> = { paris: "2019-07-01", lyon: "2021-11-01" };
 
+// The decrees for Est Ensemble and Plaine Commune price houses and flats apart, the other decrees do not.
+export type Dwelling = "flat" | "house";
+
 export interface Flat
 {
     city: City;
@@ -23,6 +26,7 @@ export interface Flat
     rooms: Rooms;
     period: Period;
     furnished: boolean;
+    dwelling?: Dwelling;  // left out where one grid prices houses and flats alike
 }
 
 export interface Contest
@@ -63,7 +67,8 @@ export class RatesError extends Error
     constructor(flat: Flat, on: Day, count: number)
     {
         const letting = flat.furnished ? "furnished" : "unfurnished";
-        super(`rates: ${count} rates cover ${flat.city} area ${flat.quartier}, ${flat.rooms} rooms, ${flat.period}, ${letting} on ${on}`);
+        const kind = flat.dwelling === undefined ? "" : `${flat.dwelling}, `;
+        super(`rates: ${count} rates cover ${flat.city} area ${flat.quartier}, ${kind}${flat.rooms} rooms, ${flat.period}, ${letting} on ${on}`);
         this.name = "RatesError";
     }
 }
@@ -90,7 +95,8 @@ function sameFlat(a: Flat, b: Flat): boolean
         && a.quartier === b.quartier
         && a.rooms === b.rooms
         && a.period === b.period
-        && a.furnished === b.furnished;
+        && a.furnished === b.furnished
+        && a.dwelling === b.dwelling;
 }
 
 function covers(rate: Rate, on: Day): boolean
