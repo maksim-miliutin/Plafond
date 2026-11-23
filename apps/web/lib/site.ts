@@ -53,9 +53,14 @@ export const pages: readonly Page[] = [
         description: "Les 130 communes de la Métropole du Grand Paris\u00A0: où le loyer est plafonné, ce que Plafond vérifie et le simulateur officiel pour les autres.",
     },
     {
+        path: "grand-paris/est-ensemble/",
+        title: "Encadrement des loyers à Est Ensemble | Plafond",
+        description: "Vérifiez gratuitement le plafond du loyer de base à Montreuil, Pantin et dans les neuf communes d'Est Ensemble, selon l'arrêté du préfet.",
+    },
+    {
         path: "loyer/",
-        title: "Loyer plafonné à Paris et Lyon\u00A0: vérifiez le vôtre | Plafond",
-        description: "Vérifiez si votre loyer respecte l'encadrement des loyers à Paris, Lyon et Villeurbanne, calculez le trop-perçu et préparez la lettre au propriétaire.",
+        title: "Loyer encadré\u00A0: vérifiez le plafond du vôtre | Plafond",
+        description: "Vérifiez si votre loyer respecte l'encadrement à Paris, Lyon, Villeurbanne et Est Ensemble, calculez le trop-perçu et préparez la lettre.",
     },
     {
         path: "dpe/",

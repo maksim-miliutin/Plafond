@@ -11,7 +11,7 @@ export function Elsewhere()
             <h1 className="title">Ailleurs en France</h1>
             <p className="lead">
                 Ces six vérifications ne dépendent pas de la ville&nbsp;: chacune dit où elle s'applique. Le plafond des loyers n'existe que dans
-                certains territoires, et Plafond le vérifie à Paris, à Lyon et à Villeurbanne.
+                certains territoires, et Plafond le vérifie à Paris, à Lyon, à Villeurbanne et dans les communes d'Est Ensemble.
             </p>
             <section className="findings">
                 <h2>Que voulez-vous vérifier ?</h2>

@@ -34,7 +34,7 @@ export function Home({ shapes }: { shapes: Record<MappedCity, string> })
             </p>
             <section className="findings" aria-labelledby="home-checks">
                 <h2 id="home-checks">Les sept vérifications</h2>
-                <CheckLinks base="" rentReach="À Paris, Lyon et Villeurbanne." />
+                <CheckLinks base="" rentReach="À Paris, Lyon, Villeurbanne et Est Ensemble." />
             </section>
             <div className="grow" />
             <p className="fine">

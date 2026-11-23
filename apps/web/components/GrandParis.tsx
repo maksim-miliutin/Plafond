@@ -19,6 +19,13 @@ export function GrandParis({ communes }: { communes: readonly MetropoleCommune[]
             </p>
             <CommuneSearch communes={communes} />
             <section className="findings">
+                <h2>Les territoires où Plafond vérifie le loyer</h2>
+                <ul className="references">
+                    <li><a href="../paris/">Paris</a></li>
+                    <li><a href="est-ensemble/">Est Ensemble</a>, à l'est de Paris</li>
+                </ul>
+            </section>
+            <section className="findings">
                 <h2>Sans loyer de référence</h2>
                 <p>
                     Ailleurs dans la Métropole, aucun loyer de référence ne s'applique. La hausse du loyer entre deux locataires peut
