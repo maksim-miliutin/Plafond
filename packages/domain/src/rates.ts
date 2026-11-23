@@ -3,18 +3,20 @@ import { DayError, isDay, type Day } from "./day.js";
 // 4 stands for four rooms or more: the published tables group them that way.
 export type Rooms = 1 | 2 | 3 | 4;
 
-export type City = "paris" | "lyon";
+export type City = "paris" | "lyon" | "est-ensemble";
 
 export type Period = "before-1946" | "1946-1970" | "1971-1990" | "after-1990" | "1991-2005" | "after-2005";
 
-// Each prefecture cuts construction years its own way: Paris stops at 1990, Lyon splits on to 2005.
+// Each prefecture cuts construction years its own way: Paris and Est Ensemble stop at 1990, Lyon splits on to 2005.
 export const periodsOf: Record<City, readonly Period[]> = {
     paris: ["before-1946", "1946-1970", "1971-1990", "after-1990"],
     lyon: ["before-1946", "1946-1970", "1971-1990", "1991-2005", "after-2005"],
+    "est-ensemble": ["before-1946", "1946-1970", "1971-1990", "after-1990"],
 };
 
-// The first day a lease falls under each city's control: the décrets of 2019 for Paris and of 2 September 2021 for Lyon.
-export const controlledSince: Record<City, Day> = { paris: "2019-07-01", lyon: "2021-11-01" };
+// The first day a lease falls under each city's control: the décrets of 2019 for Paris and of 2 September 2021 for Lyon,
+// and for Est Ensemble the first decree of the prefect under the décret n° 2021-688 of 28 May 2021.
+export const controlledSince: Record<City, Day> = { paris: "2019-07-01", lyon: "2021-11-01", "est-ensemble": "2021-12-01" };
 
 // The decrees for Est Ensemble and Plaine Commune price houses and flats apart, the other decrees do not.
 export type Dwelling = "flat" | "house";

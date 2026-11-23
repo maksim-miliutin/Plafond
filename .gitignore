@@ -9,6 +9,7 @@ apps/web/public/rates.json
 apps/web/public/quartiers.json
 apps/web/public/lyon-rates.json
 apps/web/public/lyon-areas.json
+apps/web/public/est-ensemble-rates.json
 apps/web/public/licences.txt
 
 test-results/

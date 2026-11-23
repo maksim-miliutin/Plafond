@@ -5,6 +5,7 @@ import type { Fetcher } from "@plafond/address";
 export const tableFiles: Record<City, { rates: string; areas: string }> = {
     paris: { rates: "rates.json", areas: "quartiers.json" },
     lyon: { rates: "lyon-rates.json", areas: "lyon-areas.json" },
+    "est-ensemble": { rates: "est-ensemble-rates.json", areas: "est-ensemble-areas.json" },
 };
 
 export const ratesFile = tableFiles.paris.rates;

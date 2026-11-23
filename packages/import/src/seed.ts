@@ -5,6 +5,7 @@ import { decreesOf } from "./decrees.js";
 import { lyonOutlines, lyonRates, lyonTable } from "./lyon.js";
 import { parseParis } from "./paris.js";
 import { quartiersOf } from "./quartiers.js";
+import { territoryRates } from "./territories.js";
 
 export class SeedError extends Error
 {
@@ -110,11 +111,17 @@ export function lyonSeed({ tables, annexes, decrees }: LyonSeed): LyonRates
     };
 }
 
+export interface TerritorySeed
+{
+    rates: Rate[];
+}
+
 export interface Seeds
 {
     paris: Rate[];
     quartiers: Quartier[];
     lyon: LyonRates;
+    estEnsemble: TerritorySeed;
 }
 
 const lyonTables = new Map([
@@ -145,5 +152,6 @@ export function seedsFrom(read: (name: string) => string): Seeds
             annexes: new Map([...lyonAnnexes].map(([year, files]) => [year, { annex: read(files.annex), sectors: read(files.sectors) }])),
             decrees: decreesOf(JSON.parse(read("lyon-decrees.json"))),
         }),
+        estEnsemble: { rates: territoryRates(read("grand-paris-rates.csv"), "est-ensemble", decreesOf(JSON.parse(read("est-ensemble-decrees.json")))) },
     };
 }

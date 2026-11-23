@@ -1,7 +1,7 @@
 import { frenchDay } from "@plafond/domain";
 import type { City, Contest } from "@plafond/domain";
 
-const adil: Record<City, string> = { paris: "l'ADIL de Paris", lyon: "l'ADIL du Rhône" };
+const adil: Record<City, string> = { paris: "l'ADIL de Paris", lyon: "l'ADIL du Rhône", "est-ensemble": "l'ADIL de la Seine-Saint-Denis" };
 
 export function ContestNote({ contest, city }: { contest: Contest; city?: City })
 {

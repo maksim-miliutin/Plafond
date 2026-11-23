@@ -263,3 +263,15 @@ test("a letter for a flat in Lyon names the prefect for the fine and leaves Pari
     expect(text).not.toContain("dans le quartier");
     expect(sent.dated).toBe("Lyon, le 29 septembre 2026");
 });
+
+// Article 140 gives the prefect's powers in Île-de-France to the prefect of the region, outside Paris as well.
+test("a letter for a flat in Est Ensemble names the prefect of the region for the fine", () =>
+{
+    const eastRate: Rate = { ...rate, flat: { ...rate.flat, city: "est-ensemble", quartier: 308, dwelling: "flat" } };
+    const lease = { ...claim, flat: eastRate.flat };
+    const sent = letter({ check: check(lease, [eastRate], law) as Check, claim: lease, address: "12 Rue Hoche 93500 Pantin", quartier: "Pantin", stated: true }) as Letter;
+    const text = letterText(sent);
+
+    expect(text).toContain("amende administrative prononcée par le préfet de la région d'Île-de-France");
+    expect(text).not.toContain("Ville de Paris");
+});

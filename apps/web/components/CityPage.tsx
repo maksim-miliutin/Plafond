@@ -1,6 +1,6 @@
-import { frenchDay, type City, type Quartier, type Span } from "@plafond/domain";
+import { frenchDay, type Quartier, type Span } from "@plafond/domain";
 
-import { cityCopy, territories } from "../lib/city-copy";
+import { cityCopy, territories, type MappedCity } from "../lib/city-copy";
 import { guides } from "../lib/guides";
 import { Brand } from "./Brand";
 import { CheckList } from "./Checks";
@@ -8,7 +8,7 @@ import { CityMap } from "./CityMap";
 
 export interface CityPageProps
 {
-    city: City;
+    city: MappedCity;
     outlines: readonly Quartier["rings"][];
     spans: readonly Span[];
     links: readonly { href: string; label: string }[];

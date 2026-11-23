@@ -18,7 +18,10 @@ export const territories = {
 };
 
 // The neighbours lines follow the prefecture's press release of 3 June 2025 and the Métropole de Lyon's of 3 September 2021.
-export const cityCopy: Record<City, CityCopy> = {
+// The cities with a page and a map of their own; the territories around Paris are reached through the Grand Paris page.
+export type MappedCity = Extract<City, "paris" | "lyon">;
+
+export const cityCopy: Record<MappedCity, CityCopy> = {
     paris: {
         name: "Paris",
         within: "dans les 20 arrondissements, à l'intérieur de la limite tracée sur le plan.",
