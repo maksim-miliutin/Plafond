@@ -1,5 +1,5 @@
 import type { FeeZone } from "./agency.js";
-import type { Period, Rooms } from "./rates.js";
+import type { Dwelling, Period, Rooms } from "./rates.js";
 
 export const rooms: Record<Rooms, string> = {
     1: "1 pièce",
@@ -15,6 +15,11 @@ export const periods: Record<Period, string> = {
     "after-1990": "après 1990",
     "1991-2005": "entre 1991 et 2005",
     "after-2005": "après 2005",
+};
+
+export const dwellings: Record<Dwelling, string> = {
+    flat: "appartement",
+    house: "maison",
 };
 
 // Where the flat lies, as a sentence goes on after "situé" or "par m²".

@@ -1,6 +1,6 @@
-import { periods, rooms } from "./labels.js";
+import { dwellings, periods, rooms } from "./labels.js";
 import type { Quartier } from "./quartier.js";
-import { periodsOf, type City, type Decree, type Period, type Rate, type Rooms } from "./rates.js";
+import { periodsOf, type City, type Decree, type Dwelling, type Flat, type Period, type Rate, type Rooms } from "./rates.js";
 
 export class PackedError extends Error
 {
@@ -11,8 +11,9 @@ export class PackedError extends Error
     }
 }
 
-// city, area, rooms, period, furnished as 1 or 0, the three rents in cents per m², the index of the decree.
-type Row = [City, number, Rooms, Period, 0 | 1, number, number, number, number];
+// city, area, rooms, period, furnished as 1 or 0, the three rents in cents per m², the index of the decree, and last
+// the dwelling only where the decree prices houses and flats apart, so the tables of Paris and Lyon keep their bytes.
+type Row = [City, number, Rooms, Period, 0 | 1, number, number, number, number] | [City, number, Rooms, Period, 0 | 1, number, number, number, number, Dwelling];
 
 export interface Packed
 {
@@ -35,7 +36,9 @@ export function pack(rates: readonly Rate[]): Packed
             places.set(decree.from, at);
         }
 
-        return [flat.city, flat.quartier, flat.rooms, flat.period, flat.furnished ? 1 : 0, reference, majored, minored, at];
+        const row: Row = [flat.city, flat.quartier, flat.rooms, flat.period, flat.furnished ? 1 : 0, reference, majored, minored, at];
+
+        return flat.dwelling === undefined ? row : [...row, flat.dwelling] as Row;
     });
 
     return { version: 2, decrees, rows };
@@ -55,9 +58,10 @@ export function unpack(source: unknown): Rate[]
             throw new PackedError(`row ${index} cannot be read back`);
         }
 
-        const [city, quartier, rooms, period, furnished, reference, majored, minored, at] = row;
+        const [city, quartier, rooms, period, furnished, reference, majored, minored, at, dwelling] = row;
+        const flat: Flat = { city, quartier, rooms, period, furnished: furnished === 1 };
 
-        return { flat: { city, quartier, rooms, period, furnished: furnished === 1 }, reference, majored, minored, decree: source.decrees[at]! };
+        return { flat: dwelling === undefined ? flat : { ...flat, dwelling }, reference, majored, minored, decree: source.decrees[at]! };
     });
 }
 
@@ -75,14 +79,16 @@ function isTable(source: unknown): source is { decrees: Decree[]; rows: unknown[
 
 function isRow(row: unknown): row is Row
 {
-    if (!Array.isArray(row) || row.length !== 9)
+    if (!Array.isArray(row) || (row.length !== 9 && row.length !== 10))
     {
         return false;
     }
 
-    const [city, quartier, room, period, furnished, ...rest] = row;
+    const [city, quartier, room, period, furnished, ...rest] = row.slice(0, 9);
+    const dwelling = row[9];
 
-    return typeof city === "string"
+    return (dwelling === undefined || (typeof dwelling === "string" && Object.hasOwn(dwellings, dwelling)))
+        && typeof city === "string"
         && Object.hasOwn(periodsOf, city)
         && Number.isInteger(quartier)
         && typeof room === "number"
