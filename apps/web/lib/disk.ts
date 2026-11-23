@@ -5,7 +5,8 @@ import { checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type 
 import { feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
-import { arrondissementPages, communePages, placePages, type CommunePage, type DistrictPage, type PlacePage } from "./places";
+import { arrondissementPages, communePages, placePages, territoryFacts, type CommunePage, type DistrictPage, type PlacePage, type TerritoryFacts } from "./places";
+import type { Example } from "./territory-copy";
 
 export interface Places
 {
@@ -82,4 +83,9 @@ export function spansFromDisk(): Record<City, Span[]>
         lyon: checkedSpans("lyon", lyon.rates, law),
         "est-ensemble": checkedSpans("est-ensemble", estEnsemble.rates, law),
     };
+}
+
+export function territoryFromDisk(example: Example): TerritoryFacts
+{
+    return territoryFacts(seeds().estEnsemble, lawFromDisk(), example);
 }

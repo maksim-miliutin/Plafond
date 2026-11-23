@@ -1,6 +1,7 @@
-import { frenchDay, type Quartier, type Span } from "@plafond/domain";
+import type { Quartier, Span } from "@plafond/domain";
 
 import { cityCopy, territories, type MappedCity } from "../lib/city-copy";
+import { stretchesOf } from "../lib/places";
 import { guides } from "../lib/guides";
 import { Brand } from "./Brand";
 import { CheckList } from "./Checks";
@@ -58,15 +59,4 @@ export function CityPage({ city, outlines, spans, links }: CityPageProps)
             </p>
         </main>
     );
-}
-
-function stretchesOf(spans: readonly Span[]): string
-{
-    const named = spans.map((span) => `du ${frenchDay(span.from)} au ${frenchDay(span.lastDay)}`);
-    if (named.length === 1)
-    {
-        return named[0]!;
-    }
-
-    return `${named.slice(0, -1).join(", ")} et ${named.at(-1)}`;
 }
