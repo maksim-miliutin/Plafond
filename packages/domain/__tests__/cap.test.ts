@@ -130,6 +130,34 @@ test("the year to contest a complement reaches every lease whose three months we
     expect(until("2026-08-23", "2026-09-15")).toBe("2027-08-23");
 });
 
+// The same law makes the claim for a lower rent lapse a year after the tenant knew or should have known the excess,
+// instead of three years. Plafond counts from signing, the earliest day a landlord can argue. Under article 2222 of
+// the Code civil an older lease gets a year from 23 November 2026, never past its three years: the worked examples of
+// a Paris practice (1 December 2023, 1 March 2024, 1 September 2025) give 1 December 2026, 1 March 2027 and
+// 23 November 2027.
+test("the claim for a lower rent is dated a year from signing, and an older lease a year from 23 November 2026 within its three years", () =>
+{
+    const extended = [...law, { from: "2026-11-25", until: "2028-11-25", title: "fixture extension", url: "https://example.org/extension" }];
+    const current = [rate("2023-07-01", "2024-07-01", 3100), ...rates.slice(1), rate("2026-07-01", "2027-07-01", 3220)];
+    const by = (signedOn: string, rent = claim.rent, startsOn = signedOn) =>
+    {
+        const result = check({ ...claim, signedOn, startsOn, rent, on: "2026-11-23" }, [rates[0]!, ...current], extended);
+
+        return result.kind === "checked" ? result.claimBy : result.kind;
+    };
+
+    expect(by("2023-12-01")).toBe("2026-12-01");
+    expect(by("2024-03-01")).toBe("2027-03-01");
+    expect(by("2025-09-01")).toBe("2027-11-23");
+    expect(by("2024-11-30")).toBe("2027-11-23");
+    expect(by("2024-11-22")).toBe("2027-11-22");
+    expect(by("2020-09-01")).toBe("2023-09-01");
+    expect(by("2026-11-23")).toBe("2027-11-23");
+    expect(by("2027-02-28")).toBe("2028-02-28");
+    expect(by("2026-11-23", claim.rent, "2026-12-15")).toBe("2027-11-23");
+    expect(by("2025-09-01", 90000)).toBeNull();
+});
+
 test("a lease without a complement has none to show", () =>
 {
     expect(check(claim, rates, law)).toMatchObject({ complement: null });

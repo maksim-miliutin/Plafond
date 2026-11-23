@@ -42,6 +42,7 @@ export function ResultStep({ check, claim, quartier, writable, onWrite, onBack, 
                 </div>
             </dl>
             {over && <Recovery check={check} claim={claim} />}
+            {check.claimBy !== null && <ClaimNote claimBy={check.claimBy} on={claim.on} />}
             {check.complement !== null && <ComplementNote complement={check.complement} on={claim.on} signedOn={claim.signedOn} />}
             {check.rate.decree.contest !== null && <ContestNote contest={check.rate.decree.contest} city={claim.flat.city} />}
             <Sources check={check} claim={claim} quartier={quartier} />
@@ -89,6 +90,40 @@ function Recovery({ check, claim }: { check: Check; claim: Claim })
                 <dd>{euros(check.recoverable)}</dd>
             </div>
         </dl>
+    );
+}
+
+// Plafond knows only the signing day, while the year runs from when the tenant knew or should have known the excess:
+// past the day counted from signing, the notice must not read as a closed door.
+function ClaimNote({ claimBy, on }: { claimBy: Day; on: Day })
+{
+    const deadline = frenchDay(claimBy);
+
+    return (
+        <section className="note stacked">
+            <h2>Délai pour agir</h2>
+            {on <= claimBy
+                ? (
+                    <p>
+                        Pour ne pas risquer la prescription, agissez au plus tard le {deadline}. Une lettre au propriétaire ne suffit
+                        pas à arrêter ce délai&nbsp;: saisir la commission départementale de conciliation le suspend jusqu'à son avis.
+                        Si cette date est proche, saisissez la commission sans attendre la réponse du propriétaire.
+                    </p>
+                )
+                : (
+                    <p>
+                        Si vous connaissiez le dépassement dès la signature du bail, le délai pour demander la baisse du loyer a pris
+                        fin le {deadline}. Il ne court pourtant qu'à partir du jour où vous avez connu ou auriez dû connaître le
+                        dépassement&nbsp;: si vous l'avez découvert plus tard, la demande peut rester possible, mais le propriétaire
+                        pourra soutenir que vous le connaissiez plus tôt.
+                    </p>
+                )}
+            <p>
+                Depuis la loi du 21 novembre 2026, la demande de baisse du loyer se prescrit par un an. Plafond compte ce délai
+                depuis la signature du bail, ou depuis le 23 novembre 2026 pour un bail signé avant, sans dépasser les trois ans
+                de l'ancienne règle.
+            </p>
+        </section>
     );
 }
 

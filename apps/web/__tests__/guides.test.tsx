@@ -243,6 +243,24 @@ test("the guides give a year to contest a complement, say which leases it reache
     }
 });
 
+// Since the law of 21 November 2026 a lower rent must be claimed within a year; the city guides only spoke of the
+// three years of refund, which a tenant would read as time to wait.
+test("both city guides say a lower rent is claimed within a year, from when, and that a letter does not stop the clock", () =>
+{
+    for (const slug of ["encadrement-des-loyers-paris", "encadrement-des-loyers-lyon"])
+    {
+        const guide = guides.find((one) => one.slug === slug)!;
+        const said = guide.sections.flatMap((section) => section.paragraphs).join(" ");
+
+        expect(said, slug).toContain("la demande de baisse du loyer se prescrit par un an");
+        expect(said, slug).toContain("à partir du jour où vous avez connu ou auriez dû connaître le dépassement");
+        expect(said, slug).toContain("Si vous connaissiez ou auriez dû connaître le dépassement avant le 23 novembre 2026, cette année court depuis cette date");
+        expect(said, slug).not.toContain("Pour un bail signé avant le 23 novembre 2026, cette année");
+        expect(said, slug).toContain("Une lettre au propriétaire ne suffit pas à arrêter ce délai");
+        expect(guide.sources.map((source) => source.href), slug).toContain("https://www.legifrance.gouv.fr/jorf/jo/2026/11/22/0273");
+    }
+});
+
 test("the revision guide shows the index of the last three years from the seed, newest first, with its source", async () =>
 {
     const { IndexTable } = await import("../components/IndexTable");
