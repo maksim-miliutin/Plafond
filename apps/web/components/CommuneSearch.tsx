@@ -4,9 +4,9 @@ import { useState } from "react";
 
 import type { MetropoleCommune } from "@plafond/import";
 
-import { isNumber, matching, reachOf, simulators, territoryNames, type Reach } from "../lib/metropole";
+import { checkedTerritories, isNumber, matching, reachOf, simulators, territoryNames, type Outer, type Reach } from "../lib/metropole";
 
-export function CommuneSearch({ communes }: { communes: readonly MetropoleCommune[] })
+export function CommuneSearch({ communes, checked = checkedTerritories }: { communes: readonly MetropoleCommune[]; checked?: readonly Outer[] })
 {
     const [typed, setTyped] = useState("");
     const shown = matching(communes, typed);
@@ -29,7 +29,7 @@ export function CommuneSearch({ communes }: { communes: readonly MetropoleCommun
                     <li key={commune.code}>
                         <strong>{commune.name}</strong>
                         {commune.former.length > 0 && <> (avec {commune.former.join(", ")})</>}
-                        <span className="reach"><ReachText reach={reachOf(commune)} /></span>
+                        <span className="reach"><ReachText reach={reachOf(commune, checked)} /></span>
                     </li>
                 ))}
             </ul>

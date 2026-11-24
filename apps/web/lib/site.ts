@@ -60,7 +60,7 @@ export const pages: readonly Page[] = [
     {
         path: "loyer/",
         title: "Loyer encadré\u00A0: vérifiez le plafond du vôtre | Plafond",
-        description: "Vérifiez si votre loyer respecte l'encadrement à Paris, Lyon, Villeurbanne et Est Ensemble, calculez le trop-perçu et préparez la lettre.",
+        description: "Vérifiez si votre loyer respecte l'encadrement à Paris, Lyon, Villeurbanne, Est Ensemble et Plaine Commune, et préparez la lettre.",
     },
     {
         path: "dpe/",

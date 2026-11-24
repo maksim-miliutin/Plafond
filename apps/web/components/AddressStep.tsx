@@ -19,7 +19,7 @@ export interface AddressProps
 
 export const problems: Record<Problem, string> = {
     "not-found": "Cette adresse n'a pas été trouvée. Vérifiez le numéro, la rue et l'arrondissement.",
-    "not-paris": "Cette adresse n'est ni à Paris, ni à Lyon ou Villeurbanne, ni dans une commune d'Est Ensemble, les territoires que Plafond couvre pour l'instant.",
+    "not-paris": "Cette adresse n'est ni à Paris, ni à Lyon ou Villeurbanne, ni à Est Ensemble ou Plaine Commune, les territoires que Plafond couvre pour l'instant.",
     "overseas": "Cette adresse est outre-mer, où ces règles s'appliquent à d'autres dates. Plafond ne les couvre pas encore.",
     "street-only": "Seule la rue a été trouvée. Ajoutez le numéro de l'immeuble.",
     "unreachable": "Le service public de géocodage ne répond pas. Réessayez dans un instant.",
@@ -46,9 +46,9 @@ export function AddressStep({ typed = "", problem = null, simulator, busy = fals
             <Progress at={1} of={4} label="votre adresse" />
             <h1 className="title">Votre loyer dépasse-t-il le plafond légal ?</h1>
             <p className="lead">
-                Le loyer au mètre carré est plafonné à Paris depuis le 1er juillet 2019, à Lyon et Villeurbanne depuis le
-                1er novembre 2021, dans les communes d'Est Ensemble depuis le 1er décembre 2021. Le plafond dépend du
-                secteur&nbsp;: commencez par l'adresse du logement.
+                Le loyer au mètre carré est plafonné à Paris depuis le 1er juillet 2019, dans les communes de Plaine Commune
+                depuis le 1er juin 2021, à Lyon et Villeurbanne depuis le 1er novembre 2021, dans les communes d'Est Ensemble
+                depuis le 1er décembre 2021. Le plafond dépend du secteur&nbsp;: commencez par l'adresse du logement.
             </p>
             <a className="rule" href={`../guides/${guideFor("loyer/").slug}/`}>Comprendre la règle</a>
             <LocalForm className="stack" onSubmit={find}>

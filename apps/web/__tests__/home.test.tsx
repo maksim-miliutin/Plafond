@@ -41,7 +41,7 @@ test("under the cities, the first screen links the seven checks by their questio
         ["preavis/", "Combien de temps dure mon préavis\u00A0?"],
         ["frais-agence/", "Mes frais d'agence dépassent-ils le plafond\u00A0?"],
     ]);
-    expect(listed).toMatch(/plafond légal\u00A0\?<\/a><span class="reach">À Paris, Lyon, Villeurbanne et Est Ensemble\.<\/span>/);
+    expect(listed).toMatch(/plafond légal\u00A0\?<\/a><span class="reach">À Paris, Lyon, Villeurbanne, Est Ensemble et Plaine Commune\.<\/span>/);
 });
 
 test("the home names the very checks a city page offers, from the same list", () =>

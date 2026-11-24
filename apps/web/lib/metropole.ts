@@ -5,7 +5,7 @@ import type { MetropoleCommune, Territory } from "@plafond/import";
 export type Outer = Exclude<Territory, "paris">;
 
 // Those whose leases Plafond checks, as Paris; tenants in the others are sent to the prefecture's own simulator.
-export const checkedTerritories: readonly Outer[] = ["est-ensemble"];
+export const checkedTerritories: readonly Outer[] = ["est-ensemble", "plaine-commune"];
 
 export const territoryNames: Record<Outer, string> = {
     "est-ensemble": "Est Ensemble",
@@ -21,7 +21,7 @@ export const simulators: Record<Outer, string> = {
 // The official check for an address Plafond could not place in its territory's sectors.
 export function simulatorOf(city: City | undefined): string | undefined
 {
-    return city === "est-ensemble" ? simulators[city] : undefined;
+    return city === "est-ensemble" || city === "plaine-commune" ? simulators[city] : undefined;
 }
 
 // Service Public's simulator tells, commune by commune, whether the rents are capped and whether their rise is limited.
