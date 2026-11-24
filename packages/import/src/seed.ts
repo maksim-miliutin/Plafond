@@ -141,6 +141,7 @@ export interface Seeds
     quartiers: Quartier[];
     lyon: LyonRates;
     estEnsemble: TerritorySeed;
+    plaineCommune: TerritorySeed;
 }
 
 const lyonTables = new Map([
@@ -172,5 +173,6 @@ export function seedsFrom(read: (name: string) => string): Seeds
             decrees: decreesOf(JSON.parse(read("lyon-decrees.json"))),
         }),
         estEnsemble: territorySeed("est-ensemble", read),
+        plaineCommune: territorySeed("plaine-commune", read),
     };
 }

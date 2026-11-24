@@ -84,9 +84,9 @@ test("a rate belongs to its city, so Paris quartier 1 and Lyon zone 1 never answ
     expect(rateOn([paris, lyon], paris.flat, "2025-09-01")).toBe(paris);
 });
 
-test("each city's rent control has the day it began: Paris in July 2019, Lyon in November 2021, Est Ensemble in December 2021", () =>
+test("each city's rent control has the day it began: Paris in July 2019, Plaine Commune in June, Lyon in November, Est Ensemble in December 2021", () =>
 {
-    expect(controlledSince).toEqual({ paris: "2019-07-01", lyon: "2021-11-01", "est-ensemble": "2021-12-01" });
+    expect(controlledSince).toEqual({ paris: "2019-07-01", lyon: "2021-11-01", "est-ensemble": "2021-12-01", "plaine-commune": "2021-06-01" });
 });
 
 // Where a decree prices houses and flats apart, each finds its own grid and no other: the same rooms, period and

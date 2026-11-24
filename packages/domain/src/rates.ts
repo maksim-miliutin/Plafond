@@ -3,26 +3,28 @@ import { DayError, isDay, type Day } from "./day.js";
 // 4 stands for four rooms or more: the published tables group them that way.
 export type Rooms = 1 | 2 | 3 | 4;
 
-export type City = "paris" | "lyon" | "est-ensemble";
+export type City = "paris" | "lyon" | "est-ensemble" | "plaine-commune";
 
 export type Period = "before-1946" | "1946-1970" | "1971-1990" | "after-1990" | "1991-2005" | "after-2005";
 
-// Each prefecture cuts construction years its own way: Paris and Est Ensemble stop at 1990, Lyon splits on to 2005.
+// Each prefecture cuts construction years its own way: Paris and its neighbours stop at 1990, Lyon splits on to 2005.
 export const periodsOf: Record<City, readonly Period[]> = {
     paris: ["before-1946", "1946-1970", "1971-1990", "after-1990"],
     lyon: ["before-1946", "1946-1970", "1971-1990", "1991-2005", "after-2005"],
     "est-ensemble": ["before-1946", "1946-1970", "1971-1990", "after-1990"],
+    "plaine-commune": ["before-1946", "1946-1970", "1971-1990", "after-1990"],
 };
 
 // The first day a lease falls under each city's control: the décrets of 2019 for Paris and of 2 September 2021 for Lyon,
-// and for Est Ensemble the first decree of the prefect under the décret n° 2021-688 of 28 May 2021.
-export const controlledSince: Record<City, Day> = { paris: "2019-07-01", lyon: "2021-11-01", "est-ensemble": "2021-12-01" };
+// and the first decree of the prefect under the décrets n° 2021-688 of 28 May 2021 for Est Ensemble and n° 2020-1619 of
+// 17 December 2020 for Plaine Commune.
+export const controlledSince: Record<City, Day> = { paris: "2019-07-01", lyon: "2021-11-01", "est-ensemble": "2021-12-01", "plaine-commune": "2021-06-01" };
 
-// Paris and Lyon publish an outline for every area. The Est Ensemble decree names communes, each in one sector, and
-// outlines only the commune it splits, so there an address finds its area by its commune code first.
-export const placing: Record<City, "outline" | "commune"> = { paris: "outline", lyon: "outline", "est-ensemble": "commune" };
+// Paris and Lyon publish an outline for every area. The decrees for Est Ensemble and Plaine Commune name communes, each
+// in one sector, and outline only the communes they split, so there an address finds its area by its commune code first.
+export const placing: Record<City, "outline" | "commune"> = { paris: "outline", lyon: "outline", "est-ensemble": "commune", "plaine-commune": "commune" };
 
-export const dwellingsApart: Record<City, boolean> = { paris: false, lyon: false, "est-ensemble": true };
+export const dwellingsApart: Record<City, boolean> = { paris: false, lyon: false, "est-ensemble": true, "plaine-commune": true };
 
 // The decrees for Est Ensemble and Plaine Commune price houses and flats apart, the other decrees do not.
 export type Dwelling = "flat" | "house";

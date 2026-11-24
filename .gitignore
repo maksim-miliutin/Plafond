@@ -11,6 +11,8 @@ apps/web/public/lyon-rates.json
 apps/web/public/lyon-areas.json
 apps/web/public/est-ensemble-rates.json
 apps/web/public/est-ensemble-areas.json
+apps/web/public/plaine-commune-rates.json
+apps/web/public/plaine-commune-areas.json
 apps/web/public/licences.txt
 
 test-results/

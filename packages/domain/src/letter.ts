@@ -46,14 +46,18 @@ export interface LetterInput
 const law = "l'article 140 de la loi n° 2018-1021 du 23 novembre 2018";
 
 // Paris handed the fines of article 140, VII to its mayor in December 2018; in Lyon the prefect of the Rhône pronounces
-// them. Article 140 gives the prefect's powers in Île-de-France to the prefect of the region, so he fines in Est Ensemble.
+// them. Article 140 gives the prefect's powers in Île-de-France to the prefect of the region, so he fines in Est Ensemble
+// and Plaine Commune.
+const regionalFine = "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
+    + "par le préfet de la région d'Île-de-France, en application de l'article 140, VII de la même loi.";
+
 const fines: Record<City, string> = {
     paris: "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
         + "par la Ville de Paris, en application de l'article 140, VII de la même loi.",
     lyon: "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
         + "par le préfet du Rhône, en application de l'article 140, VII de la même loi.",
-    "est-ensemble": "Je vous rappelle enfin qu'un loyer supérieur au plafond peut donner lieu à une amende administrative prononcée "
-        + "par le préfet de la région d'Île-de-France, en application de l'article 140, VII de la même loi.",
+    "est-ensemble": regionalFine,
+    "plaine-commune": regionalFine,
 };
 
 export function letter(input: LetterInput): Letter | NothingToClaim
