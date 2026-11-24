@@ -23,6 +23,7 @@ const drawnBy: Record<City, string> = {
     paris: "Les limites des quartiers viennent du plan officiel de la Ville de Paris.",
     lyon: "Les limites des secteurs viennent des données publiées par la Métropole de Lyon.",
     "est-ensemble": "Le secteur vient de l'annexe 1 de l'arrêté du préfet et, à Montreuil, du découpage publié par la DRIHL d'Île-de-France.",
+    "plaine-commune": "Le secteur vient de l'annexe 1 de l'arrêté du préfet et, à Saint-Denis, du découpage publié par la DRIHL d'Île-de-France.",
 };
 
 export function QuartierStep({ city = "paris", quartier, around, address, point, onConfirm, onBack }: QuartierProps)

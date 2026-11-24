@@ -75,13 +75,14 @@ export function outlinesFromDisk(): Record<MappedCity, Quartier["rings"][]>
 
 export function spansFromDisk(): Record<City, Span[]>
 {
-    const { paris, lyon, estEnsemble } = seeds();
+    const { paris, lyon, estEnsemble, plaineCommune } = seeds();
     const law = lawFromDisk();
 
     return {
         paris: checkedSpans("paris", paris, law),
         lyon: checkedSpans("lyon", lyon.rates, law),
         "est-ensemble": checkedSpans("est-ensemble", estEnsemble.rates, law),
+        "plaine-commune": checkedSpans("plaine-commune", plaineCommune.rates, law),
     };
 }
 
