@@ -42,3 +42,14 @@ test("the Est Ensemble page opens from the Grand Paris page, passes axe and lead
     await page.getByRole("link", { name: "Vérifier mon loyer à Est Ensemble" }).click();
     await expect.poll(() => new URL(page.url()).pathname).toBe("/loyer/");
 });
+
+test("the Plaine Commune page opens from the Grand Paris page and passes axe", async ({ page }) =>
+{
+    await page.goto("/grand-paris/");
+    await page.getByRole("link", { name: "Plaine Commune", exact: true }).click();
+    await expect.poll(() => new URL(page.url()).pathname).toBe("/grand-paris/plaine-commune/");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Encadrement des loyers à Plaine Commune");
+
+    const found = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
+    expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
+});

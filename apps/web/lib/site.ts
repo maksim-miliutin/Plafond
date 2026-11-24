@@ -58,6 +58,11 @@ export const pages: readonly Page[] = [
         description: "Vérifiez gratuitement le plafond du loyer de base à Montreuil, Pantin et dans les neuf communes d'Est Ensemble, selon l'arrêté du préfet.",
     },
     {
+        path: "grand-paris/plaine-commune/",
+        title: "Encadrement des loyers à Plaine Commune | Plafond",
+        description: "Calculez le plafond de votre loyer de base à Saint-Denis, Saint-Ouen-sur-Seine et dans les autres communes de Plaine Commune.",
+    },
+    {
         path: "loyer/",
         title: "Loyer encadré\u00A0: vérifiez le plafond du vôtre | Plafond",
         description: "Vérifiez si votre loyer respecte l'encadrement à Paris, Lyon, Villeurbanne, Est Ensemble et Plaine Commune, et préparez la lettre.",

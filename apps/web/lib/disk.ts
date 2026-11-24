@@ -6,7 +6,8 @@ import { feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, type MetropoleCommun
 
 import type { MappedCity } from "./city-copy";
 import { arrondissementPages, communePages, placePages, territoryFacts, type CommunePage, type DistrictPage, type PlacePage, type TerritoryFacts } from "./places";
-import type { Example } from "./territory-copy";
+import type { Outer } from "./metropole";
+import { territoryCopy } from "./territory-copy";
 
 export interface Places
 {
@@ -86,7 +87,10 @@ export function spansFromDisk(): Record<City, Span[]>
     };
 }
 
-export function territoryFromDisk(example: Example): TerritoryFacts
+export function territoryFromDisk(territory: Outer): TerritoryFacts
 {
-    return territoryFacts(seeds().estEnsemble, lawFromDisk(), example);
+    const { estEnsemble, plaineCommune } = seeds();
+    const seed = territory === "est-ensemble" ? estEnsemble : plaineCommune;
+
+    return territoryFacts(territory, seed, lawFromDisk(), territoryCopy[territory].example);
 }

@@ -14,6 +14,7 @@ import * as notice from "../app/mentions/page";
 import * as elsewhere from "../app/ailleurs/page";
 import * as metropole from "../app/grand-paris/page";
 import * as east from "../app/grand-paris/est-ensemble/page";
+import * as north from "../app/grand-paris/plaine-commune/page";
 import { SiteError, pageMetadata, pages, siteFrom, siteUrl } from "../lib/site";
 
 test("every page has a title search engines show whole and a description they do not cut", () =>
@@ -37,7 +38,7 @@ test("a shared link shows the large card, with the page's own words and its cano
 
 test("each page declares the words the table holds for it", () =>
 {
-    const declared = { "": home, "loyer/": rent, "dpe/": energy, "depot/": deposit, "charges/": charges, "preavis/": leaving, "frais-agence/": agency, "revision/": raise, "mentions/": notice, "ailleurs/": elsewhere, "grand-paris/": metropole, "grand-paris/est-ensemble/": east };
+    const declared = { "": home, "loyer/": rent, "dpe/": energy, "depot/": deposit, "charges/": charges, "preavis/": leaving, "frais-agence/": agency, "revision/": raise, "mentions/": notice, "ailleurs/": elsewhere, "grand-paris/": metropole, "grand-paris/est-ensemble/": east, "grand-paris/plaine-commune/": north };
 
     for (const [path, page] of Object.entries(declared))
     {
