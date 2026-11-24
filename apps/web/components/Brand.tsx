@@ -1,4 +1,4 @@
-// The icon lives at the root of the site, empty locally and /Plafond on GitHub Pages, whichever page shows it.
+// The icon lives at the root of the site, empty both locally and on leplafond.org, whichever page shows it.
 const siteRoot = process.env.NEXT_PUBLIC_SITE_ROOT ?? "";
 
 export function Brand()

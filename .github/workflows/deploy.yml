@@ -27,7 +27,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      # Gives the path GitHub Pages serves the project under, /Plafond for this repository.
+      # Gives the address GitHub Pages serves the project at: https://leplafond.org, with an empty path.
       - id: pages
         uses: actions/configure-pages@v6
 

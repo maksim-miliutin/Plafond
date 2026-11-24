@@ -26,7 +26,7 @@ export interface Needs
     now: () => Date;
 }
 
-// The tables sit at the root of the site, empty locally and /Plafond on GitHub Pages, while this page lives at /loyer/.
+// The tables sit at the root of the site, empty both locally and on leplafond.org, while this page lives at /loyer/.
 const siteRoot = process.env.NEXT_PUBLIC_SITE_ROOT ?? "";
 
 // GitHub Pages lets a browser keep a file for ten minutes; asking first keeps an old table out of a fresh check.
