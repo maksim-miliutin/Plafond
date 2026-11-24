@@ -3,6 +3,7 @@ import { expect, test } from "vitest";
 
 import type { MetropoleCommune } from "@plafond/import";
 
+import { CommuneSearch } from "../components/CommuneSearch";
 import { GrandParis } from "../components/GrandParis";
 import { applicability, matching, reachOf } from "../lib/metropole";
 
@@ -31,15 +32,17 @@ test("every commune is listed before anything is typed, each with what Plafond c
     expect(itemOf("Vincennes")).toMatch(/<a href="\.\.\/ailleurs\/">/);
 });
 
-// The decree of Plaine Commune caps the rents there too; until Plafond prices them, it sends the tenant to the
-// prefecture's simulator for that territory rather than saying nothing is capped.
-test("an Est Ensemble commune leads to the check, and a capped commune Plafond does not check yet to its official simulator", () =>
+// Plafond checks every territory around Paris whose rents a decree caps; one it did not check would send the tenant to
+// the prefecture's simulator for that territory rather than say nothing is capped.
+test("an Est Ensemble or Plaine Commune commune leads to the check, and an unchecked capped one to its official simulator", () =>
 {
     expect(itemOf("Montreuil")).toMatch(/<a href="\.\.\/loyer\/">vérifier mon loyer<\/a>/);
-    expect(itemOf("Saint-Denis")).toContain("Plaine Commune");
-    expect(itemOf("Saint-Denis")).toContain('href="https://www.service-public.gouv.fr/particuliers/vosdroits/R59027"');
-    expect(itemOf("Saint-Denis")).not.toContain("../loyer/");
-    expect(reachOf(communes[1]!, [])).toEqual({ kind: "capped", territory: "est-ensemble" });
+    expect(itemOf("Saint-Denis")).toMatch(/<a href="\.\.\/loyer\/">vérifier mon loyer<\/a>/);
+    expect(reachOf(communes[3]!, [])).toEqual({ kind: "capped", territory: "plaine-commune" });
+
+    const unchecked = renderToStaticMarkup(<CommuneSearch communes={[communes[3]!]} checked={[]} />);
+    expect(unchecked).toContain('href="https://www.service-public.gouv.fr/particuliers/vosdroits/R59027"');
+    expect(unchecked).not.toContain("../loyer/");
 });
 
 test("the page names the official check of each commune's rules and has one heading of the first level", () =>

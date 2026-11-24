@@ -29,7 +29,7 @@ export const cityCopy: Record<MappedCity, CityCopy> = {
         rentReach: "Dans les 20 arrondissements, avec l'encadrement des loyers.",
         linksTitle: "Les loyers de référence par arrondissement",
         otherGuide: "encadrement-des-loyers-lyon",
-        neighbours: "Est Ensemble et Plaine Commune, à l'est et au nord de Paris, ont leurs propres loyers de référence\u00A0: Plafond vérifie ceux d'Est Ensemble, pas encore ceux de Plaine Commune.",
+        neighbours: "Est Ensemble et Plaine Commune, à l'est et au nord de Paris, ont leurs propres loyers de référence, que Plafond vérifie aussi.",
         door: "Les 20 arrondissements. Le plan de la zone et les sept vérifications.",
     },
     lyon: {

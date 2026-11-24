@@ -1,11 +1,12 @@
 /// <reference types="vite/client" />
 import { expect, test } from "vitest";
 
-import { estEnsemble } from "@plafond/address";
+import { estEnsemble, plaineCommune } from "@plafond/address";
 
 import { cityOf } from "../lib/cities";
 
-import communes from "../../../db/seed/est-ensemble-communes.csv?raw";
+import eastCommunes from "../../../db/seed/est-ensemble-communes.csv?raw";
+import northCommunes from "../../../db/seed/plaine-commune-communes.csv?raw";
 
 test("a commune code tells the city whose rules apply: Paris for 751, Lyon for its arrondissements and Villeurbanne", () =>
 {
@@ -13,13 +14,19 @@ test("a commune code tells the city whose rules apply: Paris for 751, Lyon for i
     expect(cityOf("69383")).toBe("lyon");
     expect(cityOf("69266")).toBe("lyon");
     expect(cityOf("93055")).toBe("est-ensemble");
+    expect(cityOf("93066")).toBe("plaine-commune");
 });
 
-// The geocoder lets through the communes it lists, and the decree's annex 1 names them: the two lists must agree.
-test("every commune the Est Ensemble decree names is let through by the geocoder and checked under its decree", () =>
+function named(communes: string): string[]
 {
-    const named = [...new Set(communes.trim().split("\n").slice(1).map((line) => line.split(";")[0]!))].sort();
+    return [...new Set(communes.trim().split("\n").slice(1).map((line) => line.split(";")[0]!))].sort();
+}
 
-    expect([...estEnsemble].sort()).toEqual(named);
-    expect(named.map(cityOf)).toEqual(named.map(() => "est-ensemble"));
+// The geocoder lets through the communes it lists, and each decree's annex 1 names them: the lists must agree.
+test("every commune the decrees around Paris name is let through by the geocoder and checked under its own decree", () =>
+{
+    expect([...estEnsemble].sort()).toEqual(named(eastCommunes));
+    expect([...plaineCommune].sort()).toEqual(named(northCommunes));
+    expect(named(eastCommunes).map(cityOf)).toEqual(named(eastCommunes).map(() => "est-ensemble"));
+    expect(named(northCommunes).map(cityOf)).toEqual(named(northCommunes).map(() => "plaine-commune"));
 });

@@ -65,9 +65,16 @@ const lyon = /^(6938[1-9]|69266)$/;
 // The nine communes of Est Ensemble, each named in annex 1 of the decree that caps their rents.
 export const estEnsemble: readonly string[] = ["93006", "93008", "93010", "93045", "93048", "93053", "93055", "93061", "93063"];
 
+// The eight communes of Plaine Commune and Pierrefitte-sur-Seine, a commune déléguée of Saint-Denis since 1 January 2025,
+// whose former code the national address base still gives some of its addresses.
+export const plaineCommune: readonly string[] = ["93001", "93027", "93031", "93039", "93059", "93066", "93070", "93072", "93079"];
+
 const areas: Record<Area, { holds: (citycode: string) => boolean; refusal: "not-paris" | "overseas" }> = {
     paris: { holds: (citycode) => arrondissement.test(citycode), refusal: "not-paris" },
-    rent: { holds: (citycode) => arrondissement.test(citycode) || lyon.test(citycode) || estEnsemble.includes(citycode), refusal: "not-paris" },
+    rent: {
+        holds: (citycode) => arrondissement.test(citycode) || lyon.test(citycode) || estEnsemble.includes(citycode) || plaineCommune.includes(citycode),
+        refusal: "not-paris",
+    },
     mainland: { holds: (citycode) => !citycode.startsWith("97"), refusal: "overseas" },
 };
 

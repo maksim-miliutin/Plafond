@@ -61,7 +61,7 @@ test("the guides leave out the other city's", () =>
 
 test("the neighbours line points to the ANIL list of the territories", () =>
 {
-    expect(paris()).toContain("Plafond vérifie ceux d&#x27;Est Ensemble, pas encore ceux de Plaine Commune");
+    expect(paris()).toContain("ont leurs propres loyers de référence, que Plafond vérifie aussi");
     expect(paris()).toContain('href="https://www.anil.org/aj-experimentation-encadrement-niveau-loyers-zones-tendues/"');
 });
 
