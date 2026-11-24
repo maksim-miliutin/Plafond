@@ -11,3 +11,4 @@ export { LawTableError, lawOf } from "./law.js";
 export { ContoursError, contoursOf, type Contour } from "./contours.js";
 export { MetropoleError, metropoleOf, type MetropoleCommune, type Territory } from "./metropole.js";
 export { TerritoryError, territoryAreas, territoryRates } from "./territories.js";
+export { ZonesError, zonesOf, type CommuneZone } from "./zones.js";
