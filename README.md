@@ -46,7 +46,7 @@ Plaine Commune's decrees are read the same way from the same table. `db/seed/pla
 
 ## Status
 
-The app is live at https://maksim-miliutin.com/Plafond/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. The rents of Paris were checked against the official map of reference rents of the DRIHL Île-de-France; those of Lyon are still to be checked against the Métropole's own simulator.
+The app is live at https://leplafond.org/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. The rents of Paris were checked against the official map of reference rents of the DRIHL Île-de-France; those of Lyon are still to be checked against the Métropole's own simulator.
 
 ## Layout
 
