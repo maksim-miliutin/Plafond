@@ -10,6 +10,7 @@ import "@fontsource/source-serif-4/400.css";
 import "@fontsource/source-serif-4/600.css";
 import "./globals.css";
 
+import { SiteFooter } from "../components/SiteFooter";
 import { navy } from "../lib/brand";
 import { pageMetadata } from "../lib/site";
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: ReactNode })
         <html lang="fr">
             <body>
                 {children}
+                <SiteFooter />
             </body>
         </html>
     );

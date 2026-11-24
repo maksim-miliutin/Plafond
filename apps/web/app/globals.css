@@ -1079,3 +1079,45 @@ a:hover
     stroke-linejoin: round;
 }
 
+
+.site-footer
+{
+    border-top: 1px solid var(--line);
+    background: #FFFFFF;
+}
+
+.site-footer-inner
+{
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 20px 24px 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.site-footer-inner p
+{
+    margin: 0;
+}
+
+.site-footer-inner ul
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+}
+
+.site-footer-inner a
+{
+    display: inline-block;
+    padding: 10px 0;
+}
