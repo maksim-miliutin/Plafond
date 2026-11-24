@@ -1,0 +1,254 @@
+[
+    {
+        "case": "mt-b4-307",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.434058,
+                    48.859669
+                ]
+            },
+            "properties": {
+                "label": "29 Rue Parmentier 93100 Montreuil",
+                "id": "93048_7140_00029",
+                "type": "housenumber",
+                "citycode": "93048",
+                "city": "Montreuil",
+                "postcode": "93100"
+            }
+        }
+    },
+    {
+        "case": "mt-b4-308",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.433312,
+                    48.860537
+                ]
+            },
+            "properties": {
+                "label": "4 Sentier du Tourniquet 93100 Montreuil",
+                "id": "93048_m2fusm_00004",
+                "type": "housenumber",
+                "citycode": "93048",
+                "city": "Montreuil",
+                "postcode": "93100"
+            }
+        }
+    },
+    {
+        "case": "mt-c4-307",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.448212,
+                    48.861085
+                ]
+            },
+            "properties": {
+                "label": "13 Rue Eugène Varlin 93100 Montreuil",
+                "id": "93048_3195_00013",
+                "type": "housenumber",
+                "citycode": "93048",
+                "city": "Montreuil",
+                "postcode": "93100"
+            }
+        }
+    },
+    {
+        "case": "mt-c4-308",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.449468,
+                    48.859624
+                ]
+            },
+            "properties": {
+                "label": "25 Avenue Jean Moulin 93100 Montreuil",
+                "id": "93048_4757_00025",
+                "type": "housenumber",
+                "citycode": "93048",
+                "city": "Montreuil",
+                "postcode": "93100"
+            }
+        }
+    },
+    {
+        "case": "mt-d3-308",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.463048,
+                    48.86344
+                ]
+            },
+            "properties": {
+                "label": "110 Rue Pierre de Montreuil 93100 Montreuil",
+                "id": "93048_7240_00110",
+                "type": "housenumber",
+                "citycode": "93048",
+                "city": "Montreuil",
+                "postcode": "93100"
+            }
+        }
+    },
+    {
+        "case": "sd-c2-311",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.359996,
+                    48.941117
+                ]
+            },
+            "properties": {
+                "label": "11 Rue Guy Môquet 93200 Saint-Denis",
+                "id": "93066_4192_00011",
+                "type": "housenumber",
+                "citycode": "93066",
+                "city": "Saint-Denis",
+                "postcode": "93200"
+            }
+        }
+    },
+    {
+        "case": "sd-c2-312",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.356979,
+                    48.941902
+                ]
+            },
+            "properties": {
+                "label": "128 Rue Gabriel Péri 93200 Saint-Denis",
+                "id": "93066_93wiy2_00128",
+                "type": "housenumber",
+                "citycode": "93066",
+                "city": "Saint-Denis",
+                "postcode": "93200"
+            }
+        }
+    },
+    {
+        "case": "sd-c4-311",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.382477,
+                    48.940962
+                ]
+            },
+            "properties": {
+                "label": "20 Rue des Marnaudes 93200 Saint-Denis",
+                "id": "93066_6139_00020",
+                "type": "housenumber",
+                "citycode": "93066",
+                "city": "Saint-Denis",
+                "postcode": "93200"
+            }
+        }
+    },
+    {
+        "case": "sd-c4-312",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.380129,
+                    48.94167
+                ]
+            },
+            "properties": {
+                "label": "2 Rue Chopin 93200 Saint-Denis",
+                "id": "93066_1513_00002",
+                "type": "housenumber",
+                "citycode": "93066",
+                "city": "Saint-Denis",
+                "postcode": "93200"
+            }
+        }
+    },
+    {
+        "case": "sd-c2-312-house",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.355731,
+                    48.942706
+                ]
+            },
+            "properties": {
+                "label": "1 Rue Berne 93200 Saint-Denis",
+                "id": "93066_0630_00001",
+                "type": "housenumber",
+                "citycode": "93066",
+                "city": "Saint-Denis",
+                "postcode": "93200"
+            }
+        }
+    },
+    {
+        "case": "ps-2024",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.359202,
+                    48.961136
+                ]
+            },
+            "properties": {
+                "label": "31 Avenue Lénine (Pierrefitte-sur-Seine) 93380 Saint-Denis",
+                "id": "93066_5132_00031",
+                "type": "housenumber",
+                "citycode": "93066",
+                "city": "Saint-Denis",
+                "postcode": "93380"
+            }
+        }
+    },
+    {
+        "case": "ps-2025",
+        "feature": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.366928,
+                    48.952675
+                ]
+            },
+            "properties": {
+                "label": "111 Rue Nungesser et Coli 93380 Saint-Denis",
+                "id": "93066_6670_00111",
+                "type": "housenumber",
+                "citycode": "93066",
+                "city": "Saint-Denis",
+                "postcode": "93380"
+            }
+        }
+    }
+]
