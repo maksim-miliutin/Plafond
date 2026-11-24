@@ -9,7 +9,7 @@ export const metadata = pageMetadata("grand-paris/est-ensemble/");
 export default function EstEnsemble()
 {
     const copy = territoryCopy["est-ensemble"];
-    const { communes, spans, example } = territoryFromDisk(copy.example);
+    const { communes, spans, example } = territoryFromDisk("est-ensemble");
 
     return <TerritoryPage copy={copy} communes={communes} spans={spans} example={example} simulator={simulators["est-ensemble"]} />;
 }

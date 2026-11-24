@@ -1,5 +1,5 @@
 import { arrondissementOf, check, checkedSpans, frenchDay } from "@plafond/domain";
-import type { Check, Decree, LawPeriod, Period, Quartier, Rate, Rooms, Span } from "@plafond/domain";
+import type { Check, City, Decree, LawPeriod, Period, Quartier, Rate, Rooms, Span } from "@plafond/domain";
 import type { TerritorySeed } from "@plafond/import";
 
 import type { Example } from "./territory-copy";
@@ -171,9 +171,9 @@ export interface TerritoryFacts
 }
 
 // The page's figures come from the same tables as the check: the example is checked, not copied.
-export function territoryFacts(seed: TerritorySeed, law: readonly LawPeriod[], example: Example): TerritoryFacts
+export function territoryFacts(city: City, seed: TerritorySeed, law: readonly LawPeriod[], example: Example): TerritoryFacts
 {
-    const flat = { city: "est-ensemble" as const, quartier: example.sector, rooms: example.rooms, period: example.period, furnished: example.furnished, dwelling: example.dwelling };
+    const flat = { city, quartier: example.sector, rooms: example.rooms, period: example.period, furnished: example.furnished, dwelling: example.dwelling };
     const claim = { flat, surface: example.surface, signedOn: example.signedOn, startsOn: example.signedOn, rent: 1, complement: 0, on: example.signedOn };
     const worked = check(claim, seed.rates, law);
     if (worked.kind !== "checked")
@@ -181,5 +181,5 @@ export function territoryFacts(seed: TerritorySeed, law: readonly LawPeriod[], e
         throw new PlacesError(`the example at ${example.address} finds no rate on ${example.signedOn}`);
     }
 
-    return { communes: territoryCommunes(seed.areas), spans: checkedSpans("est-ensemble", seed.rates, law), example: worked };
+    return { communes: territoryCommunes(seed.areas), spans: checkedSpans(city, seed.rates, law), example: worked };
 }

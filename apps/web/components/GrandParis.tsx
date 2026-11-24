@@ -23,6 +23,7 @@ export function GrandParis({ communes }: { communes: readonly MetropoleCommune[]
                 <ul className="references">
                     <li><a href="../paris/">Paris</a></li>
                     <li><a href="est-ensemble/">Est Ensemble</a>, à l'est de Paris</li>
+                    <li><a href="plaine-commune/">Plaine Commune</a>, au nord de Paris</li>
                 </ul>
             </section>
             <section className="findings">

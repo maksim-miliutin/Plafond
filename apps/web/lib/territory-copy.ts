@@ -27,7 +27,7 @@ export interface TerritoryCopy
 }
 
 // The example's address was placed in its sector by the DRIHL's simulator; the home is made up to show the sum.
-export const territoryCopy: Record<Extract<Outer, "est-ensemble">, TerritoryCopy> = {
+export const territoryCopy: Record<Outer, TerritoryCopy> = {
     "est-ensemble": {
         name: "Est Ensemble",
         lead: "Vous louez à Montreuil, à Pantin ou dans une autre commune d'Est Ensemble ? Plafond calcule gratuitement le plafond "
@@ -48,5 +48,27 @@ export const territoryCopy: Record<Extract<Outer, "est-ensemble">, TerritoryCopy
         split: "À Montreuil, deux logements comparables peuvent relever de secteurs différents : saisissez le numéro de rue pour que "
             + "Plafond trouve le bon barème.",
         help: "https://www.service-public.gouv.fr/particuliers/vosdroits/F36219",
+    },
+    "plaine-commune": {
+        name: "Plaine Commune",
+        lead: "Vous louez à Saint-Denis, à Aubervilliers, à Saint-Ouen-sur-Seine ou dans une autre commune de Plaine Commune\u00A0? "
+            + "Plafond calcule gratuitement le plafond de votre loyer de base selon l'adresse, les caractéristiques du logement et la "
+            + "date de signature du bail.",
+        example: {
+            address: "11 rue Guy Môquet",
+            town: "Saint-Denis",
+            commune: "93066",
+            sector: 311,
+            dwelling: "flat",
+            rooms: 2,
+            period: "1946-1970",
+            furnished: false,
+            surface: 5000,
+            signedOn: "2026-07-15",
+            page: 6,
+        },
+        split: "Saint-Denis s'étend sur les secteurs 311 et 312, et Pierrefitte-sur-Seine, commune déléguée de Saint-Denis depuis le "
+            + "1er janvier 2025, forme le secteur 317\u00A0: saisissez le numéro de rue pour que Plafond trouve le bon barème.",
+        help: "https://www.service-public.gouv.fr/particuliers/vosdroits/F35761",
     },
 };
