@@ -8,5 +8,6 @@ export { LyonError, lyonOutlines, lyonRates, lyonTable, type LyonTable } from ".
 export { FeeCapsError, feeCapsOf } from "./fees.js";
 export { IndexError, indexOf, type RentIndex } from "./irl.js";
 export { LawTableError, lawOf } from "./law.js";
+export { ContoursError, contoursOf, type Contour } from "./contours.js";
 export { MetropoleError, metropoleOf, type MetropoleCommune, type Territory } from "./metropole.js";
 export { TerritoryError, territoryAreas, territoryRates } from "./territories.js";
