@@ -2,11 +2,20 @@
 
 import { useState } from "react";
 
+import type { FeeZone } from "@plafond/domain";
 import type { MetropoleCommune } from "@plafond/import";
 
+import { communeActions } from "../lib/commune-actions";
 import { checkedTerritories, isNumber, matching, reachOf, simulators, territoryNames, type Outer, type Reach } from "../lib/metropole";
 
-export function CommuneSearch({ communes, checked = checkedTerritories }: { communes: readonly MetropoleCommune[]; checked?: readonly Outer[] })
+export interface CommuneSearchProps
+{
+    communes: readonly MetropoleCommune[];
+    checked?: readonly Outer[];
+    zones?: Readonly<Record<string, FeeZone>>;  // by INSEE code: a commune with a zone offers the checks that read it
+}
+
+export function CommuneSearch({ communes, checked = checkedTerritories, zones = {} }: CommuneSearchProps)
 {
     const [typed, setTyped] = useState("");
     const shown = matching(communes, typed);
@@ -30,6 +39,12 @@ export function CommuneSearch({ communes, checked = checkedTerritories }: { comm
                         <strong>{commune.name}</strong>
                         {commune.former.length > 0 && <> (avec {commune.former.join(", ")})</>}
                         <span className="reach"><ReachText reach={reachOf(commune, checked)} /></span>
+                        {zones[commune.code] !== undefined && (
+                            <span className="commune-actions">
+                                {zones[commune.code] !== "other" && <span className="zone-tag">Zone tendue</span>}
+                                {communeActions(commune.code, false, "../").map((action) => <a key={action.href} href={action.href}>{action.label}</a>)}
+                            </span>
+                        )}
                     </li>
                 ))}
             </ul>

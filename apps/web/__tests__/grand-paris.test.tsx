@@ -73,3 +73,17 @@ test("digits typed in the search find nothing and ask for the commune's name", (
     expect(matching(communes, "93 0")).toEqual([]);
     expect(itemOf("Saint-Denis")).toContain("(avec Pierrefitte-sur-Seine)");
 });
+
+// Every commune of the Grand Paris is in the tense zone: the list offers, as the map does, the checks that read the zone,
+// each opening with the commune's code so that the form fills the zone in.
+test("with its zone known, each commune offers the notice and agency fee checks for its own code", () =>
+{
+    const zoned = renderToStaticMarkup(<CommuneSearch communes={communes} zones={{ "94080": "very-tense", "93066": "very-tense" }} />).replaceAll("&#x27;", "'");
+    const item = (name: string) => (zoned.match(/<li><strong>.*?<\/li>/g) ?? []).find((one) => one.includes(`<strong>${name}</strong>`)) ?? "";
+
+    expect(item("Vincennes")).toContain('<span class="zone-tag">Zone tendue</span>');
+    expect(item("Vincennes")).toContain('<a href="../preavis/?commune=94080">Vérifier mon préavis</a>');
+    expect(item("Vincennes")).toContain('<a href="../frais-agence/?commune=94080">Vérifier les frais d\'agence</a>');
+    expect(item("Saint-Denis")).toContain('href="../preavis/?commune=93066"');
+    expect(item("Montreuil")).not.toContain("zone-tag");
+});

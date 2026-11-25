@@ -49,7 +49,12 @@ test("a commune without reference rents tells its zone and leads to the six chec
     expect(card(host).querySelector("strong")?.textContent).toBe("Vincennes");
     expect(card(host).textContent).toContain("Pas de loyer de référence dans cette commune.");
     expect(card(host).textContent).toContain("Zone très tendue");
-    expect(links(host)).toEqual([["ailleurs/", "Les six vérifications"], ["grand-paris/", "Le Grand Paris commune par commune"]]);
+    expect(card(host).querySelector(".zone-tag")?.textContent).toBe("Zone tendue");
+    expect(links(host)).toEqual([
+        ["preavis/?commune=94080", "Vérifier mon préavis"],
+        ["frais-agence/?commune=94080", "Vérifier les frais d'agence"],
+        ["ailleurs/", "Les six vérifications"],
+    ]);
     expect(host.querySelector(".picked title")?.textContent).toBe("Vincennes");
 });
 
@@ -59,14 +64,19 @@ test("an arrondissement leads to the rent check and to its own reference rents",
     await touch(host, "Paris 11e");
 
     expect(card(host).textContent).toContain("Le loyer est encadré dans tout Paris.");
-    expect(links(host)).toEqual([["loyer/", "Vérifier mon loyer"], ["arrondissements/paris-11e/", "Les loyers de référence de Paris 11e"]]);
+    expect(links(host)).toEqual([
+        ["loyer/", "Vérifier le plafond du loyer"],
+        ["preavis/?commune=75056", "Vérifier mon préavis"],
+        ["frais-agence/?commune=75056", "Vérifier les frais d'agence"],
+        ["arrondissements/paris-11e/", "Les loyers de référence de Paris 11e"],
+    ]);
 });
 
 test("the Lyon tab shows Lyon, forgets the touch made in Paris, and leads from an arrondissement to its page", async () =>
 {
     const host = await open();
     await touch(host, "Montreuil");
-    expect(links(host)[1]).toEqual(["grand-paris/est-ensemble/", "La page d'Est Ensemble"]);
+    expect(links(host).at(-1)).toEqual(["grand-paris/est-ensemble/", "La page d'Est Ensemble"]);
 
     const tab = host.querySelector<HTMLButtonElement>("#map-tab-lyon")!;
     await act(async () =>
@@ -79,5 +89,5 @@ test("the Lyon tab shows Lyon, forgets the touch made in Paris, and leads from a
     expect(card(host).textContent).toContain("Touchez votre arrondissement, Villeurbanne ou votre commune");
 
     await touch(host, "Lyon 3e");
-    expect(links(host)).toEqual([["loyer/", "Vérifier mon loyer"], ["lyon/lyon-3e-arrondissement/", "Les loyers de référence de Lyon 3e"]]);
+    expect(links(host)).toEqual([["loyer/", "Vérifier le plafond du loyer"], ["lyon/lyon-3e-arrondissement/", "Les loyers de référence de Lyon 3e"]]);
 });

@@ -183,7 +183,7 @@ export function homeMapsFromDisk(tolerance: number): { grandParis: Drawing; lyon
         .map((contour) => ({ ...contour, zone: zoneOf(contour.code) }));
 
     return {
-        grandParis: grandParisDrawing({ arrondissements, communes: outer, paris: outlineOf(quartiers), parisContour: contours.find((contour) => contour.code === "75056")!.rings, departments: regions }, tolerance),
+        grandParis: grandParisDrawing({ arrondissements, communes: outer, paris: outlineOf(quartiers), parisZone: zoneOf("75056"), parisContour: contours.find((contour) => contour.code === "75056")!.rings, departments: regions }, tolerance),
         lyon: lyonDrawing({ areas: lyonAreas, communes: around }, tolerance),
     };
 }

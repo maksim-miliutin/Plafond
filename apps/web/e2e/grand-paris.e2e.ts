@@ -61,3 +61,15 @@ test("the Plaine Commune page opens from the Grand Paris page and passes axe", a
     const found = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
     expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
 });
+
+test("a commune found by name offers the notice check with its zone filled in, Pierrefitte leading to Saint-Denis", async ({ page }) =>
+{
+    await page.goto("/grand-paris/");
+    await page.getByLabel("Votre commune").fill("Pierrefitte");
+    await expect(page.locator("#commune-count")).toHaveText("1 commune");
+    await expect(page.getByRole("listitem").filter({ hasText: "Saint-Denis" }).getByRole("link", { name: "Vérifier mon préavis" })).toHaveAttribute("href", "../preavis/?commune=93066");
+
+    await page.getByLabel("Votre commune").fill("Vincennes");
+    await page.getByRole("listitem").filter({ hasText: "Vincennes" }).getByRole("link", { name: "Vérifier mon préavis" }).click();
+    await expect(page.locator('input[name="tense"][value="yes"]')).toBeChecked();
+});
