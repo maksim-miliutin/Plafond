@@ -1,7 +1,10 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
+import { isDay, type Day } from "@plafond/domain";
+
+import { tenseNote, tenseOn, type KnownCommune } from "../lib/commune-zone";
 import { noticeQuestions, otherReasons, type NoticeErrors, type NoticeFields } from "../lib/notice-flow";
 import { readForm } from "../lib/forms";
 import { guideFor } from "../lib/guides";
@@ -14,14 +17,23 @@ export interface NoticeFormProps
     fields: NoticeFields;
     errors: NoticeErrors;
     onAnswer?: (fields: NoticeFields) => void;
+    commune?: KnownCommune;  // named by the link that opened the form
+    today?: Day;  // the day the zone is read for until the letter's date is typed
 }
 
 const lettings: [string, string][] = [["no", "vide"], ["yes", "meublé"]];
 const zones: [string, string][] = [["yes", "oui"], ["no", "non"], ["unknown", "je ne sais pas"]];
 const reasons: [string, string][] = [["none", "Aucun de ces motifs"], ...otherReasons.map((reason): [string, string] => [reason.id, reason.label])];
 
-export function NoticeFormStep({ fields, errors, onAnswer }: NoticeFormProps)
+export function NoticeFormStep({ fields, errors, onAnswer, commune, today = "" }: NoticeFormProps)
 {
+    const [receivedOn, setReceivedOn] = useState(fields.receivedOn);
+    // Once the tenant picks an answer the choice stays theirs: the key that would redraw it with the filled-in one is frozen.
+    const [kept, setKept] = useState<string | null>(fields.tense !== "" ? "answered" : null);
+    const chosen = kept !== null;
+    const filled = commune === undefined ? null : tenseOn(commune.commune, isDay(receivedOn) ? receivedOn : today, commune.lists);
+    const tense = commune === undefined || chosen ? fields.tense : filled === null ? "" : filled ? "yes" : "no";
+
     function answer(event: FormEvent<HTMLFormElement>)
     {
         event.preventDefault();
@@ -47,13 +59,17 @@ export function NoticeFormStep({ fields, errors, onAnswer }: NoticeFormProps)
                 <p className="hint">
                     Paris, Lyon, Marseille, Lille, Bordeaux, Toulouse et la plupart des grandes agglomérations sont en zone tendue.
                 </p>
-                <Choice
-                    name="tense"
-                    legend={"Le logement est-il en zone tendue ?"}
-                    options={zones}
-                    value={fields.tense}
-                    error={errors.tense}
-                />
+                {commune !== undefined && <p className="hint" aria-live="polite">{tenseNote(commune.commune, filled, commune.lists)}</p>}
+                <div className="stack" onChange={(event) => (event.target as HTMLInputElement).name === "tense" && kept === null && setKept(`filled-${tense}`)}>
+                    <Choice
+                        key={kept ?? `filled-${tense}`}
+                        name="tense"
+                        legend={"Le logement est-il en zone tendue ?"}
+                        options={zones}
+                        value={tense}
+                        error={errors.tense}
+                    />
+                </div>
                 <Choice
                     name="reason"
                     legend={"Un autre motif réduit-il votre préavis à un mois ?"}
@@ -69,6 +85,7 @@ export function NoticeFormStep({ fields, errors, onAnswer }: NoticeFormProps)
                     type="date"
                     value={fields.receivedOn}
                     error={errors.receivedOn}
+                    onValue={setReceivedOn}
                 />
                 <button type="submit" className="primary">Calculer mon préavis</button>
             </LocalForm>

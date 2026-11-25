@@ -43,9 +43,10 @@ export interface TypedProps
     type?: "text" | "date" | "address";
     value: string;
     error: string | undefined;
+    onValue?: (value: string) => void;  // for a form that fills in another answer from this one
 }
 
-export function Typed({ id, label, hint, type = "text", value, error }: TypedProps)
+export function Typed({ id, label, hint, type = "text", value, error, onValue }: TypedProps)
 {
     const [typed, setTyped] = useState(value);
     const spelled = type === "date" && isDay(typed);
@@ -66,7 +67,11 @@ export function Typed({ id, label, hint, type = "text", value, error }: TypedPro
                 inputMode={type === "text" ? "decimal" : undefined}
                 autoComplete={type === "address" ? "street-address" : undefined}
                 defaultValue={value}
-                onChange={(event) => setTyped(event.currentTarget.value)}
+                onChange={(event) =>
+                {
+                    setTyped(event.currentTarget.value);
+                    onValue?.(event.currentTarget.value);
+                }}
                 className="field"
                 aria-invalid={error === undefined ? undefined : true}
                 aria-describedby={notes.length === 0 ? undefined : notes.join(" ")}

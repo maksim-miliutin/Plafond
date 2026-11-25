@@ -41,3 +41,29 @@ test("a tenant checks the agency fees and writes to the agency, and nothing type
 
     expect(elsewhere.filter((href) => !href.startsWith("https://data.geopf.fr/wmts?"))).toEqual([]);
 });
+
+// Vincennes is in zone A bis; the version of the list Plafond holds took effect on 26 June 2026.
+test("opened from a commune, the fees form ticks its zone, asks for an older lease, and keeps the tenant's own pick", async ({ page }) =>
+{
+    await page.goto("/frais-agence/?commune=94080");
+    const zone = (value: string) => page.locator(`input[name="zone"][value="${value}"]`);
+
+    await expect(zone("very-tense")).toBeChecked();
+    await expect(page.getByText("Vincennes : zone très tendue")).toBeVisible();
+
+    await page.getByLabel("Date de signature du bail").fill("2026-03-01");
+    await expect(page.locator('input[name="zone"]:checked')).toHaveCount(0);
+    await expect(page.getByText("Choisissez la zone vous-même.")).toBeVisible();
+
+    await zone("tense").check();
+    await page.getByLabel("Date de signature du bail").fill("2026-08-01");
+    await expect(zone("tense")).toBeChecked();
+});
+
+test("a code the list does not hold leaves the fees form as it always was", async ({ page }) =>
+{
+    await page.goto("/frais-agence/?commune=00000");
+
+    await expect(page.locator('input[name="zone"]:checked')).toHaveCount(0);
+    await expect(page.getByText("Vous pouvez corriger ce choix")).toHaveCount(0);
+});
