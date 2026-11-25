@@ -84,6 +84,8 @@ test("with its zone known, each commune offers the notice and agency fee checks 
     expect(item("Vincennes")).toContain('<span class="zone-tag">Zone tendue</span>');
     expect(item("Vincennes")).toContain('<a href="../preavis/?commune=94080">Vérifier mon préavis</a>');
     expect(item("Vincennes")).toContain('<a href="../frais-agence/?commune=94080">Vérifier les frais d\'agence</a>');
+    expect(item("Vincennes")).toContain('<a href="../relocation/?commune=94080">Vérifier la hausse du loyer à la relocation</a>');
     expect(item("Saint-Denis")).toContain('href="../preavis/?commune=93066"');
+    expect(item("Saint-Denis")).toContain('href="../relocation/?commune=93066"');
     expect(item("Montreuil")).not.toContain("zone-tag");
 });

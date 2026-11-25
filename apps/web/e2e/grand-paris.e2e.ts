@@ -72,4 +72,9 @@ test("a commune found by name offers the notice check with its zone filled in, P
     await page.getByLabel("Votre commune").fill("Vincennes");
     await page.getByRole("listitem").filter({ hasText: "Vincennes" }).getByRole("link", { name: "Vérifier mon préavis" }).click();
     await expect(page.locator('input[name="tense"][value="yes"]')).toBeChecked();
+
+    await page.goto("/grand-paris/");
+    await page.getByLabel("Votre commune").fill("Pierrefitte");
+    await page.getByRole("listitem").filter({ hasText: "Saint-Denis" }).getByRole("link", { name: "Vérifier la hausse du loyer à la relocation" }).click();
+    await expect(page.getByLabel("Commune du logement")).toHaveValue("93066");
 });
