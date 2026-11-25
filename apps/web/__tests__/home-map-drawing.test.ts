@@ -30,6 +30,7 @@ const drawing = grandParisDrawing({
         return { ...contour, territory: territory === "est-ensemble" || territory === "plaine-commune" ? territory : null, zone: zones.get(contour.code)! };
     }),
     paris: outlineOf(quartiers),
+    parisZone: zones.get("75056")!,
     parisContour: contours.find((contour) => contour.code === "75056")!.rings,
     departments: contoursOf(JSON.parse(regions)),
 }, 0.7);
@@ -46,12 +47,12 @@ test("each shape leads to the page that says more, and each grey commune carries
 {
     const find = (name: string) => drawing.shapes.find((shape) => shape.name === name);
 
-    expect(find("Paris 11e")?.page).toBe("arrondissements/paris-11e/");
-    expect(find("Montreuil")?.page).toBe("grand-paris/est-ensemble/");
+    expect(find("Paris 11e")).toMatchObject({ page: "arrondissements/paris-11e/", code: "75056", zone: "very-tense" });
+    expect(find("Montreuil")).toMatchObject({ page: "grand-paris/est-ensemble/", code: "93048" });
     expect(find("Saint-Denis")?.page).toBe("grand-paris/plaine-commune/");
     expect(find("Vincennes")).toMatchObject({ page: "grand-paris/", zone: "very-tense" });
     expect(find("Argenteuil")).toMatchObject({ kind: "plain", zone: "tense" });
-    expect(drawing.shapes.filter((shape) => shape.group === "plain").every((shape) => shape.zone !== undefined)).toBe(true);
+    expect(drawing.shapes.every((shape) => shape.zone !== undefined && /^\d[\dAB]\d{3}$/.test(shape.code ?? ""))).toBe(true);
 });
 
 test("the drawing fits its frame, with the territories named on it and the small map of the region", () =>

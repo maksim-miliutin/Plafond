@@ -1,3 +1,4 @@
+import type { FeeZone } from "@plafond/domain";
 import type { MetropoleCommune } from "@plafond/import";
 
 import type { CityMapArea } from "../lib/map";
@@ -8,7 +9,7 @@ import { CommuneSearch } from "./CommuneSearch";
 
 const metropole = "https://www.insee.fr/fr/metadonnees/geographie/intercommunalite/200054781-le-grand-paris";
 
-export function GrandParis({ communes, areas }: { communes: readonly MetropoleCommune[]; areas: readonly CityMapArea[] })
+export function GrandParis({ communes, areas, zones = {} }: { communes: readonly MetropoleCommune[]; areas: readonly CityMapArea[]; zones?: Readonly<Record<string, FeeZone>> })
 {
     return (
         <main className="screen">
@@ -19,7 +20,7 @@ export function GrandParis({ communes, areas }: { communes: readonly MetropoleCo
                 Dans la Métropole du Grand Paris, un arrêté du préfet plafonne le loyer à Paris et dans les communes d'Est Ensemble
                 et de Plaine Commune. Cherchez votre commune pour savoir ce que Plafond peut vérifier.
             </p>
-            <CommuneSearch communes={communes} />
+            <CommuneSearch communes={communes} zones={zones} />
             <section className="findings">
                 <h2>Les territoires où Plafond vérifie le loyer</h2>
                 <CityMap areas={areas} label={grandParisMapLabel} />

@@ -4,6 +4,7 @@ import { useState, type MouseEvent } from "react";
 
 import type { FeeZone } from "@plafond/domain";
 
+import { communeActions } from "../lib/commune-actions";
 import type { Drawing, Label, Shape } from "../lib/home-map";
 
 export type MapName = "grand-paris" | "lyon";
@@ -35,7 +36,7 @@ const legends: Record<MapName, { group: Shape["group"]; text: string }[]> = {
     ],
 };
 
-const capped: Record<Exclude<Shape["group"], "plain">, string> = {
+const cappedText: Record<Exclude<Shape["group"], "plain">, string> = {
     paris: "Le loyer est encadré dans tout Paris. Plafond vérifie s'il dépasse le plafond légal de votre quartier.",
     "est-ensemble": "Le loyer est encadré dans les communes d'Est Ensemble. Plafond vérifie s'il dépasse le plafond légal de votre secteur.",
     "plaine-commune": "Le loyer est encadré dans les communes de Plaine Commune. Plafond vérifie s'il dépasse le plafond légal de votre secteur.",
@@ -139,28 +140,27 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
 
 function Card({ shape }: { shape: Shape })
 {
-    if (shape.group === "plain")
-    {
-        return (
-            <>
-                <strong>{shape.name}</strong>
-                <p>Pas de loyer de référence dans cette commune. Les six autres vérifications s'appliquent.</p>
-                {shape.zone !== undefined && <p>{zoneSentences[shape.zone]}</p>}
-                <p className="map-links">
-                    <a href="ailleurs/">Les six vérifications</a>
-                    {shape.page === "grand-paris/" && <a href="grand-paris/">Le Grand Paris commune par commune</a>}
-                </p>
-            </>
-        );
-    }
+    const capped = shape.group !== "plain";
+    // A commune of the Grand Paris carries its code: the forms it leads to open with its zone filled in.
+    const actions = shape.code === undefined
+        ? (capped ? [{ href: "loyer/", label: "Vérifier le plafond du loyer" }] : [])
+        : communeActions(shape.code, capped, "");
 
     return (
         <>
             <strong>{shape.name}</strong>
-            <p>{capped[shape.group]}</p>
+            {shape.code !== undefined && shape.zone !== "other" && <span className="zone-tag">Zone tendue</span>}
+            <p>{shape.group === "plain" ? "Pas de loyer de référence dans cette commune. Les six autres vérifications s'appliquent." : cappedText[shape.group]}</p>
+            {shape.zone !== undefined && <p>{zoneSentences[shape.zone]}</p>}
+            {actions.length > 0 && (
+                <ul className="map-actions">
+                    {actions.map((action, index) => <li key={action.href}><a href={action.href} className={index === 0 ? "map-check" : undefined}>{action.label}</a></li>)}
+                </ul>
+            )}
             <p className="map-links">
-                <a href="loyer/" className="map-check">Vérifier mon loyer</a>
-                <a href={shape.page}>{pageOf[shape.group](shape.name)}</a>
+                {shape.group === "plain"
+                    ? <a href="ailleurs/">Les six vérifications</a>
+                    : <a href={shape.page}>{pageOf[shape.group](shape.name)}</a>}
             </p>
         </>
     );

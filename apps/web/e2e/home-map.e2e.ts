@@ -19,9 +19,13 @@ test("the first screen draws the Grand Paris and tells what Plafond checks in th
     await touch(page, "Vincennes");
     await expect(panel.locator(".map-card")).toContainText("Zone très tendue");
     await expect(panel.getByRole("link", { name: "Les six vérifications" })).toHaveAttribute("href", "ailleurs/");
+    await panel.getByRole("link", { name: "Vérifier les frais d'agence" }).click();
+    await expect.poll(() => new URL(page.url()).search).toBe("?commune=94080");
+    await expect(page.locator('input[name="zone"][value="very-tense"]')).toBeChecked();
 
+    await page.goto("/");
     await touch(page, "Montreuil");
-    await panel.getByRole("link", { name: "Vérifier mon loyer" }).click();
+    await page.getByRole("tabpanel").getByRole("link", { name: "Vérifier le plafond du loyer" }).click();
     await expect.poll(() => new URL(page.url()).pathname).toBe("/loyer/");
 });
 
