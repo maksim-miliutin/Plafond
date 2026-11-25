@@ -53,6 +53,7 @@ test("a commune without reference rents tells its zone and leads to the six chec
     expect(links(host)).toEqual([
         ["preavis/?commune=94080", "Vérifier mon préavis"],
         ["frais-agence/?commune=94080", "Vérifier les frais d'agence"],
+        ["relocation/?commune=94080", "Vérifier la hausse du loyer à la relocation"],
         ["ailleurs/", "Les six vérifications"],
     ]);
     expect(host.querySelector(".picked title")?.textContent).toBe("Vincennes");
@@ -68,6 +69,7 @@ test("an arrondissement leads to the rent check and to its own reference rents",
         ["loyer/", "Vérifier le plafond du loyer"],
         ["preavis/?commune=75056", "Vérifier mon préavis"],
         ["frais-agence/?commune=75056", "Vérifier les frais d'agence"],
+        ["relocation/?commune=75056", "Vérifier la hausse du loyer à la relocation"],
         ["arrondissements/paris-11e/", "Les loyers de référence de Paris 11e"],
     ]);
 });
