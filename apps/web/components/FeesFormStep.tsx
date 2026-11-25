@@ -1,7 +1,10 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
+import { isDay, type Day } from "@plafond/domain";
+
+import { feeZoneNote, feeZoneOn, type KnownCommune } from "../lib/commune-zone";
 import { feesQuestions, type FeesErrors, type FeesFields } from "../lib/fees-flow";
 import { readForm } from "../lib/forms";
 import { guideFor } from "../lib/guides";
@@ -14,12 +17,21 @@ export interface FeesFormProps
     fields: FeesFields;
     errors: FeesErrors;
     onAnswer?: (fields: FeesFields) => void;
+    commune?: KnownCommune;  // named by the link that opened the form
+    today?: Day;  // the day the zone is read for until the lease's date is typed
 }
 
 const zones: [string, string][] = [["very-tense", "zone très tendue"], ["tense", "zone tendue"], ["other", "ailleurs"], ["unknown", "je ne sais pas"]];
 
-export function FeesFormStep({ fields, errors, onAnswer }: FeesFormProps)
+export function FeesFormStep({ fields, errors, onAnswer, commune, today = "" }: FeesFormProps)
 {
+    const [signedOn, setSignedOn] = useState(fields.signedOn);
+    // Once the tenant picks an answer the choice stays theirs: the key that would redraw it with the filled-in one is frozen.
+    const [kept, setKept] = useState<string | null>(fields.zone !== "" ? "answered" : null);
+    const chosen = kept !== null;
+    const filled = commune === undefined ? null : feeZoneOn(commune.commune, isDay(signedOn) ? signedOn : today, commune.lists);
+    const zone = commune === undefined || chosen ? fields.zone : filled ?? "";
+
     function answer(event: FormEvent<HTMLFormElement>)
     {
         event.preventDefault();
@@ -44,15 +56,19 @@ export function FeesFormStep({ fields, errors, onAnswer }: FeesFormProps)
                     Paris et une partie de sa proche banlieue sont en zone très tendue. Lyon, Marseille, Lille, Bordeaux, Toulouse et la
                     plupart des grandes agglomérations sont en zone tendue.
                 </p>
-                <Choice
-                    name="zone"
-                    legend={"Dans quelle zone se trouve le logement ?"}
-                    options={zones}
-                    value={fields.zone}
-                    error={errors.zone}
-                />
+                {commune !== undefined && <p className="hint" aria-live="polite">{feeZoneNote(commune.commune, filled, commune.lists)}</p>}
+                <div className="stack" onChange={(event) => (event.target as HTMLInputElement).name === "zone" && kept === null && setKept(`filled-${zone}`)}>
+                    <Choice
+                        key={kept ?? `filled-${zone}`}
+                        name="zone"
+                        legend={"Dans quelle zone se trouve le logement ?"}
+                        options={zones}
+                        value={zone}
+                        error={errors.zone}
+                    />
+                </div>
                 <h2 className="section">Le bail et les honoraires</h2>
-                <Typed id="signedOn" label="Date de signature du bail" type="date" value={fields.signedOn} error={errors.signedOn} />
+                <Typed id="signedOn" label="Date de signature du bail" type="date" value={fields.signedOn} error={errors.signedOn} onValue={setSignedOn} />
                 <Typed
                     id="letting"
                     label="Honoraires de visite, de dossier et de bail"

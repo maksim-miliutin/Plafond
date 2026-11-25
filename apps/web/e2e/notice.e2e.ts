@@ -39,3 +39,11 @@ test("a tenant finds when the notice ends and writes the letter giving notice, a
 
     expect(elsewhere.filter((href) => !href.startsWith("https://data.geopf.fr/wmts?"))).toEqual([]);
 });
+
+test("opened from Athis-Mons, the notice form says the dwelling is in the tense zone", async ({ page }) =>
+{
+    await page.goto("/preavis/?commune=91027");
+
+    await expect(page.locator('input[name="tense"][value="yes"]')).toBeChecked();
+    await expect(page.getByText("Athis-Mons : en zone tendue")).toBeVisible();
+});

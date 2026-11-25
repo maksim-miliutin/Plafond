@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from "react";
 
+import type { CommuneZone, ZoneLists } from "@plafond/import";
+
+import { communeFrom } from "../lib/commune-zone";
 import { helpers } from "../lib/help";
 import { nextNotice, noticeStart, type NoticeEvent, type NoticeStep } from "../lib/notice-flow";
 import { todayInParis } from "../lib/today";
+import type { ZoneNeeds } from "./Honoraires";
 import { HelpStep } from "./HelpStep";
 import { LetterStep } from "./LetterStep";
 import { NoticeFormStep } from "./NoticeFormStep";
@@ -17,9 +21,16 @@ export interface NoticeNeeds
 
 const live: NoticeNeeds = { now: () => new Date() };
 
-export function Preavis({ needs = live }: { needs?: NoticeNeeds })
+export function Preavis({ zones, needs = live }: { zones?: ZoneNeeds; needs?: NoticeNeeds })
 {
     const [step, setStep] = useState<NoticeStep>(noticeStart);
+    const [commune, setCommune] = useState<CommuneZone | undefined>(undefined);
+
+    // The link's code is read in the browser: the page is built once for every commune.
+    useEffect(() =>
+    {
+        setCommune(zones === undefined ? undefined : communeFrom(window.location.search, zones.communes));
+    }, [zones]);
 
     useEffect(() =>
     {
@@ -36,7 +47,15 @@ export function Preavis({ needs = live }: { needs?: NoticeNeeds })
     switch (step.at)
     {
         case "form":
-            return <NoticeFormStep fields={step.fields} errors={step.errors} onAnswer={(fields) => go({ type: "answered", fields })} />;
+            return (
+                <NoticeFormStep
+                    fields={step.fields}
+                    errors={step.errors}
+                    onAnswer={(fields) => go({ type: "answered", fields })}
+                    commune={commune === undefined || zones === undefined ? undefined : { commune, lists: zones.lists }}
+                    today={todayInParis(needs.now())}
+                />
+            );
 
         case "result":
             return (
