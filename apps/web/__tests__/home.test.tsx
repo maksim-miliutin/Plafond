@@ -3,8 +3,9 @@ import { expect, test } from "vitest";
 
 import { CheckList } from "../components/Checks";
 import { Home } from "../components/Home";
+import { homeMaps } from "./fixtures";
 
-const page = renderToStaticMarkup(<Home shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} />);
+const page = renderToStaticMarkup(<Home shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} maps={homeMaps} />);
 const doors = page.match(/<a[^>]*class="check"[^>]*>.*?<\/a>/gs) ?? [];
 
 test("the first screen opens on the two cities as its doors, as links relative to the page", () =>

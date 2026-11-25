@@ -1167,3 +1167,342 @@ a:hover
     display: inline-block;
     padding: 10px 0;
 }
+
+.home-map
+{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.map-tabs
+{
+    display: flex;
+}
+
+.map-tabs button
+{
+    flex: 1;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1.5px solid var(--blue);
+    background: #FFFFFF;
+    color: var(--blue);
+    font: 700 16px var(--text);
+    cursor: pointer;
+}
+
+.map-tabs button:first-child
+{
+    border-radius: 12px 0 0 12px;
+}
+
+.map-tabs button:last-child
+{
+    margin-left: -1.5px;
+    border-radius: 0 12px 12px 0;
+}
+
+.map-tabs button[aria-selected="true"]
+{
+    background: var(--blue);
+    color: #FFFFFF;
+}
+
+.map-panel
+{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+}
+
+.map-panel svg
+{
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.map-panel .shape
+{
+    stroke: #FFFFFF;
+    stroke-width: 0.9;
+    stroke-linejoin: round;
+    cursor: pointer;
+}
+
+.map-panel .plain
+{
+    fill: #E4EAF1;
+}
+
+.map-panel .paris,
+.map-panel .lyon
+{
+    fill: var(--sky);
+}
+
+.map-panel .est-ensemble,
+.map-panel .villeurbanne
+{
+    fill: #8DBBE6;
+}
+
+.map-panel .plaine-commune
+{
+    fill: url(#hatch);
+}
+
+.map-panel .hatch-ground
+{
+    fill: #E3EEF9;
+}
+
+.map-panel .hatch-line
+{
+    stroke: #8FB8E2;
+    stroke-width: 2.6;
+}
+
+.map-panel .shape:hover
+{
+    fill: #A9B6C6;
+}
+
+.map-panel .shape:not(.plain):hover,
+.map-panel .shape.picked
+{
+    fill: var(--blue);
+}
+
+.map-panel .borders
+{
+    fill: none;
+    stroke: #7F90A6;
+    stroke-width: 1.3;
+    stroke-dasharray: 4 3;
+    pointer-events: none;
+}
+
+.map-panel .outline
+{
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.6;
+    pointer-events: none;
+}
+
+.map-panel .city
+{
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.map-panel .tag rect
+{
+    fill: #FFFFFF;
+    stroke: var(--blue);
+    stroke-width: 1.5;
+}
+
+.map-panel .tag text,
+.map-panel text.area
+{
+    font: 700 22px var(--display);
+    fill: var(--blue);
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.map-panel text.area
+{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.map-panel text.region
+{
+    font: 13px var(--text);
+    fill: var(--muted);
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.map-panel .inset rect
+{
+    fill: #FFFFFF;
+    stroke: var(--line);
+}
+
+.map-panel .inset .regions
+{
+    fill: #EEF2F7;
+    stroke: #B5C2D1;
+    stroke-width: 0.8;
+}
+
+.map-panel .inset .frame
+{
+    fill: var(--sky);
+    stroke: var(--blue);
+    stroke-width: 1.2;
+}
+
+.map-key
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.map-key li
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.map-key li::before
+{
+    content: "";
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--blue);
+    border-radius: 3px;
+    background: var(--sky);
+}
+
+.map-key .est-ensemble::before,
+.map-key .villeurbanne::before
+{
+    background: #8DBBE6;
+}
+
+.map-key .plaine-commune::before
+{
+    background: repeating-linear-gradient(45deg, #8FB8E2 0 3px, #E3EEF9 3px 7px);
+}
+
+.map-key .plain::before
+{
+    border-color: #7F90A6;
+    background: #E4EAF1;
+}
+
+.map-card
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.map-card p
+{
+    margin: 0;
+}
+
+.map-card strong
+{
+    font: 700 24px var(--display);
+    line-height: 1.1;
+    color: var(--blue);
+}
+
+.map-links
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 20px;
+}
+
+.map-check
+{
+    padding: 10px 16px;
+    background: var(--blue);
+    border-radius: 12px;
+    color: #FFFFFF;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.map-panel .credit
+{
+    margin: 0;
+    text-align: left;
+}
+
+.map-check:hover
+{
+    color: #FFFFFF;
+    background: var(--blue-dark);
+}
+
+@media (min-width: 960px)
+{
+    .screen.home
+    {
+        max-width: 1200px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        grid-auto-flow: row dense;
+        align-content: start;
+        column-gap: 56px;
+        row-gap: 24px;
+        padding: 48px 40px 32px;
+    }
+
+    .screen.home > *
+    {
+        grid-column: 2;
+    }
+
+    .screen.home > .home-map
+    {
+        grid-column: 1;
+        grid-row: 1 / span 7;
+    }
+
+    .screen.home > .findings,
+    .screen.home > .grow,
+    .screen.home > .fine
+    {
+        grid-column: 1 / -1;
+    }
+
+    .screen.home .title
+    {
+        font-size: 62px;
+        line-height: 0.98;
+    }
+
+    .screen.home .findings .references
+    {
+        columns: 2;
+        column-gap: 48px;
+    }
+
+    body:has(.screen.home) .site-footer-inner
+    {
+        max-width: 1200px;
+        padding-inline: 40px;
+    }
+}

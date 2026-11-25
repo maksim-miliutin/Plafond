@@ -1,16 +1,19 @@
 import { cityCopy, type MappedCity } from "../lib/city-copy";
+import type { Drawing } from "../lib/home-map";
 import { Brand } from "./Brand";
 import { CheckLinks } from "./Checks";
+import { HomeMap, type MapName } from "./HomeMap";
 
-export function Home({ shapes }: { shapes: Record<MappedCity, string> })
+export function Home({ shapes, maps }: { shapes: Record<MappedCity, string>; maps: Record<MapName, Drawing> })
 {
     return (
-        <main className="screen">
+        <main className="screen home">
             <Brand />
             <p className="lead">
                 Sept vérifications gratuites pour les locataires. Quand votre cas le justifie, Plafond prépare la lettre au propriétaire ou à l'agence.
             </p>
             <h1 className="title">Où se trouve votre logement ?</h1>
+            <HomeMap maps={maps} />
             <nav className="checks cities" aria-label="Villes">
                 {(Object.keys(cityCopy) as MappedCity[]).map((city) => (
                     <a key={city} href={`${city}/`} className="check">

@@ -7,6 +7,7 @@ import { ChargesFormStep } from "../components/ChargesFormStep";
 import { DepositFormStep } from "../components/DepositFormStep";
 import { DpeFindStep } from "../components/DpeFindStep";
 import { Home } from "../components/Home";
+import { homeMaps } from "./fixtures";
 import { chargesStart } from "../lib/charges-flow";
 import { depositQuestions, type DepositFields } from "../lib/deposit-flow";
 
@@ -22,7 +23,7 @@ test("the first screen of the app and of each check carries the brand", () =>
 {
     const blankDeposit = Object.fromEntries(Object.keys(depositQuestions).map((key) => [key, ""])) as unknown as DepositFields;
     const screens = [
-        <Home key="home" shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} />,
+        <Home key="home" shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} maps={homeMaps} />,
         <AddressStep key="rent" />,
         <DpeFindStep key="dpe" />,
         <DepositFormStep key="deposit" fields={blankDeposit} errors={{}} />,
