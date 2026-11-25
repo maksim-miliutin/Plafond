@@ -48,6 +48,8 @@ The maps draw communes from the [Contours administratifs](https://www.data.gouv.
 
 `db/seed/commune-zones.csv` gives each of those 188 communes two flags. `tendue` says whether the commune is on the list of décret n° 2013-392 of 10 May 2013, as amended by décret n° 2025-1267 of 22 December 2025, which shortens the notice of an empty dwelling to one month; `tres_tendue` says whether it lies in zone A bis of annex I of the arrêté of 1 August 2014, as the arrêté of 5 September 2025 sets it and the arrêté of 23 June 2026 adds Alfortville, the zone décret n° 2014-890 caps agency fees highest in. Both come from the tables of the ministry on data.gouv.fr ([zonage TLV](https://www.data.gouv.fr/datasets/liste-des-communes-selon-le-zonage-tlv-1/), [zonage ABC](https://www.data.gouv.fr/datasets/liste-des-communes-selon-le-zonage-abc/)), published under the Licence Ouverte 2.0, as in force on 24 November 2026. The maps use them to tell the tenant of a commune without rent control which caps and notice apply there.
 
+`db/seed/zone-lists.json` records, with its source, the day each of those versions took effect: 24 December 2025 for the list of décret n° 2025-1267, 26 June 2026 for zone A bis since the arrêté of 23 June 2026. A form opened from a commune fills in its zone only for a day both lists cover; for an earlier lease or letter it asks, since the table holds no older version.
+
 ## Status
 
 The app is live at https://leplafond.org/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. The rents of Paris were checked against the official map of reference rents of the DRIHL Île-de-France; those of Lyon are still to be checked against the Métropole's own simulator.
