@@ -2,19 +2,19 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { indexOf, relocationRulesOf, zoneListsOf, zonesOf } from "@plafond/import";
+import { indexOf, relocationRulesOf, zoneListsOf } from "@plafond/import";
 
 import { RelocationFormStep } from "../components/RelocationFormStep";
 import { RelocationResultStep } from "../components/RelocationResultStep";
 import { nextRelocation, relocationStart, type RelocationFields, type RelocationWorld } from "../lib/relocation-flow";
 
-import table from "../../../db/seed/commune-zones.csv?raw";
 import sources from "../../../db/seed/zone-lists.json?raw";
 import rules from "../../../db/seed/relocation-rules.json?raw";
 import irl from "../../../db/seed/irl.json?raw";
+import { seededZones } from "./zone-seeds";
 
 const world: RelocationWorld = {
-    communes: zonesOf(table).filter((row) => ["94080", "93048", "75056", "91027"].includes(row.code)),
+    communes: seededZones.filter((row) => ["94080", "93048", "75056", "91027"].includes(row.code)),
     lists: zoneListsOf(JSON.parse(sources)),
     capped: ["75056", "93048"],
     periods: relocationRulesOf(JSON.parse(rules)),

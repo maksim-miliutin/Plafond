@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { arrondissementOf, checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type RelocationPeriod, type Span } from "@plafond/domain";
-import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, relocationRulesOf, seedsFrom, zoneListsOf, zonesOf, type CommuneZone, type Contour, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
+import { contoursOf, feeCapsOf, indexOf, latestFeeZone, lawOf, metropoleOf, regionalCommunesOf, relocationRulesOf, seedsFrom, zoneListsOf, zonesOf, type CommuneZone, type Contour, type RegionalCommune, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
 import { grandParisDrawing, lyonDrawing, type Drawing } from "./home-map";
@@ -123,9 +123,23 @@ export function territoryFromDisk(territory: Outer): TerritoryFacts
 
 const departments = ["75", "77", "78", "91", "92", "93", "94", "95"];
 
+export function regionFromDisk(): RegionalCommune[]
+{
+    return regionalCommunesOf(readFileSync(join(seed, "ile-de-france-zones.csv"), "utf8"));
+}
+
+// Every commune whose zone Plafond knows: Île-de-France by the latest lists, then the communes drawn around Lyon.
 export function zonesFromDisk(): CommuneZone[]
 {
-    return zonesOf(readFileSync(join(seed, "commune-zones.csv"), "utf8"));
+    const region = regionFromDisk().map((commune): CommuneZone => ({ code: commune.code, name: commune.name, zone: latestFeeZone(commune) }));
+    const others = zonesOf(readFileSync(join(seed, "commune-zones.csv"), "utf8"));
+    const twice = others.find((commune) => region.some((one) => one.code === commune.code));
+    if (twice !== undefined)
+    {
+        throw new Error(`commune ${twice.code} is in both tables of zones`);
+    }
+
+    return [...region, ...others];
 }
 
 export function zoneListsFromDisk(): ZoneLists

@@ -1,14 +1,14 @@
 /// <reference types="vite/client" />
 import { expect, test } from "vitest";
 
-import { zoneListsOf, zonesOf } from "@plafond/import";
+import { zoneListsOf } from "@plafond/import";
 
 import { communeFrom, feeZoneNote, feeZoneOn, tenseNote, tenseOn } from "../lib/commune-zone";
 
-import table from "../../../db/seed/commune-zones.csv?raw";
 import sources from "../../../db/seed/zone-lists.json?raw";
+import { seededZones } from "./zone-seeds";
 
-const communes = zonesOf(table);
+const communes = seededZones;
 const lists = zoneListsOf(JSON.parse(sources));
 const named = (code: string) => communes.find((commune) => commune.code === code)!;
 

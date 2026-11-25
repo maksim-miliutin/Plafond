@@ -20,6 +20,7 @@ const communes: CommuneZone[] = [
 const lists: ZoneLists = {
     tense: { from: "2025-12-24", title: "Décret", url: "https://example.org/tense" },
     veryTense: { from: "2026-06-26", title: "Arrêté", url: "https://example.org/a-bis" },
+    earlierVeryTense: { from: "2025-09-07", until: "2026-06-26", title: "Arrêté", url: "https://example.org/a-bis-2025" },
 };
 const hosts: HTMLElement[] = [];
 

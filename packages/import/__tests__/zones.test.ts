@@ -12,24 +12,14 @@ import lists from "../../../db/seed/zone-lists.json?raw";
 const zones = zonesOf(seed);
 const zoneOf = (code: string) => zones.find((row) => row.code === code)?.zone;
 
-test("the table gives a zone to every commune of both métropoles, and to no other", () =>
-{
-    const grandParis = metropoleOf(communes).map((commune) => commune.code);
-    const lyonCodes = (JSON.parse(lyon) as { features: { properties: { code: string } }[] }).features.map((feature) => feature.properties.code);
-
-    expect(zones.map((row) => row.code).sort()).toEqual([...grandParis, ...lyonCodes].sort());
-});
-
-// Décret n° 2013-392 as amended by décret n° 2025-1267 of 22 December 2025, and zone A bis as the arrêté of
-// 5 September 2025 sets it, Alfortville added by the arrêté of 23 June 2026.
-test("every commune of the Grand Paris is tense and 68 of them very tense, Paris and Alfortville among them", () =>
+// The communes of Île-de-France, the Grand Paris among them, have a table of their own: this one keeps the rest.
+test("the table gives a zone to every commune drawn around Lyon, and to none of Île-de-France", () =>
 {
     const grandParis = new Set(metropoleOf(communes).map((commune) => commune.code));
-    const of = (zone: string) => zones.filter((row) => grandParis.has(row.code) && row.zone === zone).length;
+    const lyonCodes = (JSON.parse(lyon) as { features: { properties: { code: string } }[] }).features.map((feature) => feature.properties.code);
 
-    expect([of("very-tense"), of("tense"), of("other")]).toEqual([68, 62, 0]);
-    expect(zoneOf("75056")).toBe("very-tense");
-    expect(zoneOf("94002")).toBe("very-tense");
+    expect(zones.map((row) => row.code).sort()).toEqual([...lyonCodes].sort());
+    expect(zones.some((row) => grandParis.has(row.code))).toBe(false);
 });
 
 test("around Lyon no commune is very tense, and four of the Monts d'Or and the plain are not tense at all", () =>
@@ -53,6 +43,8 @@ test("each list carries the day its version took effect and its source", () =>
     const read = zoneListsOf(JSON.parse(lists));
 
     expect([read.tense.from, read.veryTense.from]).toEqual(["2025-12-24", "2026-06-26"]);
+    expect([read.earlierVeryTense.from, read.earlierVeryTense.until]).toEqual(["2025-09-07", "2026-06-26"]);
+    expect(() => zoneListsOf({ ...read, earlierVeryTense: { ...read.earlierVeryTense, until: "2026-06-25" } })).toThrow("does not end the day");
     expect(read.tense.url).toMatch(/^https:\/\/www\.legifrance\.gouv\.fr\//);
     expect(() => zoneListsOf({ tense: read.tense })).toThrow("the veryTense list has no day it took effect");
     expect(() => zoneListsOf({ ...read, tense: { ...read.tense, from: "24/12/2025" } })).toThrow("the tense list has no day it took effect");
