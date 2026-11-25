@@ -19,7 +19,7 @@ test("when the map cannot load, the page says so and sends the tenant to the lis
     document.body.append(host);
     await act(async () =>
     {
-        createRoot(host).render(<CityMap outlines={[]} label="Plan de Paris" />);
+        createRoot(host).render(<CityMap areas={[]} label="Plan de Paris" />);
     });
 
     await vi.waitFor(() => expect(host.querySelector('[role="status"]')?.textContent).toBe("Le plan n'a pas pu s'afficher. Rechargez la page, ou passez par la liste plus bas."));

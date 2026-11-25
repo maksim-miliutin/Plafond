@@ -1,5 +1,7 @@
 import type { City } from "@plafond/domain";
 
+import { grandParisMapLabel } from "./metropole";
+
 export interface CityCopy
 {
     name: string;
@@ -24,8 +26,8 @@ export type MappedCity = Extract<City, "paris" | "lyon">;
 export const cityCopy: Record<MappedCity, CityCopy> = {
     paris: {
         name: "Paris",
-        within: "dans les 20 arrondissements, à l'intérieur de la limite tracée sur le plan.",
-        mapLabel: "Plan de Paris avec la limite de l'encadrement des loyers",
+        within: "dans les 20 arrondissements de Paris.",
+        mapLabel: grandParisMapLabel,
         rentReach: "Dans les 20 arrondissements, avec l'encadrement des loyers.",
         linksTitle: "Les loyers de référence par arrondissement",
         otherGuide: "encadrement-des-loyers-lyon",

@@ -3,10 +3,10 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, expect, test, vi } from "vitest";
 
-import type { Quartier } from "@plafond/domain";
 import type { TileLayer } from "leaflet";
 
 import { CityMap } from "../components/CityMap";
+import type { CityMapArea } from "../lib/map";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -26,7 +26,9 @@ vi.mock("leaflet", async (importOriginal) =>
     return { default: { ...real, tileLayer } };
 });
 
-const paris: Quartier["rings"][] = [[[[2.34, 48.86], [2.345, 48.86], [2.345, 48.865], [2.34, 48.865], [2.34, 48.86]]]];
+const paris: CityMapArea[] = [
+    { rings: [[[2.34, 48.86], [2.345, 48.86], [2.345, 48.865], [2.34, 48.865], [2.34, 48.86]]], territory: "paris" },
+];
 const hosts: HTMLElement[] = [];
 
 afterEach(() =>
@@ -42,7 +44,7 @@ async function drawn(): Promise<{ host: HTMLElement; tiles: TileLayer }>
     hosts.push(host);
     await act(async () =>
     {
-        createRoot(host).render(<CityMap outlines={paris} label="Plan de Paris" />);
+        createRoot(host).render(<CityMap areas={paris} label="Plan de Paris" />);
     });
     await vi.waitFor(() => expect(layers).toHaveLength(1));
 

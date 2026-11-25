@@ -23,12 +23,16 @@ async function plan(page: Page): Promise<string[]>
     return tiles;
 }
 
-test("the Paris page draws the zone on the IGN plan and zooms in toward the street", async ({ page }) =>
+test("the Paris page draws all three territories on the IGN plan and zooms in toward the street", async ({ page }) =>
 {
     const tiles = await plan(page);
     await page.goto("/paris/");
 
-    await expect(page.locator(".leaflet-overlay-pane path.zone")).toHaveCount(1);
+    await expect(page.locator(".leaflet-overlay-pane path.zone")).toHaveCount(3);
+    await expect(page.locator("path.zone-paris")).toHaveCount(1);
+    await expect(page.locator("path.zone-est-ensemble")).toHaveCount(1);
+    await expect(page.locator("path.zone-plaine-commune")).toHaveCount(1);
+    await expect(page.getByRole("list", { name: "Territoires de la carte" }).getByRole("link")).toHaveText(["Paris", "Est Ensemble", "Plaine Commune"]);
     await expect.poll(() => tiles.length).toBeGreaterThan(0);
     expect(tiles.every((url) => url.includes("LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2"))).toBe(true);
 
@@ -41,7 +45,7 @@ test("the Paris page draws the zone on the IGN plan and zooms in toward the stre
     }
 });
 
-test("the whole of Paris is in view when the page opens, even on a 320 px phone", async ({ page }) =>
+test("all three territories are in view when the Paris page opens, even on a 320 px phone", async ({ page }) =>
 {
     await plan(page);
 
@@ -49,14 +53,18 @@ test("the whole of Paris is in view when the page opens, even on a 320 px phone"
     {
         await page.setViewportSize(size);
         await page.goto("/paris/");
-        await expect(page.locator("path.zone")).toHaveCount(1);
+        const zones = page.locator("path.zone");
+        await expect(zones).toHaveCount(3);
 
-        const zone = (await page.locator("path.zone").boundingBox())!;
         const map = (await page.locator(".city-map").boundingBox())!;
-        expect(zone.x, `${size.width}`).toBeGreaterThanOrEqual(map.x - 2);
-        expect(zone.y, `${size.width}`).toBeGreaterThanOrEqual(map.y - 2);
-        expect(zone.x + zone.width, `${size.width}`).toBeLessThanOrEqual(map.x + map.width + 2);
-        expect(zone.y + zone.height, `${size.width}`).toBeLessThanOrEqual(map.y + map.height + 2);
+        for (const layer of await zones.all())
+        {
+            const zone = (await layer.boundingBox())!;
+            expect(zone.x, `${size.width}`).toBeGreaterThanOrEqual(map.x - 2);
+            expect(zone.y, `${size.width}`).toBeGreaterThanOrEqual(map.y - 2);
+            expect(zone.x + zone.width, `${size.width}`).toBeLessThanOrEqual(map.x + map.width + 2);
+            expect(zone.y + zone.height, `${size.width}`).toBeLessThanOrEqual(map.y + map.height + 2);
+        }
     }
 });
 
@@ -67,7 +75,7 @@ test("without the IGN plan the zone is still drawn, and the page says why the gr
     await page.route("https://data.geopf.fr/**", (route) => route.abort());
     await page.goto("/paris/");
 
-    await expect(page.locator("path.zone")).toHaveCount(1);
+    await expect(page.locator("path.zone")).toHaveCount(3);
     await expect(page.locator(".city-block").getByRole("status")).toContainText("Le fond de plan IGN ne s'est pas chargé");
     await expect(page.getByText("Fond de carte")).toBeVisible();
     expect(errors).toEqual([]);
@@ -78,7 +86,7 @@ test("a wheel over the map scrolls the page until the map has focus", async ({ p
     test.skip(isMobile, "a wheel is a desktop gesture");
     const tiles = await plan(page);
     await page.goto("/paris/");
-    await expect(page.locator("path.zone")).toHaveCount(1);
+    await expect(page.locator("path.zone")).toHaveCount(3);
     await expect.poll(() => tiles.length).toBeGreaterThan(0);
     const first = Math.max(...tiles.map(zoomOf));
 
@@ -109,7 +117,7 @@ test("the Paris page fits a 320 px phone and its zoom buttons fit a thumb", asyn
     await plan(page);
     await page.setViewportSize({ width: 320, height: 640 });
     await page.goto("/paris/");
-    await expect(page.locator("path.zone")).toHaveCount(1);
+    await expect(page.locator("path.zone")).toHaveCount(3);
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     const zoom = (await page.getByRole("button", { name: "Zoom avant" }).boundingBox())!;
@@ -121,7 +129,7 @@ test("the Paris page passes axe", async ({ page }) =>
 {
     await plan(page);
     await page.goto("/paris/");
-    await expect(page.locator("path.zone")).toHaveCount(1);
+    await expect(page.locator("path.zone")).toHaveCount(3);
 
     const found = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
     expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);

@@ -1,11 +1,13 @@
-import type { City } from "@plafond/domain";
-import type { MetropoleCommune, Territory } from "@plafond/import";
+import { outlineOf, type City, type Quartier } from "@plafond/domain";
+import type { Contour, MetropoleCommune, Territory } from "@plafond/import";
 
 // The territories around Paris whose rents a decree caps.
 export type Outer = Exclude<Territory, "paris">;
 
 // Those whose leases Plafond checks, as Paris; tenants in the others are sent to the prefecture's own simulator.
 export const checkedTerritories: readonly Outer[] = ["est-ensemble", "plaine-commune"];
+
+export const grandParisMapLabel = "Plan de Paris, d'Est Ensemble et de Plaine Commune, où le loyer est encadré";
 
 export const territoryNames: Record<Outer, string> = {
     "est-ensemble": "Est Ensemble",
@@ -76,4 +78,12 @@ export function matching(communes: readonly MetropoleCommune[], typed: string): 
     }
 
     return communes.filter((commune) => [commune.name, ...commune.former].some((name) => searchKey(name).includes(key)));
+}
+
+// A territory drawn as one outline: the union of the outlines of its communes, which share their borders exactly.
+export function territoryOutline(territory: Outer, communes: readonly MetropoleCommune[], contours: readonly Contour[]): Quartier["rings"]
+{
+    const codes = new Set(communes.filter((commune) => commune.territory === territory).map((commune) => commune.code));
+
+    return outlineOf(contours.filter((contour) => codes.has(contour.code)).map((contour, number) => ({ number, name: contour.name, rings: contour.rings })));
 }

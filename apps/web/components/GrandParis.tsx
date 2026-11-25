@@ -1,12 +1,14 @@
 import type { MetropoleCommune } from "@plafond/import";
 
-import { applicability } from "../lib/metropole";
+import type { CityMapArea } from "../lib/map";
+import { applicability, grandParisMapLabel } from "../lib/metropole";
 import { Brand } from "./Brand";
+import { CityMap } from "./CityMap";
 import { CommuneSearch } from "./CommuneSearch";
 
 const metropole = "https://www.insee.fr/fr/metadonnees/geographie/intercommunalite/200054781-le-grand-paris";
 
-export function GrandParis({ communes }: { communes: readonly MetropoleCommune[] })
+export function GrandParis({ communes, areas }: { communes: readonly MetropoleCommune[]; areas: readonly CityMapArea[] })
 {
     return (
         <main className="screen">
@@ -20,11 +22,7 @@ export function GrandParis({ communes }: { communes: readonly MetropoleCommune[]
             <CommuneSearch communes={communes} />
             <section className="findings">
                 <h2>Les territoires où Plafond vérifie le loyer</h2>
-                <ul className="references">
-                    <li><a href="../paris/">Paris</a></li>
-                    <li><a href="est-ensemble/">Est Ensemble</a>, à l'est de Paris</li>
-                    <li><a href="plaine-commune/">Plaine Commune</a>, au nord de Paris</li>
-                </ul>
+                <CityMap areas={areas} label={grandParisMapLabel} />
             </section>
             <section className="findings">
                 <h2>Sans loyer de référence</h2>
