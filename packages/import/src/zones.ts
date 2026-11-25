@@ -1,4 +1,4 @@
-import type { FeeZone } from "@plafond/domain";
+import { isDay, type Day, type FeeZone } from "@plafond/domain";
 
 import { readRows } from "./csv.js";
 
@@ -57,4 +57,36 @@ export function zonesOf(text: string): CommuneZone[]
 
         return { code, name, zone: veryTense === "1" ? "very-tense" : tense === "1" ? "tense" : "other" };
     });
+}
+
+// The version of each list that commune-zones.csv copies, and the day it took effect: a lease signed before that day may
+// have fallen under another version, so the zone is not filled in for it.
+export interface ZoneList
+{
+    from: Day;
+    title: string;
+    url: string;
+}
+
+export interface ZoneLists
+{
+    tense: ZoneList;
+    veryTense: ZoneList;
+}
+
+export function zoneListsOf(source: unknown): ZoneLists
+{
+    const listOf = (name: "tense" | "veryTense"): ZoneList =>
+    {
+        const list = typeof source === "object" && source !== null ? (source as Record<string, unknown>)[name] : undefined;
+        const { from, title, url } = (typeof list === "object" && list !== null ? list : {}) as Record<string, unknown>;
+        if (typeof from !== "string" || !isDay(from) || typeof title !== "string" || title === "" || typeof url !== "string" || !url.startsWith("https://"))
+        {
+            throw new ZonesError(`the ${name} list has no day it took effect, no title or no link`);
+        }
+
+        return { from, title, url };
+    };
+
+    return { tense: listOf("tense"), veryTense: listOf("veryTense") };
 }

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { arrondissementOf, checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
-import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, zonesOf, type Contour, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
+import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, zoneListsOf, zonesOf, type CommuneZone, type Contour, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
 import { grandParisDrawing, lyonDrawing, type Drawing } from "./home-map";
@@ -118,13 +118,40 @@ export function territoryFromDisk(territory: Outer): TerritoryFacts
 
 const departments = ["75", "77", "78", "91", "92", "93", "94", "95"];
 
+export function zonesFromDisk(): CommuneZone[]
+{
+    return zonesOf(readFileSync(join(seed, "commune-zones.csv"), "utf8"));
+}
+
+export function zoneListsFromDisk(): ZoneLists
+{
+    return zoneListsOf(JSON.parse(readFileSync(join(seed, "zone-lists.json"), "utf8")));
+}
+
+// The communes a link may name to fill in a zone: the 130 of the Grand Paris, each checked to have a zone.
+export function grandParisZonesFromDisk(): CommuneZone[]
+{
+    const zones = zonesFromDisk();
+
+    return metropoleFromDisk().map((commune) =>
+    {
+        const found = zones.find((row) => row.code === commune.code);
+        if (found === undefined)
+        {
+            throw new Error(`no zone is known for commune ${commune.code}`);
+        }
+
+        return found;
+    });
+}
+
 // The two maps of the first screen, drawn once at build time: the Grand Paris commune by commune, and Lyon.
 export function homeMapsFromDisk(tolerance: number): { grandParis: Drawing; lyon: Drawing }
 {
     const { quartiers, lyon } = seeds();
     const communes = metropoleFromDisk();
     const territoryOf = new Map(communes.map((commune) => [commune.code, commune.territory]));
-    const zones = new Map(zonesOf(readFileSync(join(seed, "commune-zones.csv"), "utf8")).map((row) => [row.code, row.zone]));
+    const zones = new Map(zonesFromDisk().map((row) => [row.code, row.zone]));
     const zoneOf = (code: string) =>
     {
         const zone = zones.get(code);
