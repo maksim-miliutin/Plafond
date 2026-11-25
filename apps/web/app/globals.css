@@ -424,10 +424,23 @@ a:hover
 .map .own,
 .city-map .zone
 {
-    fill: rgba(197, 225, 250, 0.45);
+    fill: var(--zone-fill, rgba(197, 225, 250, 0.45));
     fill-opacity: 1;
     stroke: var(--blue);
     stroke-width: 2.5;
+    stroke-dasharray: var(--zone-dash, none);
+}
+
+/* The territories around Paris take the colours of the map of the first screen; Plaine Commune is told apart by its dashes too. */
+.zone-est-ensemble
+{
+    --zone-fill: rgba(141, 187, 230, 0.55);
+}
+
+.zone-plaine-commune
+{
+    --zone-fill: rgba(227, 238, 249, 0.7);
+    --zone-dash: 7 5;
 }
 
 .map .pin
@@ -1049,6 +1062,39 @@ a:hover
 .city-block .credit
 {
     margin: 0;
+}
+
+.map-legend
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+}
+
+.map-legend li
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.map-legend li::before
+{
+    content: "";
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--blue);
+    border-radius: 3px;
+    background: var(--zone-fill, rgba(197, 225, 250, 0.45));
+}
+
+.map-legend .zone-plaine-commune::before
+{
+    border-style: dashed;
 }
 
 .city-map

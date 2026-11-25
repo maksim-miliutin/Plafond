@@ -1,4 +1,11 @@
 import type { Point, Quartier } from "@plafond/domain";
+import type { Territory } from "@plafond/import";
+
+export interface CityMapArea
+{
+    rings: Quartier["rings"];
+    territory?: Territory;
+}
 
 export interface Frame
 {

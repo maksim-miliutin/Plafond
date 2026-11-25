@@ -1,6 +1,7 @@
-import type { Quartier, Span } from "@plafond/domain";
+import type { Span } from "@plafond/domain";
 
 import { cityCopy, territories, type MappedCity } from "../lib/city-copy";
+import type { CityMapArea } from "../lib/map";
 import { stretchesOf } from "../lib/places";
 import { guides } from "../lib/guides";
 import { Brand } from "./Brand";
@@ -10,12 +11,12 @@ import { CityMap } from "./CityMap";
 export interface CityPageProps
 {
     city: MappedCity;
-    outlines: readonly Quartier["rings"][];
+    areas: readonly CityMapArea[];
     spans: readonly Span[];
     links: readonly { href: string; label: string }[];
 }
 
-export function CityPage({ city, outlines, spans, links }: CityPageProps)
+export function CityPage({ city, areas, spans, links }: CityPageProps)
 {
     const copy = cityCopy[city];
 
@@ -27,12 +28,7 @@ export function CityPage({ city, outlines, spans, links }: CityPageProps)
             <p className="lead">
                 Plafond vérifie les baux signés {stretchesOf(spans)}, {copy.within}
             </p>
-            <div className="city-block">
-                <CityMap outlines={outlines} label={copy.mapLabel} />
-                <p className="credit">
-                    Fond de carte © <a href="https://www.ign.fr/">IGN</a>, Plan IGN · Carte <a href="https://leafletjs.com/">Leaflet</a>
-                </p>
-            </div>
+            <CityMap areas={areas} label={copy.mapLabel} />
             <section className="findings">
                 <h2>Que voulez-vous vérifier ?</h2>
                 <CheckList base="../" rentReach={copy.rentReach} />

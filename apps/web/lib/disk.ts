@@ -2,11 +2,12 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
-import { feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
+import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, type Contour, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
+import type { CityMapArea } from "./map";
+import { checkedTerritories, territoryOutline, type Outer } from "./metropole";
 import { arrondissementPages, communePages, placePages, territoryFacts, type CommunePage, type DistrictPage, type PlacePage, type TerritoryFacts } from "./places";
-import type { Outer } from "./metropole";
 import { territoryCopy } from "./territory-copy";
 
 export interface Places
@@ -72,6 +73,25 @@ export function outlinesFromDisk(): Record<MappedCity, Quartier["rings"][]>
         paris: [outlineOf(quartiers)],
         lyon: [outlineOf(lyon.outlines.filter((area) => area.name !== "Villeurbanne")), outlineOf(lyon.outlines.filter((area) => area.name === "Villeurbanne"))],
     };
+}
+
+// The outlines of the 130 communes, checked against the list of the Métropole so that none is drawn twice or missing.
+export function grandParisContoursFromDisk(): Contour[]
+{
+    return contoursOf(JSON.parse(readFileSync(join(seed, "grand-paris-contours.geojson"), "utf8")), metropoleFromDisk().map((commune) => commune.code));
+}
+
+// Paris keeps the outline the rent check searches; each territory around it is the union of its communes.
+export function grandParisMapFromDisk(): CityMapArea[]
+{
+    const { quartiers } = seeds();
+    const communes = metropoleFromDisk();
+    const contours = grandParisContoursFromDisk();
+
+    return [
+        { territory: "paris", rings: outlineOf(quartiers) },
+        ...checkedTerritories.map((territory) => ({ territory, rings: territoryOutline(territory, communes, contours) })),
+    ];
 }
 
 export function spansFromDisk(): Record<City, Span[]>

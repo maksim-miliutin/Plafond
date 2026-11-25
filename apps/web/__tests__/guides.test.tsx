@@ -75,7 +75,7 @@ test("the two city pages list every guide between them, and each check's first s
     const { RevisionFormStep } = await import("../components/RevisionFormStep");
     const { revisionStart } = await import("../lib/revision-flow");
     const spans = [{ from: "2019-07-01", lastDay: "2026-11-24" }];
-    const cities = renderToStaticMarkup(<CityPage city="paris" outlines={[]} spans={spans} links={[]} />) + renderToStaticMarkup(<CityPage city="lyon" outlines={[]} spans={spans} links={[]} />);
+    const cities = renderToStaticMarkup(<CityPage city="paris" areas={[]} spans={spans} links={[]} />) + renderToStaticMarkup(<CityPage city="lyon" areas={[]} spans={spans} links={[]} />);
 
     for (const guide of guides)
     {

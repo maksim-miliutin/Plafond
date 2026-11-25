@@ -1,6 +1,13 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+import { answerForGeoplateforme } from "./geoplateforme";
+
+test.beforeEach(async ({ page }) =>
+{
+    await answerForGeoplateforme(page, []);
+});
+
 test("a tenant of the Grand Paris finds a commune by a name typed without accents and learns what Plafond checks there", async ({ page }) =>
 {
     await page.goto("/");
@@ -22,6 +29,7 @@ test("the Grand Paris page fits a 320 px phone and passes axe, list and search i
 {
     await page.setViewportSize({ width: 320, height: 640 });
     await page.goto("/grand-paris/");
+    await expect(page.locator("path.zone")).toHaveCount(3);
     await page.getByLabel("Votre commune").fill("Montreuil");
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);

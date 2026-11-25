@@ -15,7 +15,7 @@ const communes: MetropoleCommune[] = [
     { code: "94080", name: "Vincennes", territory: null, former: [] },
 ];
 
-const page = renderToStaticMarkup(<GrandParis communes={communes} />);
+const page = renderToStaticMarkup(<GrandParis communes={communes} areas={[]} />);
 const items = page.match(/<li><strong>.*?<\/li>/g) ?? [];
 
 function itemOf(name: string): string

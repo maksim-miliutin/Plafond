@@ -5,8 +5,10 @@ import type { Quartier, Span } from "@plafond/domain";
 
 import { CityPage } from "../components/CityPage";
 import { guides } from "../lib/guides";
+import type { CityMapArea } from "../lib/map";
 
 const square: Quartier["rings"] = [[[2.3, 48.85], [2.31, 48.85], [2.31, 48.86], [2.3, 48.86], [2.3, 48.85]]];
+const areas: CityMapArea[] = [{ rings: square, territory: "paris" }];
 const span: Span = { from: "2019-07-01", lastDay: "2026-11-24" };
 const links = [
     { href: "../arrondissements/paris-1er/", label: "1er arrondissement" },
@@ -15,7 +17,7 @@ const links = [
 
 function paris(lastDay = span.lastDay): string
 {
-    return renderToStaticMarkup(<CityPage city="paris" outlines={[square]} spans={[{ ...span, lastDay }]} links={links} />);
+    return renderToStaticMarkup(<CityPage city="paris" areas={areas} spans={[{ ...span, lastDay }]} links={links} />);
 }
 
 test("the page names the leases Plafond can check, with the days of the data", () =>
@@ -31,7 +33,7 @@ test("days without rents split the sentence, so the page never claims them", () 
         { from: "2021-07-01", lastDay: "2023-06-30" },
         { from: "2024-07-01", lastDay: "2026-11-24" },
     ];
-    const page = renderToStaticMarkup(<CityPage city="paris" outlines={[square]} spans={spans} links={links} />);
+    const page = renderToStaticMarkup(<CityPage city="paris" areas={areas} spans={spans} links={links} />);
 
     expect(page).toContain("Plafond vérifie les baux signés du 1er juillet 2019 au 30 juin 2020, du 1er juillet 2021 au 30 juin 2023 et du 1er juillet 2024 au 24 novembre 2026, dans les 20 arrondissements");
 });
@@ -67,7 +69,7 @@ test("the neighbours line points to the ANIL list of the territories", () =>
 
 test("the map is labelled in French and credits IGN and Leaflet", () =>
 {
-    expect(paris()).toMatch(/role="region"[^>]*aria-label="Plan de Paris avec la limite de l&#x27;encadrement des loyers"|aria-label="Plan de Paris avec la limite de l&#x27;encadrement des loyers"[^>]*role="region"/);
+    expect(paris()).toMatch(/role="region"[^>]*aria-label="Plan de Paris, d&#x27;Est Ensemble et de Plaine Commune, où le loyer est encadré"/);
     expect(paris()).toContain("Fond de carte");
     expect(paris()).toContain('href="https://www.ign.fr/"');
     expect(paris()).toContain('href="https://leafletjs.com/"');
@@ -82,7 +84,7 @@ test("Changer de ville leads home and the notice is one tap away", () =>
 test("the Lyon page speaks of Lyon and Villeurbanne only", () =>
 {
     const spans: Span[] = [{ from: "2022-11-01", lastDay: "2023-10-31" }, { from: "2024-11-01", lastDay: "2026-10-31" }];
-    const page = renderToStaticMarkup(<CityPage city="lyon" outlines={[square, square]} spans={spans} links={[{ href: "villeurbanne/", label: "Villeurbanne" }]} />);
+    const page = renderToStaticMarkup(<CityPage city="lyon" areas={[{ rings: square }, { rings: square }]} spans={spans} links={[{ href: "villeurbanne/", label: "Villeurbanne" }]} />);
     const tiles = page.match(/<a[^>]*class="check"[^>]*>.*?<\/a>/gs) ?? [];
 
     expect(page).toContain("Plafond vérifie les baux signés du 1er novembre 2022 au 31 octobre 2023 et du 1er novembre 2024 au 31 octobre 2026, dans les 9 arrondissements de Lyon et à Villeurbanne");

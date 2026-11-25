@@ -9,5 +9,7 @@ export default function Lyon()
 {
     const links = fromDisk().communes.map((commune) => ({ href: `${commune.slug}/`, label: shortName(commune.name) }));
 
-    return <CityPage city="lyon" outlines={outlinesFromDisk().lyon} spans={spansFromDisk().lyon} links={links} />;
+    const areas = outlinesFromDisk().lyon.map((rings) => ({ rings }));
+
+    return <CityPage city="lyon" areas={areas} spans={spansFromDisk().lyon} links={links} />;
 }
