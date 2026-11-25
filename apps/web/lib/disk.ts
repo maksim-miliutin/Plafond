@@ -1,13 +1,14 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
-import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, type Contour, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
+import { arrondissementOf, checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
+import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, zonesOf, type Contour, type MetropoleCommune, type RentIndex, type Seeds } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
+import { grandParisDrawing, lyonDrawing, type Drawing } from "./home-map";
 import type { CityMapArea } from "./map";
 import { checkedTerritories, territoryOutline, type Outer } from "./metropole";
-import { arrondissementPages, communePages, placePages, territoryFacts, type CommunePage, type DistrictPage, type PlacePage, type TerritoryFacts } from "./places";
+import { arrondissementPages, communePages, districtSlug, placePages, territoryFacts, type CommunePage, type DistrictPage, type PlacePage, type TerritoryFacts } from "./places";
 import { territoryCopy } from "./territory-copy";
 
 export interface Places
@@ -113,4 +114,49 @@ export function territoryFromDisk(territory: Outer): TerritoryFacts
     const seed = territory === "est-ensemble" ? estEnsemble : plaineCommune;
 
     return territoryFacts(territory, seed, lawFromDisk(), territoryCopy[territory].example);
+}
+
+const departments = ["75", "77", "78", "91", "92", "93", "94", "95"];
+
+// The two maps of the first screen, drawn once at build time: the Grand Paris commune by commune, and Lyon.
+export function homeMapsFromDisk(tolerance: number): { grandParis: Drawing; lyon: Drawing }
+{
+    const { quartiers, lyon } = seeds();
+    const communes = metropoleFromDisk();
+    const territoryOf = new Map(communes.map((commune) => [commune.code, commune.territory]));
+    const zones = new Map(zonesOf(readFileSync(join(seed, "commune-zones.csv"), "utf8")).map((row) => [row.code, row.zone]));
+    const zoneOf = (code: string) =>
+    {
+        const zone = zones.get(code);
+        if (zone === undefined)
+        {
+            throw new Error(`no zone is known for commune ${code}`);
+        }
+
+        return zone;
+    };
+    const contours = grandParisContoursFromDisk();
+    const arrondissements = [...new Set(quartiers.map((quartier) => arrondissementOf(quartier.number)))].map((number) => ({
+        number,
+        slug: districtSlug(number),
+        rings: outlineOf(quartiers.filter((quartier) => arrondissementOf(quartier.number) === number)),
+    }));
+    const outer = contours.filter((contour) => contour.code !== "75056").map((contour) =>
+    {
+        const territory = territoryOf.get(contour.code);
+        return { ...contour, territory: territory === "est-ensemble" || territory === "plaine-commune" ? territory : null, zone: zoneOf(contour.code) };
+    });
+    const regions = contoursOf(JSON.parse(readFileSync(join(seed, "ile-de-france-departements.geojson"), "utf8")), departments);
+
+    const slugs = new Map(fromDisk().communes.map((commune) => [commune.name, commune.slug]));
+    const names = [...new Set(lyon.outlines.map((area) => area.name))];
+    const lyonAreas = names.map((name) => ({ name, slug: slugs.get(name) ?? "", rings: outlineOf(lyon.outlines.filter((area) => area.name === name)) }));
+    const around = contoursOf(JSON.parse(readFileSync(join(seed, "lyon-metropole-contours.geojson"), "utf8")))
+        .filter((contour) => contour.code !== "69123" && contour.code !== "69266")
+        .map((contour) => ({ ...contour, zone: zoneOf(contour.code) }));
+
+    return {
+        grandParis: grandParisDrawing({ arrondissements, communes: outer, paris: outlineOf(quartiers), parisContour: contours.find((contour) => contour.code === "75056")!.rings, departments: regions }, tolerance),
+        lyon: lyonDrawing({ areas: lyonAreas, communes: around }, tolerance),
+    };
 }
