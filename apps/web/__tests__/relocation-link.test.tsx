@@ -4,20 +4,20 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, expect, test } from "vitest";
 
-import { indexOf, relocationRulesOf, zoneListsOf, zonesOf } from "@plafond/import";
+import { indexOf, relocationRulesOf, zoneListsOf } from "@plafond/import";
 
 import { Relocation } from "../components/Relocation";
 import type { RelocationWorld } from "../lib/relocation-flow";
 
-import table from "../../../db/seed/commune-zones.csv?raw";
 import sources from "../../../db/seed/zone-lists.json?raw";
 import rules from "../../../db/seed/relocation-rules.json?raw";
 import irl from "../../../db/seed/irl.json?raw";
+import { seededZones } from "./zone-seeds";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 const world: RelocationWorld = {
-    communes: zonesOf(table).filter((row) => ["94080", "93066"].includes(row.code)),
+    communes: seededZones.filter((row) => ["94080", "93066"].includes(row.code)),
     lists: zoneListsOf(JSON.parse(sources)),
     capped: ["93066"],
     periods: relocationRulesOf(JSON.parse(rules)),

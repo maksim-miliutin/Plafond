@@ -2,18 +2,18 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 
-import { zoneListsOf, zonesOf } from "@plafond/import";
+import { zoneListsOf } from "@plafond/import";
 
 import { FeesFormStep } from "../components/FeesFormStep";
 import { NoticeFormStep } from "../components/NoticeFormStep";
 import { feesStart, type FeesFields } from "../lib/fees-flow";
 import { noticeStart, type NoticeFields } from "../lib/notice-flow";
 
-import table from "../../../db/seed/commune-zones.csv?raw";
 import sources from "../../../db/seed/zone-lists.json?raw";
+import { seededZones } from "./zone-seeds";
 
 const lists = zoneListsOf(JSON.parse(sources));
-const known = (code: string) => ({ commune: zonesOf(table).find((row) => row.code === code)!, lists });
+const known = (code: string) => ({ commune: seededZones.find((row) => row.code === code)!, lists });
 const checked = (html: string, name: string) => (html.match(/<input[^>]*>/g) ?? [])
     .filter((input) => input.includes(`name="${name}"`) && input.includes('checked=""'))
     .map((input) => /value="([^"]+)"/.exec(input)?.[1]);

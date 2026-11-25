@@ -2,19 +2,19 @@
 import { expect, test } from "vitest";
 
 import { arrondissementOf, outlineOf } from "@plafond/domain";
-import { contoursOf, metropoleOf, quartiersOf, zonesOf } from "@plafond/import";
+import { contoursOf, metropoleOf, quartiersOf } from "@plafond/import";
 
 import { grandParisDrawing, pathOf, projectionOf, sharedSides, simplified } from "../lib/home-map";
 
 import list from "../../../db/seed/grand-paris-communes.csv?raw";
 import outlines from "../../../db/seed/grand-paris-contours.geojson?raw";
 import regions from "../../../db/seed/ile-de-france-departements.geojson?raw";
-import table from "../../../db/seed/commune-zones.csv?raw";
 import parisQuartiers from "../../../db/seed/paris-quartiers.json?raw";
+import { seededZones } from "./zone-seeds";
 
 const communes = metropoleOf(list);
 const contours = contoursOf(JSON.parse(outlines), communes.map((commune) => commune.code));
-const zones = new Map(zonesOf(table).map((row) => [row.code, row.zone]));
+const zones = new Map(seededZones.map((row) => [row.code, row.zone]));
 const quartiers = quartiersOf(JSON.parse(parisQuartiers));
 const territoryOf = new Map(communes.map((commune) => [commune.code, commune.territory]));
 

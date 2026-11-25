@@ -72,11 +72,12 @@ export interface ZoneLists
 {
     tense: ZoneList;
     veryTense: ZoneList;
+    earlierVeryTense: ZoneList & { until: Day };  // the version of zone A bis before the current one, up to its last day excluded
 }
 
 export function zoneListsOf(source: unknown): ZoneLists
 {
-    const listOf = (name: "tense" | "veryTense"): ZoneList =>
+    const listOf = (name: keyof ZoneLists): ZoneList =>
     {
         const list = typeof source === "object" && source !== null ? (source as Record<string, unknown>)[name] : undefined;
         const { from, title, url } = (typeof list === "object" && list !== null ? list : {}) as Record<string, unknown>;
@@ -88,5 +89,14 @@ export function zoneListsOf(source: unknown): ZoneLists
         return { from, title, url };
     };
 
-    return { tense: listOf("tense"), veryTense: listOf("veryTense") };
+    const tense = listOf("tense");
+    const veryTense = listOf("veryTense");
+    const earlier = listOf("earlierVeryTense");
+    const until = ((source as Record<string, Record<string, unknown>>)["earlierVeryTense"] ?? {})["until"];
+    if (typeof until !== "string" || !isDay(until) || until !== veryTense.from)
+    {
+        throw new ZonesError("the earlier version of zone A bis does not end the day the current one starts");
+    }
+
+    return { tense, veryTense, earlierVeryTense: { ...earlier, until } };
 }
