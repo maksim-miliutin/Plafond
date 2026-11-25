@@ -98,6 +98,11 @@ export const pages: readonly Page[] = [
         description: "Vérifiez si la révision annuelle de votre loyer respecte l'indice de référence des loyers et les délais, et préparez la lettre au propriétaire.",
     },
     {
+        path: "relocation/",
+        title: "Hausse du loyer à la relocation\u00A0: vérifiez-la | Plafond",
+        description: "Dans le Grand Paris, vérifiez si le loyer de votre nouveau bail dépasse celui du locataire précédent révisé selon l'indice, ou le gel des logements F et G.",
+    },
+    {
         path: "ailleurs/",
         title: "Locataires ailleurs en France\u00A0: six vérifications | Plafond",
         description: "Hausse annuelle, DPE, dépôt de garantie, charges, préavis et frais d'agence\u00A0: six vérifications gratuites qui ne dépendent pas de votre ville.",

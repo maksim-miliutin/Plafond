@@ -26,3 +26,4 @@ export { agencyLetter, type AgencyLetterInput } from "./agency-letter.js";
 export type { IndexRow, Quarter } from "./revision.js";
 export { revision, type Revision, type RevisionCheck } from "./revision.js";
 export { revisionLetter, type RevisionLetterInput } from "./revision-letter.js";
+export { relocation, type Basis, type Relocation, type RelocationCheck, type RelocationField, type RelocationPeriod, type Vacancy } from "./relocation.js";

@@ -50,6 +50,8 @@ The maps draw communes from the [Contours administratifs](https://www.data.gouv.
 
 `db/seed/zone-lists.json` records, with its source, the day each of those versions took effect: 24 December 2025 for the list of décret n° 2025-1267, 26 June 2026 for zone A bis since the arrêté of 23 June 2026. A form opened from a commune fills in its zone only for a day both lists cover; for an earlier lease or letter it asks, since the table holds no older version.
 
+`db/seed/relocation-rules.json` lists the leases each yearly version of décret n° 2017-1198 covers, by the day they are signed, with the decree that set it: from 1 August 2026 up to 1 August 2027 excluded under décret n° 2026-644 of 20 July 2026. The rent check on reletting answers only for those days; the decree of the next year is added as a new period when it is published, usually in July.
+
 ## Status
 
 The app is live at https://leplafond.org/ and can be added to the home screen of a phone. It walks from the address to the letter and shows only what the domain calculates. The rents of Paris were checked against the official map of reference rents of the DRIHL Île-de-France; those of Lyon are still to be checked against the Métropole's own simulator.

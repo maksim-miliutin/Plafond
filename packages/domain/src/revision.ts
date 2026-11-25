@@ -54,8 +54,8 @@ export function revision(lease: Revision, index: readonly IndexRow[]): RevisionC
         return { kind: "lapsed", lastDay, allowed: lease.rent, excess: over(lease.rent) };
     }
 
-    const quarter = lease.quarter ?? latest(index, lease.signedOn)?.quarter;
-    const to = quarter === undefined ? undefined : latest(index.filter((row) => row.quarter === quarter), lease.revisedOn);
+    const quarter = lease.quarter ?? latestIndex(index, lease.signedOn)?.quarter;
+    const to = quarter === undefined ? undefined : latestIndex(index.filter((row) => row.quarter === quarter), lease.revisedOn);
     const from = to === undefined ? undefined : index.find((row) => row.quarter === to.quarter && row.year === to.year - 1);
     if (quarter === undefined || to === undefined || from === undefined)
     {
@@ -77,7 +77,8 @@ export function revision(lease: Revision, index: readonly IndexRow[]): RevisionC
     };
 }
 
-function latest(rows: readonly IndexRow[], on: Day): IndexRow | undefined
+// The last index published on a day; a quarter published after it was not yet known.
+export function latestIndex(rows: readonly IndexRow[], on: Day): IndexRow | undefined
 {
     return rows.filter((row) => row.publishedOn <= on).reduce<IndexRow | undefined>(
         (best, row) => best === undefined || row.publishedOn > best.publishedOn ? row : best,

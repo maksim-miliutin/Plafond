@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { arrondissementOf, checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type Span } from "@plafond/domain";
-import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, seedsFrom, zoneListsOf, zonesOf, type CommuneZone, type Contour, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
+import { arrondissementOf, checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type RelocationPeriod, type Span } from "@plafond/domain";
+import { contoursOf, feeCapsOf, indexOf, lawOf, metropoleOf, relocationRulesOf, seedsFrom, zoneListsOf, zonesOf, type CommuneZone, type Contour, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
 import { grandParisDrawing, lyonDrawing, type Drawing } from "./home-map";
@@ -54,6 +54,11 @@ export function feeCapsFromDisk(): FeeCaps[]
 export function indexFromDisk(): RentIndex
 {
     return indexOf(JSON.parse(readFileSync(join(seed, "irl.json"), "utf8")));
+}
+
+export function relocationRulesFromDisk(): RelocationPeriod[]
+{
+    return relocationRulesOf(JSON.parse(readFileSync(join(seed, "relocation-rules.json"), "utf8")));
 }
 
 export function metropoleFromDisk(): MetropoleCommune[]
