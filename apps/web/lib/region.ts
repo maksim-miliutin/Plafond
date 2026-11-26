@@ -19,8 +19,8 @@ export const departmentNames: Record<string, string> = {
     "95": "Val-d'Oise",
 };
 
-// The 1 266 communes go to the browser as one line each, a fraction of the same list as objects:
-// code;name;part;zone ABC;A bis before;Grand Paris;former names joined by |.
+// The 1 266 communes go to the browser as one line each, a fraction of the same list as objects: code;name;part;zone ABC;
+// A bis before;Grand Paris;former names joined by |;older parts of the list;older A bis, 1, 0 or m where merged parts differ.
 export function packRegion(communes: readonly RegionalCommune[], metropole: readonly MetropoleCommune[]): string
 {
     const former = new Map(metropole.map((commune) => [commune.code, commune.former]));
@@ -34,6 +34,8 @@ export function packRegion(communes: readonly RegionalCommune[], metropole: read
             commune.veryTenseBefore ? 1 : 0,
             commune.grandParis ? 1 : 0,
             (former.get(commune.code) ?? []).join("|"),
+            (commune.pastTense ?? []).map((part) => part ?? "m").join(""),
+            (commune.pastVeryTense ?? []).map((flag) => (flag === null ? "m" : flag ? "1" : "0")).join(""),
         ].join(";"))
         .join("\n");
 }
@@ -42,7 +44,7 @@ export function unpackRegion(text: string): RegionCommune[]
 {
     return text.split("\n").filter((line) => line !== "").map((line) =>
     {
-        const [code = "", name = "", part = "0", zone = "C", before = "0", grandParis = "0", former = ""] = line.split(";");
+        const [code = "", name = "", part = "0", zone = "C", before = "0", grandParis = "0", former = "", pastTense = "", pastVeryTense = ""] = line.split(";");
 
         return {
             code,
@@ -53,6 +55,8 @@ export function unpackRegion(text: string): RegionCommune[]
             veryTenseBefore: before === "1",
             grandParis: grandParis === "1",
             former: former === "" ? [] : former.split("|"),
+            pastTense: [...pastTense].map((part) => (part === "m" ? null : Number(part) as RegionalCommune["tensePart"])),
+            pastVeryTense: [...pastVeryTense].map((flag) => (flag === "m" ? null : flag === "1")),
         };
     });
 }

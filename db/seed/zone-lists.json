@@ -14,5 +14,72 @@
         "until": "2026-06-26",
         "title": "Arrêté du 5 septembre 2025, qui révise la zone A bis de l'arrêté du 1er août 2014",
         "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000052198878"
-    }
+    },
+    "tenseHistory": [
+        {
+            "column": "tlv_2013",
+            "from": "2013-05-13",
+            "until": "2015-10-16",
+            "title": "Annexe du décret n° 2013-392 du 10 mai 2013, dans sa version initiale",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000027400640"
+        },
+        {
+            "column": "tlv_2015",
+            "from": "2015-10-16",
+            "until": "2023-08-27",
+            "title": "Annexe du décret n° 2013-392, dans sa version du 16 octobre 2015 (décret n° 2015-1284)",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000031327191"
+        },
+        {
+            "column": "tlv_2023_part",
+            "from": "2023-08-27",
+            "until": "2025-12-24",
+            "title": "Annexe du décret n° 2013-392, dans sa version du 27 août 2023 (décret n° 2023-822)",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000048000600"
+        }
+    ],
+    "veryTenseHistory": [
+        {
+            "column": "a_bis_2014",
+            "from": "2014-08-07",
+            "until": "2014-10-15",
+            "title": "Annexe I de l'arrêté du 1er août 2014, dans sa version initiale",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000029345859"
+        },
+        {
+            "column": "a_bis_2014_10",
+            "from": "2014-10-15",
+            "until": "2019-07-06",
+            "title": "Annexe I de l'arrêté du 1er août 2014, dans sa version du 15 octobre 2014",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000029587742"
+        },
+        {
+            "column": "a_bis_2019",
+            "from": "2019-07-06",
+            "until": "2022-02-21",
+            "title": "Annexe I de l'arrêté du 1er août 2014, dans sa version du 6 juillet 2019",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000038757616"
+        },
+        {
+            "column": "a_bis_2022",
+            "from": "2022-02-21",
+            "until": "2023-10-04",
+            "title": "Annexe I de l'arrêté du 1er août 2014, dans sa version du 21 février 2022",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000045296769"
+        },
+        {
+            "column": "a_bis_2023",
+            "from": "2023-10-04",
+            "until": "2024-07-12",
+            "title": "Annexe I de l'arrêté du 1er août 2014, dans sa version du 4 octobre 2023",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000048147176"
+        },
+        {
+            "column": "a_bis_2024",
+            "from": "2024-07-12",
+            "until": "2025-09-07",
+            "title": "Annexe I de l'arrêté du 1er août 2014, dans sa version du 12 juillet 2024",
+            "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000050009363"
+        }
+    ]
 }

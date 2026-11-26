@@ -29,7 +29,8 @@ export function FeesFormStep({ fields, errors, onAnswer, commune, today = "" }: 
     // Once the tenant picks an answer the choice stays theirs: the key that would redraw it with the filled-in one is frozen.
     const [kept, setKept] = useState<string | null>(fields.zone !== "" ? "answered" : null);
     const chosen = kept !== null;
-    const filled = commune === undefined ? null : feeZoneOn(commune.commune, isDay(signedOn) ? signedOn : today, commune.lists);
+    const day = isDay(signedOn) ? signedOn : today;
+    const filled = commune === undefined ? null : feeZoneOn(commune.commune, day, commune.lists);
     const zone = commune === undefined || chosen ? fields.zone : filled ?? "";
 
     function answer(event: FormEvent<HTMLFormElement>)
@@ -56,7 +57,7 @@ export function FeesFormStep({ fields, errors, onAnswer, commune, today = "" }: 
                     Paris et une partie de sa proche banlieue sont en zone très tendue. Lyon, Marseille, Lille, Bordeaux, Toulouse et la
                     plupart des grandes agglomérations sont en zone tendue.
                 </p>
-                {commune !== undefined && <p className="hint" aria-live="polite">{feeZoneNote(commune.commune, filled, commune.lists)}</p>}
+                {commune !== undefined && <p className="hint" aria-live="polite">{feeZoneNote(commune.commune, filled, commune.lists, day)}</p>}
                 <div className="stack" onChange={(event) => (event.target as HTMLInputElement).name === "zone" && kept === null && setKept(`filled-${zone}`)}>
                     <Choice
                         key={kept ?? `filled-${zone}`}

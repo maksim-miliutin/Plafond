@@ -40,22 +40,35 @@ test("Alfortville's fees are tense for a lease of 25 June 2026 and very tense fr
     expect(fee("94002", "2026-06-26")).toBe("very-tense");
 });
 
-// Zone A bis is known from 7 September 2025 under the arrêté of 5 September 2025; the list only from 24 December 2025.
-test("for a lease older than the versions Plafond holds, the zone is left to the tenant", () =>
+// The older versions reach back to 13 May 2013 for the list and 7 August 2014 for zone A bis. Alfortville entered zone A bis
+// on 12 July 2024, left it on 7 September 2025 and came back on 26 June 2026.
+test("for an older lease the zone comes from the version in force on its day, back to 2013 and 2014", () =>
 {
     expect(fee("94080", "2025-10-01")).toBe("very-tense");
-    expect(fee("94080", "2025-09-06")).toBeNull();
-    expect(fee("91377", "2025-12-23")).toBeNull();
-    expect(fee("91377", "2025-12-24")).toBe("tense");
-    expect(tense("91377", "2025-12-23")).toBeNull();
-    expect(feeZoneNote(named("91377"), null, lists)).toBe("Massy : pour un bail signé avant le 24 décembre 2025, Plafond n'a pas les listes de l'époque. Choisissez la zone vous-même.");
-    expect(feeZoneNote(named("94080"), null, lists)).toContain("avant le 7 septembre 2025");
+    expect(fee("94080", "2025-09-06")).toBe("very-tense");
+    expect(fee("91377", "2025-12-23")).toBe("tense");
+    expect(tense("91377", "2020-01-01")).toBe(true);
+    expect(fee("94002", "2024-07-11")).toBe("tense");
+    expect(fee("94002", "2024-07-12")).toBe("very-tense");
+    expect(fee("94002", "2025-09-07")).toBe("tense");
+    expect([fee("77022", "2020-01-01"), tense("77022", "2020-01-01")]).toEqual(["other", false]);
+    expect([fee("77022", "2024-01-01"), tense("77022", "2024-01-01")]).toEqual(["tense", false]);
+});
+
+test("before the oldest versions, and for a commune merged from parts the zone treated apart, the tenant says", () =>
+{
+    expect(tense("91377", "2013-05-12")).toBeNull();
+    expect(fee("91377", "2014-08-06")).toBeNull();
+    expect(feeZoneNote(named("91377"), null, lists, "2014-08-06")).toBe("Massy : pour un bail signé avant le 7 août 2014, Plafond n'a pas les listes de l'époque. Choisissez la zone vous-même.");
+    expect(fee("93066", "2020-01-01")).toBeNull();
+    expect(fee("93066", "2025-10-01")).toBe("very-tense");
+    expect(feeZoneNote(named("78551"), null, lists, "2020-01-01")).toBe("Saint-Germain-en-Laye : à cette date, la zone dépend de l'ancienne commune où se trouve le logement, réunie depuis à Saint-Germain-en-Laye. Choisissez la zone vous-même.");
+    expect(tenseNote(named("91377"), null, lists, true)).toContain("avant le 13 mai 2013");
 });
 
 test("the form says where the zone comes from, asks for the lease's date for the notice, and lets the tenant change it", () =>
 {
-    expect(feeZoneNote(named("94080"), "very-tense", lists)).toBe("Vincennes : zone très tendue pour les frais d'agence, d'après les listes en vigueur à la date du bail. Vous pouvez corriger ce choix.");
+    expect(feeZoneNote(named("94080"), "very-tense", lists, today)).toBe("Vincennes : zone très tendue pour les frais d'agence, d'après les listes en vigueur à la date du bail. Vous pouvez corriger ce choix.");
     expect(tenseNote(named("94080"), null, lists, false)).toBe("Vincennes : indiquez la date de signature ou du dernier renouvellement du bail pour que Plafond retrouve la zone, ou répondez vous-même.");
-    expect(tenseNote(named("94080"), null, lists, true)).toContain("avant le 24 décembre 2025, Plafond n'a pas la liste de l'époque");
     expect(tenseNote(named("77186"), false, lists, true)).toBe("Fontainebleau : hors zone tendue, d'après la liste en vigueur à la date du bail. Un autre motif peut tout de même réduire le préavis.");
 });

@@ -51,7 +51,9 @@ test("opened from a commune, the notice form asks for the lease's date, then ans
     await expect(answer()).toHaveValue("yes");
     await expect(page.getByText("Athis-Mons : en zone tendue")).toBeVisible();
 
-    await page.getByLabel("Date de signature ou du dernier renouvellement du bail").fill("2025-06-01");
+    await page.getByLabel("Date de signature ou du dernier renouvellement du bail").fill("2020-06-01");
+    await expect(answer()).toHaveValue("yes");
+    await page.getByLabel("Date de signature ou du dernier renouvellement du bail").fill("2013-01-01");
     await expect(answer()).toHaveCount(0);
 
     for (const code of ["77022", "78043", "77186"])
