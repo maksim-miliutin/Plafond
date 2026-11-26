@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { departmentNames, regionMatching, unpackRegion, zoneLineOf } from "../lib/region";
+import { departmentNames, regionDepartments, regionMatching, unpackRegion, zoneLineOf } from "../lib/region";
 import { CommuneChecks } from "./CommuneChecks";
 
 const shownAtMost = 20;
@@ -29,7 +29,7 @@ export function RegionSearch({ communes, capped }: { communes: string; capped: r
             setTyped(name.slice(0, 80));
         }
 
-        if (code !== null && code in departmentNames)
+        if (code !== null && (regionDepartments as readonly string[]).includes(code))
         {
             setDepartment(code);
         }
@@ -50,7 +50,7 @@ export function RegionSearch({ communes, capped }: { communes: string; capped: r
             <label htmlFor="departement" className="label">Département</label>
             <select id="departement" className="field" value={department} onChange={(event) => setDepartment(event.target.value)}>
                 <option value="">Tous les départements</option>
-                {Object.entries(departmentNames).map(([code, name]) => <option key={code} value={code}>{name} ({code})</option>)}
+                {regionDepartments.map((code) => <option key={code} value={code}>{departmentNames[code]} ({code})</option>)}
             </select>
             <p id="commune-count" className="hint" aria-live="polite">
                 {browsing ? `${pool.length} communes en ${departmentNames[department]} : touchez la vôtre ou tapez son nom.` : countOf(typed, found.length)}

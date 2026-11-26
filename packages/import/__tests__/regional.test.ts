@@ -2,11 +2,13 @@
 import { expect, test } from "vitest";
 
 import { metropoleOf } from "../src/metropole.js";
-import { latestFeeZone, RegionalError, regionalCommunesOf, zoneHistoryOf } from "../src/regional.js";
+import { latestFeeZone, lyonCommunesOf, RegionalError, regionalCommunesOf, zoneHistoryOf } from "../src/regional.js";
 import { zoneListsOf } from "../src/zones.js";
 
 import communes from "../../../db/seed/grand-paris-communes.csv?raw";
 import seed from "../../../db/seed/ile-de-france-zones.csv?raw";
+import lyonSeed from "../../../db/seed/lyon-zones.csv?raw";
+import lyonOutlines from "../../../db/seed/lyon-metropole-contours.geojson?raw";
 import tenseTable from "../../../db/seed/tlv-history.csv?raw";
 import veryTenseTable from "../../../db/seed/a-bis-history.csv?raw";
 import sources from "../../../db/seed/zone-lists.json?raw";
@@ -77,4 +79,18 @@ test("the versions follow each other up to the current ones, and a history table
     expect(lists.veryTenseHistory.at(-1)).toMatchObject({ from: "2024-07-12", until: "2025-09-07", column: "a_bis_2024" });
     expect(() => zoneHistoryOf("code;tlv_2013\n75056;3\n", "code;a_bis_2014\n75056;1\n", ["tlv_2013"], ["a_bis_2014"])).toThrow(RegionalError);
     expect(() => zoneHistoryOf("code;tlv_2013\n75056;1\n", "code;a_bis_2014\n75056;1\n", ["tlv_2015"], ["a_bis_2014"])).toThrow("lacks the columns");
+});
+
+// The same tables for the 58 communes of the Métropole de Lyon: none in zone A bis or part 2, four outside the list.
+test("around Lyon no commune is very tense, and four of the Monts d'Or and the plain are not tense at all", () =>
+{
+    const lyon = lyonCommunesOf(lyonSeed);
+    const drawn = (JSON.parse(lyonOutlines) as { features: { properties: { code: string } }[] }).features.map((feature) => feature.properties.code);
+
+    expect(lyon.map((commune) => commune.code).sort()).toEqual([...drawn].sort());
+    expect(lyon.find((commune) => commune.code === "69123")).toMatchObject({ name: "Lyon", department: "69", grandParis: false, tensePart: 1 });
+    expect(lyon.filter((commune) => commune.tensePart === 0).map((commune) => commune.name).sort()).toEqual(["Jonage", "Poleymieux-au-Mont-d'Or", "Quincieux", "Saint-Germain-au-Mont-d'Or"]);
+    expect(lyon.some((commune) => commune.tensePart === 2 || commune.abcZone === "Abis")).toBe(false);
+    expect(lyon.every((commune) => history.has(commune.code))).toBe(true);
+    expect(() => lyonCommunesOf("code;nom;departement;metropole_lyon;tlv_part;abc_zone;a_bis_2025\n75056;Paris;75;1;1;Abis;1\n")).toThrow("not a commune of the Métropole de Lyon");
 });

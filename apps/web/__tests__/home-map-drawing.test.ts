@@ -14,7 +14,7 @@ import { seededZones } from "./zone-seeds";
 
 const communes = metropoleOf(list);
 const contours = contoursOf(JSON.parse(outlines), communes.map((commune) => commune.code));
-const zones = new Map(seededZones.map((row) => [row.code, row.zone]));
+const zones = new Map(seededZones.map((row) => [row.code, row]));
 const quartiers = quartiersOf(JSON.parse(parisQuartiers));
 const territoryOf = new Map(communes.map((commune) => [commune.code, commune.territory]));
 
@@ -27,10 +27,11 @@ const drawing = grandParisDrawing({
     communes: contours.filter((contour) => contour.code !== "75056").map((contour) =>
     {
         const territory = territoryOf.get(contour.code);
-        return { ...contour, territory: territory === "est-ensemble" || territory === "plaine-commune" ? territory : null, zone: zones.get(contour.code)! };
+        return { ...contour, territory: territory === "est-ensemble" || territory === "plaine-commune" ? territory : null, zone: zones.get(contour.code)!.zone, tense: zones.get(contour.code)!.tense };
     }),
     paris: outlineOf(quartiers),
-    parisZone: zones.get("75056")!,
+    parisZone: zones.get("75056")!.zone,
+    parisTense: zones.get("75056")!.tense,
     parisContour: contours.find((contour) => contour.code === "75056")!.rings,
     departments: contoursOf(JSON.parse(regions)),
 }, 0.7);
@@ -52,7 +53,7 @@ test("each shape leads to the page that says more, and each grey commune carries
     expect(find("Saint-Denis")?.page).toBe("grand-paris/plaine-commune/");
     expect(find("Vincennes")).toMatchObject({ page: "grand-paris/", zone: "very-tense" });
     expect(find("Argenteuil")).toMatchObject({ kind: "plain", zone: "tense" });
-    expect(drawing.shapes.every((shape) => shape.zone !== undefined && /^\d[\dAB]\d{3}$/.test(shape.code ?? ""))).toBe(true);
+    expect(drawing.shapes.every((shape) => shape.zone !== undefined && shape.tense === true && /^\d[\dAB]\d{3}$/.test(shape.code ?? ""))).toBe(true);
 });
 
 test("the drawing fits its frame, with the territories named on it and the small map of the region", () =>

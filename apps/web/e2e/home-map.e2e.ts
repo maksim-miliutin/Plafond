@@ -43,6 +43,8 @@ test("the Lyon tab draws Lyon by arrondissement and leads to the page of the one
     await expect(tab).toHaveAttribute("aria-selected", "true");
     await touch(page, "Lyon 3e");
     await expect(page.getByRole("tabpanel").getByRole("link", { name: "Les loyers de référence de Lyon 3e" })).toHaveAttribute("href", "lyon/lyon-3e-arrondissement/");
+    await expect(page.getByRole("tabpanel").getByRole("link", { name: "Vérifier mon préavis" })).toHaveAttribute("href", "preavis/?commune=69123");
+    await expect(page.getByRole("tabpanel").getByRole("link", { name: "Vérifier la hausse du loyer à la relocation" })).toHaveAttribute("href", "relocation/?commune=69123");
 });
 
 test("the plan fits a 320 px phone and a wide screen, and passes the accessibility checks", async ({ page }) =>

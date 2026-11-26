@@ -65,7 +65,7 @@ export function RelocationFormStep({ fields, errors, communes, onAnswer }: Reloc
                     key={fields.commune}
                     id="commune"
                     label="Commune du logement"
-                    hint="Une commune d'Île-de-France, avec son département."
+                    hint="Une commune d'Île-de-France ou de la Métropole de Lyon, avec son département."
                     listed={named}
                     value={fields.commune}
                     error={errors.commune}

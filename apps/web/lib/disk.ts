@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { arrondissementOf, checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type RelocationPeriod, type Span } from "@plafond/domain";
-import { contoursOf, feeCapsOf, indexOf, latestFeeZone, lawOf, metropoleOf, regionalCommunesOf, relocationRulesOf, seedsFrom, zoneHistoryOf, zoneListsOf, zonesOf, type CommuneZone, type Contour, type RegionalCommune, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
+import { contoursOf, feeCapsOf, indexOf, latestFeeZone, lawOf, lyonCommunesOf, metropoleOf, regionalCommunesOf, relocationRulesOf, seedsFrom, zoneHistoryOf, zoneListsOf, type CommuneZone, type Contour, type RegionalCommune, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
 import { grandParisDrawing, lyonDrawing, type Drawing } from "./home-map";
@@ -123,8 +123,8 @@ export function territoryFromDisk(territory: Outer): TerritoryFacts
 
 const departments = ["75", "77", "78", "91", "92", "93", "94", "95"];
 
-// The communes of Île-de-France with the older versions of both lists, as zone-lists.json orders them.
-export function regionFromDisk(): RegionalCommune[]
+// A table of communes with the older versions of both lists, as zone-lists.json orders them.
+function withHistory(communes: RegionalCommune[]): RegionalCommune[]
 {
     const lists = zoneListsFromDisk();
     const history = zoneHistoryOf(
@@ -134,7 +134,7 @@ export function regionFromDisk(): RegionalCommune[]
         lists.veryTenseHistory.map((list) => list.column),
     );
 
-    return regionalCommunesOf(readFileSync(join(seed, "ile-de-france-zones.csv"), "utf8")).map((commune) =>
+    return communes.map((commune) =>
     {
         const past = history.get(commune.code);
         if (past === undefined)
@@ -146,18 +146,31 @@ export function regionFromDisk(): RegionalCommune[]
     });
 }
 
-// Every commune whose zone Plafond knows: Île-de-France by the latest lists, then the communes drawn around Lyon.
-export function zonesFromDisk(): CommuneZone[]
+export function regionFromDisk(): RegionalCommune[]
 {
-    const region = regionFromDisk().map((commune): CommuneZone => ({ code: commune.code, name: commune.name, zone: latestFeeZone(commune) }));
-    const others = zonesOf(readFileSync(join(seed, "commune-zones.csv"), "utf8"));
-    const twice = others.find((commune) => region.some((one) => one.code === commune.code));
-    if (twice !== undefined)
-    {
-        throw new Error(`commune ${twice.code} is in both tables of zones`);
-    }
+    return withHistory(regionalCommunesOf(readFileSync(join(seed, "ile-de-france-zones.csv"), "utf8")));
+}
 
-    return [...region, ...others];
+export function lyonFromDisk(): RegionalCommune[]
+{
+    return withHistory(lyonCommunesOf(readFileSync(join(seed, "lyon-zones.csv"), "utf8")));
+}
+
+// The communes the forms take from a link: Île-de-France and the Métropole de Lyon, Lyon and Villeurbanne capped.
+export function checkedCommunesFromDisk(): { communes: RegionalCommune[]; capped: string[] }
+{
+    const metropole = metropoleFromDisk();
+
+    return {
+        communes: [...regionFromDisk(), ...lyonFromDisk()],
+        capped: [...metropole.filter((commune) => commune.territory !== null).map((commune) => commune.code), "69123", "69266"],
+    };
+}
+
+// Every commune whose zone Plafond knows, by the latest lists: Île-de-France, then the Métropole de Lyon.
+export function zonesFromDisk(): (CommuneZone & { tense: boolean })[]
+{
+    return [...regionFromDisk(), ...lyonFromDisk()].map((commune) => ({ code: commune.code, name: commune.name, zone: latestFeeZone(commune), tense: commune.tensePart === 1 }));
 }
 
 export function zoneListsFromDisk(): ZoneLists
@@ -171,7 +184,7 @@ export function homeMapsFromDisk(tolerance: number): { grandParis: Drawing; lyon
     const { quartiers, lyon } = seeds();
     const communes = metropoleFromDisk();
     const territoryOf = new Map(communes.map((commune) => [commune.code, commune.territory]));
-    const zones = new Map(zonesFromDisk().map((row) => [row.code, row.zone]));
+    const zones = new Map(zonesFromDisk().map((row) => [row.code, row]));
     const zoneOf = (code: string) =>
     {
         const zone = zones.get(code);
@@ -191,19 +204,23 @@ export function homeMapsFromDisk(tolerance: number): { grandParis: Drawing; lyon
     const outer = contours.filter((contour) => contour.code !== "75056").map((contour) =>
     {
         const territory = territoryOf.get(contour.code);
-        return { ...contour, territory: territory === "est-ensemble" || territory === "plaine-commune" ? territory : null, zone: zoneOf(contour.code) };
+        return { ...contour, territory: territory === "est-ensemble" || territory === "plaine-commune" ? territory : null, zone: zoneOf(contour.code).zone, tense: zoneOf(contour.code).tense };
     });
     const regions = contoursOf(JSON.parse(readFileSync(join(seed, "ile-de-france-departements.geojson"), "utf8")), departments);
 
     const slugs = new Map(fromDisk().communes.map((commune) => [commune.name, commune.slug]));
     const names = [...new Set(lyon.outlines.map((area) => area.name))];
-    const lyonAreas = names.map((name) => ({ name, slug: slugs.get(name) ?? "", rings: outlineOf(lyon.outlines.filter((area) => area.name === name)) }));
+    const lyonAreas = names.map((name) =>
+    {
+        const code = name === "Villeurbanne" ? "69266" : "69123";
+        return { name, slug: slugs.get(name) ?? "", rings: outlineOf(lyon.outlines.filter((area) => area.name === name)), code, zone: zoneOf(code).zone, tense: zoneOf(code).tense };
+    });
     const around = contoursOf(JSON.parse(readFileSync(join(seed, "lyon-metropole-contours.geojson"), "utf8")))
         .filter((contour) => contour.code !== "69123" && contour.code !== "69266")
-        .map((contour) => ({ ...contour, zone: zoneOf(contour.code) }));
+        .map((contour) => ({ ...contour, zone: zoneOf(contour.code).zone, tense: zoneOf(contour.code).tense }));
 
     return {
-        grandParis: grandParisDrawing({ arrondissements, communes: outer, paris: outlineOf(quartiers), parisZone: zoneOf("75056"), parisContour: contours.find((contour) => contour.code === "75056")!.rings, departments: regions }, tolerance),
+        grandParis: grandParisDrawing({ arrondissements, communes: outer, paris: outlineOf(quartiers), parisZone: zoneOf("75056").zone, parisTense: zoneOf("75056").tense, parisContour: contours.find((contour) => contour.code === "75056")!.rings, departments: regions }, tolerance),
         lyon: lyonDrawing({ areas: lyonAreas, communes: around }, tolerance),
     };
 }
