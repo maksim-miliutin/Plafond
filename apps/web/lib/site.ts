@@ -98,6 +98,11 @@ export const pages: readonly Page[] = [
         description: "Vérifiez si la révision annuelle de votre loyer respecte l'indice de référence des loyers et les délais, et préparez la lettre au propriétaire.",
     },
     {
+        path: "ile-de-france/",
+        title: "Votre commune en Île-de-France | Plafond",
+        description: "Les 1 266 communes d'Île-de-France\u00A0: zone tendue ou non, préavis, frais d'agence et hausse du loyer à la relocation, commune par commune.",
+    },
+    {
         path: "relocation/",
         title: "Hausse du loyer à la relocation\u00A0: vérifiez-la | Plafond",
         description: "Dans le Grand Paris, vérifiez si le loyer de votre nouveau bail dépasse celui du locataire précédent révisé selon l'indice, ou le gel des logements F et G.",

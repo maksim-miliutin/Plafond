@@ -78,8 +78,8 @@ test("digits typed in the search find nothing and ask for the commune's name", (
 // each opening with the commune's code so that the form fills the zone in.
 test("with its zone known, each commune offers the notice and agency fee checks for its own code", () =>
 {
-    const zoned = renderToStaticMarkup(<CommuneSearch communes={communes} zones={{ "94080": "very-tense", "93066": "very-tense" }} />).replaceAll("&#x27;", "'");
-    const item = (name: string) => (zoned.match(/<li><strong>.*?<\/li>/g) ?? []).find((one) => one.includes(`<strong>${name}</strong>`)) ?? "";
+    const zoned = renderToStaticMarkup(<CommuneSearch communes={communes} tense={{ "94080": true, "93066": true }} />).replaceAll("&#x27;", "'");
+    const item = (name: string) => (zoned.match(/<li><strong>(?:(?!<li><strong>).)*/g) ?? []).find((one) => one.includes(`<strong>${name}</strong>`)) ?? "";
 
     expect(item("Vincennes")).toContain('<span class="zone-tag">Zone tendue</span>');
     expect(item("Vincennes")).toContain('<a href="../preavis/?commune=94080">Vérifier mon préavis</a>');

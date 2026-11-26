@@ -33,6 +33,9 @@ export function Home({ shapes, maps }: { shapes: Record<MappedCity, string>; map
                 <a href="grand-paris/">Autre commune du Grand Paris</a>&nbsp;: où le loyer est plafonné autour de Paris.
             </p>
             <p className="elsewhere">
+                <a href="ile-de-france/">Autre commune en Île-de-France</a>&nbsp;: la zone et les vérifications de chacune des 1&nbsp;266 communes.
+            </p>
+            <p className="elsewhere">
                 <a href="ailleurs/">Autre ville en France</a>&nbsp;: les six vérifications qui valent partout.
             </p>
             <section className="findings" aria-labelledby="home-checks">
