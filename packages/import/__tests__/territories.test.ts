@@ -61,7 +61,7 @@ test("a lease signed in July 2026 is capped at the majored rent of its category 
 });
 
 // 48 m², two rooms, empty, built 1946-1970, at 29 rue Parmentier in Montreuil, sector 307: each decree starts on 1 June,
-// and the 2026 one stops on 24 November 2026, whatever the law that runs on to 2028 allows.
+// and the act of 23 November 2026 keeps the 2026 one to the next yearly decree, due on 1 June 2027.
 test("a Montreuil lease is priced by the decree in force on the day it was signed, edge days included", () =>
 {
     const signed = (signedOn: string) =>
@@ -80,7 +80,9 @@ test("a Montreuil lease is priced by the decree in force on the day it was signe
     expect(signed("2026-06-01")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00032", 107040]);
     expect(signed("2026-11-23")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00032", 107040]);
     expect(signed("2026-11-24")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00032", 107040]);
-    expect(signed("2026-11-25")).toEqual(["no-rate", "after"]);
+    expect(signed("2026-11-25")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00032", 107040]);
+    expect(signed("2027-05-31")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00032", 107040]);
+    expect(signed("2027-06-01")).toEqual(["no-rate", "after"]);
 });
 
 // The May 2024 publication left out Bondy's two grids; the corrected one of 21 June 2024 prints them on pages 32 and 36.

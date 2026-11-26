@@ -67,7 +67,9 @@ test("a Saint-Denis lease is priced by the decree in force on the day it was sig
     expect(signed("2026-05-31")).toEqual(["Arrêté préfectoral n° IDF-2025-05-16-00009", 100000]);
     expect(signed("2026-06-01")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00033", 102500]);
     expect(signed("2026-11-24")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00033", 102500]);
-    expect(signed("2026-11-25")).toEqual(["no-rate", "after"]);
+    expect(signed("2026-11-25")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00033", 102500]);
+    expect(signed("2027-05-31")).toEqual(["Arrêté préfectoral n° IDF-2026-04-28-00033", 102500]);
+    expect(signed("2027-06-01")).toEqual(["no-rate", "after"]);
 });
 
 // Annex 1: eight communes and the commune déléguée of Pierrefitte-sur-Seine, part of Saint-Denis since 1 January 2025,

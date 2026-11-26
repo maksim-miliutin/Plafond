@@ -47,10 +47,11 @@ test("a lease signed the day after the last day of the law gets no verdict, and 
 });
 
 // The bug this guards: once the law was extended, a lease signed after the 2026 decree was still told the law had
-// lapsed. The decree of 12 June 2026 stops on 24 November 2026, and no later one is published yet.
+// lapsed. The act of 23 November 2026 keeps the decree of 12 June 2026 in force; Plafond holds it to 30 June 2027, the day
+// before the next yearly decree, and no later one is published yet.
 test("a lease signed after the last Paris decree, while the law runs on, is told the official data is not out yet", async ({ page }) =>
 {
-    await leaseSignedOn(page, "2026-11-25");
+    await leaseSignedOn(page, "2027-07-01", "2027-07-02T10:00:00+02:00");
 
     await expect(page.getByText("Données officielles indisponibles pour cette date de bail.")).toBeVisible();
     await expect(page.getByRole("link", { name: "Arrêté préfectoral n° IDF-2026-06-12-00003" }))
@@ -63,9 +64,13 @@ test("a lease signed after the last Paris decree, while the law runs on, is told
 });
 
 // 40 m² at 33,00 €, the 2026 majored rent of sector 2 for three furnished rooms built 1946-1970, caps the base rent at 1 320,00 €.
-test("a lease signed on the last day of the 2026 decree is checked against it", async ({ page }) =>
+test("a lease signed on the day the 2026 decree first stopped, and one on its last day now, are checked against it", async ({ page }) =>
 {
-    await leaseSignedOn(page, "2026-11-24");
+    await leaseSignedOn(page, "2026-11-25");
 
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("180,00");
+    await expect(page.getByRole("link", { name: "Arrêté préfectoral n° IDF-2026-11-23-00002 du 23 novembre 2026" })).toBeVisible();
+
+    await leaseSignedOn(page, "2027-06-30", "2027-07-01T10:00:00+02:00");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("180,00");
 });

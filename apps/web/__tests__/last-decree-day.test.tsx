@@ -15,11 +15,12 @@ const files = import.meta.glob("../../../db/seed/*", { query: "?raw", import: "d
 const seeds = seedsFrom((name) => files[`../../../db/seed/${name}`]!);
 const law = lawOf(lawSeed);
 
-// One area of each territory around the end of the decrees of 2026, which all three stop on 24 November 2026.
-const territories: { city: City; rates: Rate[]; area: Quartier; dwelling: string }[] = [
-    { city: "paris", rates: seeds.paris, area: seeds.quartiers[0]!, dwelling: "" },
-    { city: "est-ensemble", rates: seeds.estEnsemble.rates, area: seeds.estEnsemble.areas.find((area) => area.name === "Pantin")!, dwelling: "flat" },
-    { city: "plaine-commune", rates: seeds.plaineCommune.rates, area: seeds.plaineCommune.areas.find((area) => area.name === "Saint-Ouen-sur-Seine")!, dwelling: "flat" },
+// One area of each territory around the end of the decrees of 2026. The acts of 23 November 2026 keep them in force, and
+// Plafond holds each to the day before the next yearly decree: 1 July 2027 in Paris, 1 June 2027 in the two territories.
+const territories: { city: City; rates: Rate[]; area: Quartier; dwelling: string; last: string; after: string }[] = [
+    { city: "paris", rates: seeds.paris, area: seeds.quartiers[0]!, dwelling: "", last: "2027-06-30", after: "2027-07-01" },
+    { city: "est-ensemble", rates: seeds.estEnsemble.rates, area: seeds.estEnsemble.areas.find((area) => area.name === "Pantin")!, dwelling: "flat", last: "2027-05-31", after: "2027-06-01" },
+    { city: "plaine-commune", rates: seeds.plaineCommune.rates, area: seeds.plaineCommune.areas.find((area) => area.name === "Saint-Ouen-sur-Seine")!, dwelling: "flat", last: "2027-05-31", after: "2027-06-01" },
 ];
 
 function signed(city: City, rates: Rate[], area: Quartier, dwelling: string, signedOn: string): Step
@@ -33,15 +34,17 @@ function signed(city: City, rates: Rate[], area: Quartier, dwelling: string, sig
     return next({ at: "lease", typed: area.name, place, fields, errors: {}, unchecked: null }, { type: "answered", fields }, world);
 }
 
-test("in Paris, Est Ensemble and Plaine Commune a lease of 24 November 2026 is priced and one of the 25th is told the data is not out", () =>
+test("in Paris, Est Ensemble and Plaine Commune a lease of 25 November 2026 is priced, and one after the decree's last day is told the data is not out", () =>
 {
-    for (const { city, rates, area, dwelling } of territories)
+    for (const { city, rates, area, dwelling, last: lastDay, after: dayAfter } of territories)
     {
-        const last = signed(city, rates, area, dwelling, "2026-11-24");
-        const after = signed(city, rates, area, dwelling, "2026-11-25");
+        const today = signed(city, rates, area, dwelling, "2026-11-25");
+        const last = signed(city, rates, area, dwelling, lastDay);
+        const after = signed(city, rates, area, dwelling, dayAfter);
 
-        expect(last, `${city} on the 24th`).toMatchObject({ at: "result", check: { kind: "checked" } });
-        expect(after, `${city} on the 25th`).toMatchObject({ at: "lease", unchecked: { kind: "no-rate", side: "after", until: "2026-11-24" } });
+        expect(today, `${city} on 25 November 2026`).toMatchObject({ at: "result", check: { kind: "checked" } });
+        expect(last, `${city} on ${lastDay}`).toMatchObject({ at: "result", check: { kind: "checked" } });
+        expect(after, `${city} on ${dayAfter}`).toMatchObject({ at: "lease", unchecked: { kind: "no-rate", side: "after", until: lastDay } });
 
         const notice = after.at === "lease" ? renderToStaticMarkup(<LeaseStep fields={after.fields} errors={{}} unchecked={after.unchecked} city={city} />) : "";
         expect(notice, city).toContain("Données officielles indisponibles pour cette date de bail.");

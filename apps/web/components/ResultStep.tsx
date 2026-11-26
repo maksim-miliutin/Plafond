@@ -187,6 +187,7 @@ function Sources({ check, claim, quartier }: Pick<ResultProps, "check" | "claim"
                     <dd>
                         {euros(majored)} par m². {decree.title}, applicable du {frenchDay(decree.from)} au{" "}
                         {frenchDay(dayBefore(decree.until))}. <a href={decree.url}>Voir l'arrêté</a>
+                        {decree.extension !== undefined && <>. Prorogation&nbsp;: <a href={decree.extension.url}>{decree.extension.title}</a></>}
                     </dd>
                 </div>
                 <div>

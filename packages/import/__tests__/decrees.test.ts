@@ -91,12 +91,12 @@ test("a table that is not a list is a breakage", () =>
     expect(() => decreesOf({ 2024: entry(2024) })).toThrow(DecreesError);
 });
 
-test("the seed covers every day from July 2019 to the end of the experiment without a gap", () =>
+test("the seed covers every day from July 2019 to 30 June 2027 without a gap", () =>
 {
     const decrees = [...decreesOf(seed).values()];
 
     expect(decrees[0]?.from).toBe("2019-07-01");
-    expect(decrees.at(-1)?.until).toBe("2026-11-25");
+    expect(decrees.at(-1)?.until).toBe("2027-07-01");
     decrees.slice(1).forEach((decree, i) => expect(decree.from).toBe(decrees[i]?.until));
 });
 

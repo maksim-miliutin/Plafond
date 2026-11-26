@@ -55,6 +55,7 @@ export interface Decree
     from: Day;
     until: Day;  // the first day it no longer applies
     contest: Contest | null;
+    extension?: { title: string; url: string };  // the act that kept its rents beyond the day it first set
 }
 
 export interface Rate

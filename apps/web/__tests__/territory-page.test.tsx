@@ -32,7 +32,7 @@ test("the page lists the nine communes with their sectors, Montreuil with two, a
     expect(facts.communes).toHaveLength(9);
     expect(page).toContain("Montreuil, secteurs 307 et 308");
     expect(page).toContain("Pantin, secteur 308");
-    expect(page).toContain("Plafond vérifie les baux signés du 1er décembre 2021 au 24 novembre 2026.");
+    expect(page).toContain("Plafond vérifie les baux signés du 1er décembre 2021 au 31 mai 2027.");
 });
 
 test("the page leads to the check, to Service Public's pages and to the official simulator, and has one main heading", () =>
@@ -48,7 +48,7 @@ test("the page leads to the check, to Service Public's pages and to the official
 
 test("an example no decree prices stops the build rather than printing a guess", () =>
 {
-    expect(() => territoryFacts("est-ensemble", estEnsemble, lawOf(lawSeed), { ...copy.example, signedOn: "2026-12-15" })).toThrow(PlacesError);
+    expect(() => territoryFacts("est-ensemble", estEnsemble, lawOf(lawSeed), { ...copy.example, signedOn: "2027-06-15" })).toThrow(PlacesError);
 });
 
 // 50 m² at 18,60 €, the majored rent of sector 311 for an empty flat of two rooms built 1946-1970, page 6 of the 2026 decree.
@@ -60,11 +60,12 @@ test("the Plaine Commune page works its example at 11 rue Guy Môquet and lists 
 
     expect(known.example).toMatchObject({ kind: "checked", cap: 93000, rate: { majored: 1860 } });
     expect(html).toContain("Le 11 rue Guy Môquet, à Saint-Denis, est dans le secteur 311.");
+    expect(html).toContain("Arrêté préfectoral n° IDF-2026-11-23-00004 du 23 novembre 2026</a>, qui le proroge");
     expect(html).toContain("930,00\u00A0€ par mois hors charges");
     expect(html).toContain("arrete_pco-2.pdf#page=6");
     expect(html).toContain("Saint-Denis, secteurs 311 et 312");
     expect(html).toContain("Pierrefitte-sur-Seine, secteur 317");
     expect(known.communes).toHaveLength(9);
-    expect(html).toContain("Plafond vérifie les baux signés du 1er juin 2021 au 24 novembre 2026.");
+    expect(html).toContain("Plafond vérifie les baux signés du 1er juin 2021 au 31 mai 2027.");
     expect(html).toContain('href="https://www.service-public.gouv.fr/particuliers/vosdroits/F35761"');
 });
