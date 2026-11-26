@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-import type { CommuneZone, ZoneLists } from "@plafond/import";
+import type { RegionalCommune } from "@plafond/import";
 
 import { communeFrom } from "../lib/commune-zone";
+import { unpackRegion } from "../lib/region";
 import { helpers } from "../lib/help";
 import { nextNotice, noticeStart, type NoticeEvent, type NoticeStep } from "../lib/notice-flow";
 import { todayInParis } from "../lib/today";
@@ -24,12 +25,12 @@ const live: NoticeNeeds = { now: () => new Date() };
 export function Preavis({ zones, needs = live }: { zones?: ZoneNeeds; needs?: NoticeNeeds })
 {
     const [step, setStep] = useState<NoticeStep>(noticeStart);
-    const [commune, setCommune] = useState<CommuneZone | undefined>(undefined);
+    const [commune, setCommune] = useState<RegionalCommune | undefined>(undefined);
 
     // The link's code is read in the browser: the page is built once for every commune.
     useEffect(() =>
     {
-        setCommune(zones === undefined ? undefined : communeFrom(window.location.search, zones.communes));
+        setCommune(zones === undefined ? undefined : communeFrom(window.location.search, unpackRegion(zones.communes)));
     }, [zones]);
 
     useEffect(() =>
@@ -53,7 +54,6 @@ export function Preavis({ zones, needs = live }: { zones?: ZoneNeeds; needs?: No
                     errors={step.errors}
                     onAnswer={(fields) => go({ type: "answered", fields })}
                     commune={commune === undefined || zones === undefined ? undefined : { commune, lists: zones.lists }}
-                    today={todayInParis(needs.now())}
                 />
             );
 

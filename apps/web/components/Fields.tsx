@@ -82,18 +82,17 @@ export function Typed({ id, label, hint, type = "text", value, error, onValue }:
     );
 }
 
-export interface PickedProps
+export interface ListedProps
 {
     id: string;
     label: string;
     hint?: string;
-    prompt: string;  // the first line, before anything is picked
-    options: [string, string][];
+    listed: readonly string[];  // the answers the browser suggests as the tenant types
     value: string;
     error: string | undefined;
 }
 
-export function Picked({ id, label, hint, prompt, options, value, error }: PickedProps)
+export function Listed({ id, label, hint, listed, value, error }: ListedProps)
 {
     const notes = [hint === undefined ? null : `${id}-hint`, error === undefined ? null : `${id}-error`].filter((note) => note !== null);
 
@@ -101,17 +100,19 @@ export function Picked({ id, label, hint, prompt, options, value, error }: Picke
         <div className="typed">
             <label htmlFor={id} className="label">{label}</label>
             {hint !== undefined && <p id={`${id}-hint`} className="hint">{hint}</p>}
-            <select
+            <input
                 id={id}
                 name={id}
+                list={`${id}-list`}
                 defaultValue={value}
                 className="field"
+                autoComplete="off"
                 aria-invalid={error === undefined ? undefined : true}
                 aria-describedby={notes.length === 0 ? undefined : notes.join(" ")}
-            >
-                <option value="">{prompt}</option>
-                {options.map(([option, text]) => <option key={option} value={option}>{text}</option>)}
-            </select>
+            />
+            <datalist id={`${id}-list`}>
+                {listed.map((option) => <option key={option} value={option} />)}
+            </datalist>
             {error !== undefined && <p id={`${id}-error`} className="error">{error}</p>}
         </div>
     );

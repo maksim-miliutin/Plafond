@@ -71,12 +71,13 @@ test("a commune found by name offers the notice check with its zone filled in, P
 
     await page.getByLabel("Votre commune").fill("Vincennes");
     await page.getByRole("listitem").filter({ hasText: "Vincennes" }).getByRole("link", { name: "Vérifier mon préavis" }).click();
+    await page.getByLabel("Date de signature ou du dernier renouvellement du bail").fill("2026-01-15");
     await expect(page.locator('input[name="tense"][value="yes"]')).toBeChecked();
 
     await page.goto("/grand-paris/");
     await page.getByLabel("Votre commune").fill("Pierrefitte");
     await page.getByRole("listitem").filter({ hasText: "Saint-Denis" }).getByRole("link", { name: "Vérifier la hausse du loyer à la relocation" }).click();
-    await expect(page.getByLabel("Commune du logement")).toHaveValue("93066");
+    await expect(page.getByLabel("Commune du logement")).toHaveValue("Saint-Denis (93)");
 });
 
 test("the Grand Paris page leads to the other communes of Île-de-France", async ({ page }) =>

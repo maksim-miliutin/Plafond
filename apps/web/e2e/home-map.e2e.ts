@@ -26,7 +26,7 @@ test("the first screen draws the Grand Paris and tells what Plafond checks in th
     await page.goto("/");
     await touch(page, "Vincennes");
     await page.getByRole("tabpanel").getByRole("link", { name: "Vérifier la hausse du loyer à la relocation" }).click();
-    await expect(page.getByLabel("Commune du logement")).toHaveValue("94080");
+    await expect(page.getByLabel("Commune du logement")).toHaveValue("Vincennes (94)");
 
     await page.goto("/");
     await touch(page, "Montreuil");

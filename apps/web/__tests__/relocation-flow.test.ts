@@ -8,10 +8,10 @@ import { asked, nextRelocation, relocationStart, type RelocationFields, type Rel
 import sources from "../../../db/seed/zone-lists.json?raw";
 import rules from "../../../db/seed/relocation-rules.json?raw";
 import irl from "../../../db/seed/irl.json?raw";
-import { seededZones } from "./zone-seeds";
+import { regionList } from "./zone-seeds";
 
 const world: RelocationWorld = {
-    communes: seededZones.filter((row) => ["94080", "93048", "75056"].includes(row.code)),
+    communes: regionList.filter((row) => ["94080", "93048", "75056", "93066", "77022", "78043", "77034", "91067", "91377"].includes(row.code)),
     lists: zoneListsOf(JSON.parse(sources)),
     capped: ["75056", "93048"],
     periods: relocationRulesOf(JSON.parse(rules)),
@@ -92,4 +92,21 @@ test("back from the result keeps the answers, and back from help returns to the 
 
     expect(nextRelocation(result, { type: "back" }, world)).toEqual({ at: "form", fields: vincennes, errors: {} });
     expect(nextRelocation(help, { type: "back" }, world)).toEqual(result);
+});
+
+test("the commune is read from its name and department, its code, or a name only one commune bears", () =>
+{
+    expect(answer({ commune: "Massy (91)" })).toMatchObject({ at: "result", commune: { code: "91377" } });
+    expect(answer({ commune: "massy" })).toMatchObject({ at: "result", commune: { code: "91377" } });
+    expect(answer({ commune: "Pierrefitte-sur-Seine" })).toMatchObject({ at: "result", commune: { code: "93066" } });
+    expect(answer({ commune: "Blandy" })).toMatchObject({ at: "form", errors: { commune: "Plusieurs communes portent ce nom : choisissez celle de votre département dans la liste." } });
+    expect(answer({ commune: "Blandy (77)" })).toMatchObject({ at: "result", commune: { code: "77034" } });
+});
+
+// Article 1 of décret n° 2017-1198 reads part 1 of the list: Barbizon is only in part 2, Bailly in zone A bis but in neither part.
+test("outside part 1 of the list the decree does not apply, though an F or G dwelling stays frozen", () =>
+{
+    expect(answer({ commune: "77022" })).toMatchObject({ at: "result", check: { kind: "untense" } });
+    expect(answer({ commune: "78043" })).toMatchObject({ at: "result", check: { kind: "untense" } });
+    expect(answer({ commune: "77022", dpe: "G", vacancy: "", revised: "", basis: "" })).toMatchObject({ at: "result", check: { kind: "frozen" } });
 });

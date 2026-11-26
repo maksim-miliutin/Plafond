@@ -40,10 +40,26 @@ test("a tenant finds when the notice ends and writes the letter giving notice, a
     expect(elsewhere.filter((href) => !href.startsWith("https://data.geopf.fr/wmts?"))).toEqual([]);
 });
 
-test("opened from Athis-Mons, the notice form says the dwelling is in the tense zone", async ({ page }) =>
+// The notice reads the list on the day the lease was signed or last renewed, as the official simulator does.
+test("opened from a commune, the notice form asks for the lease's date, then answers the zone for it", async ({ page }) =>
 {
-    await page.goto("/preavis/?commune=91027");
+    const answer = () => page.locator('input[name="tense"]:checked');
 
-    await expect(page.locator('input[name="tense"][value="yes"]')).toBeChecked();
+    await page.goto("/preavis/?commune=91027");
+    await expect(answer()).toHaveCount(0);
+    await page.getByLabel("Date de signature ou du dernier renouvellement du bail").fill("2026-01-15");
+    await expect(answer()).toHaveValue("yes");
     await expect(page.getByText("Athis-Mons : en zone tendue")).toBeVisible();
+
+    await page.getByLabel("Date de signature ou du dernier renouvellement du bail").fill("2025-06-01");
+    await expect(answer()).toHaveCount(0);
+
+    for (const code of ["77022", "78043", "77186"])
+    {
+        await page.goto(`/preavis/?commune=${code}`);
+        await page.getByLabel("Date de signature ou du dernier renouvellement du bail").fill("2026-11-25");
+        await expect(answer()).toHaveValue("no");
+    }
+
+    await expect(page.locator('input[name="reason"]').first()).toBeVisible();
 });

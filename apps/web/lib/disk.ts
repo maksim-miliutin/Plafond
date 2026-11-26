@@ -147,23 +147,6 @@ export function zoneListsFromDisk(): ZoneLists
     return zoneListsOf(JSON.parse(readFileSync(join(seed, "zone-lists.json"), "utf8")));
 }
 
-// The communes a link may name to fill in a zone: the 130 of the Grand Paris, each checked to have a zone.
-export function grandParisZonesFromDisk(): CommuneZone[]
-{
-    const zones = zonesFromDisk();
-
-    return metropoleFromDisk().map((commune) =>
-    {
-        const found = zones.find((row) => row.code === commune.code);
-        if (found === undefined)
-        {
-            throw new Error(`no zone is known for commune ${commune.code}`);
-        }
-
-        return found;
-    });
-}
-
 // The two maps of the first screen, drawn once at build time: the Grand Paris commune by commune, and Lyon.
 export function homeMapsFromDisk(tolerance: number): { grandParis: Drawing; lyon: Drawing }
 {
