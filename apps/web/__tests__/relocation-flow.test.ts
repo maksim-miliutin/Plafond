@@ -110,3 +110,12 @@ test("outside part 1 of the list the decree does not apply, though an F or G dwe
     expect(answer({ commune: "78043" })).toMatchObject({ at: "result", check: { kind: "untense" } });
     expect(answer({ commune: "77022", dpe: "G", vacancy: "", revised: "", basis: "" })).toMatchObject({ at: "result", check: { kind: "frozen" } });
 });
+
+// Décret n° 2023-642 covered the leases signed from 1 August 2023; Vincennes was in part 1 of the list then too.
+test("an older lease is read under the decree of its year, with the index published by its signature", () =>
+{
+    const step = answer({ signedOn: "2024-03-01", revised: "no", proposed: "1 100" });
+
+    expect(step).toMatchObject({ at: "result", check: { kind: "indexed", period: { from: "2023-08-01" }, to: { year: 2023, quarter: 4 }, from: { year: 2022, quarter: 4 } } });
+    expect(answer({ signedOn: "2017-09-01", revised: "no" })).toMatchObject({ at: "result", check: { kind: "missing", field: "index" } });
+});

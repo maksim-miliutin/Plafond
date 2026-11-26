@@ -74,7 +74,7 @@ function Finding({ lease, check, communeName }: { lease: Relocation; check: Relo
             return (
                 <>
                     <h1 className="title">Règles non disponibles pour cette date de bail</h1>
-                    <p className="lead">Plafond connaît les règles des baux signés {check.periods.map(spanOf).join(", ")}.</p>
+                    <p className="lead">Plafond connaît les règles des baux signés {spansOf(check.periods).join(", ")}.</p>
                 </>
             );
 
@@ -187,5 +187,23 @@ function Source({ check }: { check: RelocationCheck })
     return period === null ? null : <p className="fine">Source&nbsp;: <a href={period.url} rel="noopener">{period.title}</a></p>;
 }
 
-const spanOf = (period: RelocationPeriod) => `du ${frenchDay(period.from)} au ${frenchDay(dayBefore(period.until))}`;
+// Years that follow each other read as one span: the decrees carry the same rule on from 1 August to 31 July.
+function spansOf(periods: readonly RelocationPeriod[]): string[]
+{
+    const joined: { from: string; until: string }[] = [];
+    for (const period of periods)
+    {
+        const last = joined.at(-1);
+        if (last !== undefined && last.until === period.from)
+        {
+            last.until = period.until;
+        }
+        else
+        {
+            joined.push({ from: period.from, until: period.until });
+        }
+    }
+
+    return joined.map((span) => `du ${frenchDay(span.from)} au ${frenchDay(dayBefore(span.until))}`);
+}
 const named = (row: IndexRow) => `Indice du ${ordinal(row.quarter)} trimestre ${row.year} : ${indexPoints(row.value)}`;
