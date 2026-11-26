@@ -1583,3 +1583,93 @@ a:hover
     margin-left: 8px;
     color: var(--muted);
 }
+
+.region-ask
+{
+    display: grid;
+    gap: 12px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #FFFFFF;
+}
+
+.region-ask h2
+{
+    margin: 0;
+    font-size: 20px;
+}
+
+.region-ask p
+{
+    margin: 0;
+}
+
+.region-row
+{
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.region-row .field
+{
+    flex: 1;
+    min-width: 0;
+}
+
+.region-row .primary
+{
+    height: 52px;
+    margin-top: 0;
+    padding: 0 18px;
+}
+
+.department-links
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.department-links a
+{
+    display: grid;
+    gap: 2px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.department-links span
+{
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.commune-index
+{
+    columns: 2 140px;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.commune-index button
+{
+    min-height: 36px;
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--blue);
+    font: 16px var(--text);
+    text-align: left;
+    text-decoration: underline;
+    cursor: pointer;
+}

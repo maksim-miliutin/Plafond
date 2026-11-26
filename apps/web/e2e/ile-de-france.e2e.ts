@@ -4,10 +4,10 @@ import { expect, test } from "@playwright/test";
 test("from the home, a tenant of Versailles finds the commune with its department and opens the notice form for it", async ({ page }) =>
 {
     await page.goto("/");
-    await page.getByRole("link", { name: "Autre commune en Île-de-France" }).click();
+    await page.getByLabel("Votre commune en Île-de-France").fill("versailles");
+    await page.getByRole("button", { name: "Chercher" }).click();
     await expect.poll(() => new URL(page.url()).pathname).toBe("/ile-de-france/");
-
-    await page.getByLabel("Votre commune").fill("versailles");
+    await expect(page.getByLabel("Votre commune", { exact: true })).toHaveValue("versailles");
     const card = page.locator(".region-results > li").filter({ hasText: "Versailles" });
     await expect(card).toHaveCount(1);
     await expect(card).toContainText("Yvelines (78)");
@@ -19,7 +19,7 @@ test("from the home, a tenant of Versailles finds the commune with its departmen
 test("Pierrefitte leads to Saint-Denis, Barbizon offers no reletting check, and a code finds Massy", async ({ page }) =>
 {
     await page.goto("/ile-de-france/");
-    const field = page.getByLabel("Votre commune");
+    const field = page.getByLabel("Votre commune", { exact: true });
 
     await field.fill("Pierrefitte");
     await expect(page.locator(".region-results > li")).toHaveCount(1);
@@ -38,11 +38,22 @@ test("at 320 pixels the page fits, reads well for a screen reader and works from
     await page.goto("/ile-de-france/");
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
-    await page.getByLabel("Votre commune").focus();
+    await page.getByLabel("Votre commune", { exact: true }).focus();
     await page.keyboard.type("Argenteuil");
     await expect(page.locator(".region-results > li")).toHaveCount(1);
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     const scan = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
     expect(scan.violations.map((violation) => violation.id)).toEqual([]);
+});
+
+test("a department chosen on the home lists its communes, and the tenant picks theirs", async ({ page }) =>
+{
+    await page.goto("/");
+    await page.getByRole("link", { name: /^Essonne \(91\)/ }).click();
+    await expect(page.locator(".commune-index li")).toHaveCount(194);
+
+    await page.locator(".commune-index").getByRole("button", { name: "Massy", exact: true }).click();
+    await expect(page.locator(".region-results > li").first()).toContainText("Massy");
+    await expect(page.locator(".region-results > li").first()).toContainText("Essonne (91)");
 });

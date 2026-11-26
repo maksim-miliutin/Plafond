@@ -2,9 +2,11 @@ import { cityCopy, type MappedCity } from "../lib/city-copy";
 import type { Drawing } from "../lib/home-map";
 import { Brand } from "./Brand";
 import { CheckLinks } from "./Checks";
+import type { DepartmentCount } from "../lib/region";
 import { HomeMap, type MapName } from "./HomeMap";
+import { RegionAsk } from "./RegionAsk";
 
-export function Home({ shapes, maps }: { shapes: Record<MappedCity, string>; maps: Record<MapName, Drawing> })
+export function Home({ shapes, maps, departments = [] }: { shapes: Record<MappedCity, string>; maps: Record<MapName, Drawing>; departments?: readonly DepartmentCount[] })
 {
     return (
         <main className="screen home">
@@ -14,6 +16,7 @@ export function Home({ shapes, maps }: { shapes: Record<MappedCity, string>; map
             </p>
             <h1 className="title">Où se trouve votre logement ?</h1>
             <HomeMap maps={maps} />
+            {departments.length > 0 && <RegionAsk departments={departments} />}
             <nav className="checks cities" aria-label="Villes">
                 {(Object.keys(cityCopy) as MappedCity[]).map((city) => (
                     <a key={city} href={`${city}/`} className="check">
@@ -31,9 +34,6 @@ export function Home({ shapes, maps }: { shapes: Record<MappedCity, string>; map
             </nav>
             <p className="elsewhere">
                 <a href="grand-paris/">Autre commune du Grand Paris</a>&nbsp;: où le loyer est plafonné autour de Paris.
-            </p>
-            <p className="elsewhere">
-                <a href="ile-de-france/">Autre commune en Île-de-France</a>&nbsp;: la zone et les vérifications de chacune des 1&nbsp;266 communes.
             </p>
             <p className="elsewhere">
                 <a href="ailleurs/">Autre ville en France</a>&nbsp;: les six vérifications qui valent partout.

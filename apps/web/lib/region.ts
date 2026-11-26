@@ -98,3 +98,16 @@ export function zoneLineOf(commune: RegionCommune): string
         ? `Zone tendue, ${fees}.`
         : `Hors zone tendue pour le préavis et la relocation, ${fees}.`;
 }
+
+export interface DepartmentCount
+{
+    code: string;
+    name: string;
+    count: number;
+}
+
+// How many communes each department holds, for the tenant who looks for theirs before typing it.
+export function departmentCounts(communes: readonly RegionalCommune[]): DepartmentCount[]
+{
+    return Object.entries(departmentNames).map(([code, name]) => ({ code, name, count: communes.filter((commune) => commune.department === code).length }));
+}
