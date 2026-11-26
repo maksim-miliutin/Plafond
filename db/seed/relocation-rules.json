@@ -1,9 +1,63 @@
 {
     "periods": [
         {
+            "from": "2017-08-01",
+            "until": "2018-08-01",
+            "title": "Décret n° 2017-1198 du 27 juillet 2017 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000035315236"
+        },
+        {
+            "from": "2018-08-01",
+            "until": "2019-08-01",
+            "title": "Décret n° 2018-549 du 28 juin 2018 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000037131246"
+        },
+        {
+            "from": "2019-08-01",
+            "until": "2020-08-01",
+            "title": "Décret n° 2019-802 du 26 juillet 2019 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000038831154"
+        },
+        {
+            "from": "2020-08-01",
+            "until": "2021-08-01",
+            "title": "Décret n° 2020-945 du 30 juillet 2020 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000042177415"
+        },
+        {
+            "from": "2021-08-01",
+            "until": "2022-08-01",
+            "title": "Décret n° 2021-852 du 29 juin 2021 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000043715973"
+        },
+        {
+            "from": "2022-08-01",
+            "until": "2023-08-01",
+            "title": "Décret n° 2022-1079 du 29 juillet 2022 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000046113679"
+        },
+        {
+            "from": "2023-08-01",
+            "until": "2024-08-01",
+            "title": "Décret n° 2023-642 du 20 juillet 2023 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000047867316"
+        },
+        {
+            "from": "2024-08-01",
+            "until": "2025-08-01",
+            "title": "Décret n° 2024-854 du 24 juillet 2024 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000050060392"
+        },
+        {
+            "from": "2025-08-01",
+            "until": "2026-08-01",
+            "title": "Décret n° 2025-652 du 15 juillet 2025 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000051901019"
+        },
+        {
             "from": "2026-08-01",
             "until": "2027-08-01",
-            "title": "Décret n° 2026-644 du 20 juillet 2026, qui reconduit le décret n° 2017-1198 du 27 juillet 2017 pour les baux signés du 1er août 2026 au 31 juillet 2027",
+            "title": "Décret n° 2026-644 du 20 juillet 2026 relatif à l’évolution de certains loyers dans le cadre d’une nouvelle location ou d’un renouvellement de bail, pris en application de l’article 18 de la loi n° 89-462 du 6 juillet 1989",
             "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054451221"
         }
     ]

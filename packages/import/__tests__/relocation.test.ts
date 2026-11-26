@@ -6,12 +6,16 @@ import { RelocationRulesError, relocationRulesOf } from "../src/relocation.js";
 
 const period = { from: "2026-08-01", until: "2027-08-01", title: "Décret n° 2026-644", url: "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054451221" };
 
-test("the seed holds the year décret n° 2026-644 covers, with its source", () =>
+// Décret n° 2017-1198 and the nine yearly decrees that carried it on, each for the leases of one year from 1 August.
+test("the seed holds every year from 1 August 2017 to 31 July 2027 without a gap, each with its decree", () =>
 {
     const periods = relocationRulesOf(JSON.parse(seed));
 
-    expect(periods).toHaveLength(1);
-    expect(periods[0]).toMatchObject({ from: "2026-08-01", until: "2027-08-01", url: period.url });
+    expect(periods).toHaveLength(10);
+    expect(periods.map((one) => one.from)).toEqual(Array.from({ length: 10 }, (_, index) => `${2017 + index}-08-01`));
+    expect(periods.every((one, index) => one.until === `${2018 + index}-08-01`)).toBe(true);
+    expect(periods[0]?.title).toMatch(/^Décret n° 2017-1198 du 27 juillet 2017/);
+    expect(periods.at(-1)).toMatchObject({ from: "2026-08-01", until: "2027-08-01", url: period.url });
 });
 
 test("periods come out in order of their first day", () =>

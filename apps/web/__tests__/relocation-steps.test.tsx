@@ -90,7 +90,7 @@ test("each case the check cannot price says what it is and where to look", () =>
     expect(result({ commune: "77022" })).toContain("Barbizon n'est pas dans la zone tendue que vise le décret");
     expect(result({ commune: "77022" })).toContain('<a href="../dpe/">Vérifier le DPE du logement</a>');
     expect(result({ signedOn: "2027-08-01" })).toContain("Règles non disponibles pour cette date de bail");
-    expect(result({ signedOn: "2027-08-01" })).toContain("du 1er août 2026 au 31 juillet 2027");
+    expect(result({ signedOn: "2027-08-01" })).toContain("Plafond connaît les règles des baux signés du 1er août 2017 au 31 juillet 2027.");
     expect(result({ dpe: "unknown" })).toContain("Données insuffisantes");
     expect(result({ dpe: "unknown" })).toContain('<a href="../dpe/">Retrouver le DPE du logement</a>');
     expect(result({ lastRent: "" })).toContain("il manque le dernier loyer hors charges du locataire précédent");
