@@ -2,20 +2,19 @@
 
 import { useState } from "react";
 
-import type { FeeZone } from "@plafond/domain";
 import type { MetropoleCommune } from "@plafond/import";
 
-import { communeActions } from "../lib/commune-actions";
+import { CommuneChecks } from "./CommuneChecks";
 import { checkedTerritories, isNumber, matching, reachOf, simulators, territoryNames, type Outer, type Reach } from "../lib/metropole";
 
 export interface CommuneSearchProps
 {
     communes: readonly MetropoleCommune[];
     checked?: readonly Outer[];
-    zones?: Readonly<Record<string, FeeZone>>;  // by INSEE code: a commune with a zone offers the checks that read it
+    tense?: Readonly<Record<string, boolean>>;  // by INSEE code, in part 1 of the list or not: a known commune offers its checks
 }
 
-export function CommuneSearch({ communes, checked = checkedTerritories, zones = {} }: CommuneSearchProps)
+export function CommuneSearch({ communes, checked = checkedTerritories, tense = {} }: CommuneSearchProps)
 {
     const [typed, setTyped] = useState("");
     const shown = matching(communes, typed);
@@ -39,11 +38,10 @@ export function CommuneSearch({ communes, checked = checkedTerritories, zones = 
                         <strong>{commune.name}</strong>
                         {commune.former.length > 0 && <> (avec {commune.former.join(", ")})</>}
                         <span className="reach"><ReachText reach={reachOf(commune, checked)} /></span>
-                        {zones[commune.code] !== undefined && (
-                            <span className="commune-actions">
-                                {zones[commune.code] !== "other" && <span className="zone-tag">Zone tendue</span>}
-                                {communeActions(commune.code, false, "../").map((action) => <a key={action.href} href={action.href}>{action.label}</a>)}
-                            </span>
+                        {tense[commune.code] !== undefined && (
+                            <div className="commune-actions">
+                                <CommuneChecks code={commune.code} reach={{ capped: false, tense: tense[commune.code]! }} base="../" className="commune-links" />
+                            </div>
                         )}
                     </li>
                 ))}

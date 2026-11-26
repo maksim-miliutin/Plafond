@@ -78,3 +78,10 @@ test("a commune found by name offers the notice check with its zone filled in, P
     await page.getByRole("listitem").filter({ hasText: "Saint-Denis" }).getByRole("link", { name: "Vérifier la hausse du loyer à la relocation" }).click();
     await expect(page.getByLabel("Commune du logement")).toHaveValue("93066");
 });
+
+test("the Grand Paris page leads to the other communes of Île-de-France", async ({ page }) =>
+{
+    await page.goto("/grand-paris/");
+    await page.getByRole("link", { name: "Autre commune en Île-de-France" }).click();
+    await expect.poll(() => new URL(page.url()).pathname).toBe("/ile-de-france/");
+});

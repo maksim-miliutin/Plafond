@@ -11,6 +11,7 @@ import * as leaving from "../app/preavis/page";
 import * as agency from "../app/frais-agence/page";
 import * as raise from "../app/revision/page";
 import * as relet from "../app/relocation/page";
+import * as region from "../app/ile-de-france/page";
 import * as notice from "../app/mentions/page";
 import * as elsewhere from "../app/ailleurs/page";
 import * as metropole from "../app/grand-paris/page";
@@ -39,7 +40,7 @@ test("a shared link shows the large card, with the page's own words and its cano
 
 test("each page declares the words the table holds for it", () =>
 {
-    const declared = { "": home, "loyer/": rent, "dpe/": energy, "depot/": deposit, "charges/": charges, "preavis/": leaving, "frais-agence/": agency, "revision/": raise, "relocation/": relet, "mentions/": notice, "ailleurs/": elsewhere, "grand-paris/": metropole, "grand-paris/est-ensemble/": east, "grand-paris/plaine-commune/": north };
+    const declared = { "": home, "loyer/": rent, "dpe/": energy, "depot/": deposit, "charges/": charges, "preavis/": leaving, "frais-agence/": agency, "revision/": raise, "relocation/": relet, "ile-de-france/": region, "mentions/": notice, "ailleurs/": elsewhere, "grand-paris/": metropole, "grand-paris/est-ensemble/": east, "grand-paris/plaine-commune/": north };
 
     for (const [path, page] of Object.entries(declared))
     {

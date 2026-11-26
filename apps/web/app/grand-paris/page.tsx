@@ -1,10 +1,10 @@
 import { GrandParis } from "../../components/GrandParis";
-import { grandParisMapFromDisk, grandParisZonesFromDisk, metropoleFromDisk } from "../../lib/disk";
+import { grandParisMapFromDisk, metropoleFromDisk, regionFromDisk } from "../../lib/disk";
 import { pageMetadata } from "../../lib/site";
 
 export const metadata = pageMetadata("grand-paris/");
 
 export default function Metropole()
 {
-    return <GrandParis communes={metropoleFromDisk()} areas={grandParisMapFromDisk()} zones={Object.fromEntries(grandParisZonesFromDisk().map((row) => [row.code, row.zone]))} />;
+    return <GrandParis communes={metropoleFromDisk()} areas={grandParisMapFromDisk()} tense={Object.fromEntries(regionFromDisk().filter((row) => row.grandParis).map((row) => [row.code, row.tensePart === 1]))} />;
 }

@@ -4,7 +4,7 @@ import { useState, type MouseEvent } from "react";
 
 import type { FeeZone } from "@plafond/domain";
 
-import { communeActions } from "../lib/commune-actions";
+import { CommuneChecks } from "./CommuneChecks";
 import type { Drawing, Label, Shape } from "../lib/home-map";
 
 export type MapName = "grand-paris" | "lyon";
@@ -141,22 +141,16 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
 function Card({ shape }: { shape: Shape })
 {
     const capped = shape.group !== "plain";
-    // A commune of the Grand Paris carries its code: the forms it leads to open with its zone filled in.
-    const actions = shape.code === undefined
-        ? (capped ? [{ href: "loyer/", label: "Vérifier le plafond du loyer" }] : [])
-        : communeActions(shape.code, capped, "");
 
     return (
         <>
             <strong>{shape.name}</strong>
-            {shape.code !== undefined && shape.zone !== "other" && <span className="zone-tag">Zone tendue</span>}
             <p>{shape.group === "plain" ? "Pas de loyer de référence dans cette commune. Les six autres vérifications s'appliquent." : cappedText[shape.group]}</p>
             {shape.zone !== undefined && <p>{zoneSentences[shape.zone]}</p>}
-            {actions.length > 0 && (
-                <ul className="map-actions">
-                    {actions.map((action, index) => <li key={action.href}><a href={action.href} className={index === 0 ? "map-check" : undefined}>{action.label}</a></li>)}
-                </ul>
-            )}
+            {/* A commune of the Grand Paris carries its code, and all 130 are in part 1 of the list, as the import's tests check. */}
+            {shape.code !== undefined
+                ? <CommuneChecks code={shape.code} reach={{ capped, tense: true }} base="" className="map-actions" lead />
+                : capped && <ul className="map-actions"><li><a href="loyer/" className="map-check">Vérifier le plafond du loyer</a></li></ul>}
             <p className="map-links">
                 {shape.group === "plain"
                     ? <a href="ailleurs/">Les six vérifications</a>
