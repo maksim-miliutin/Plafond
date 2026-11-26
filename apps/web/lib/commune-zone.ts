@@ -1,5 +1,5 @@
 import { frenchDay, type Day, type FeeZone } from "@plafond/domain";
-import type { RegionalCommune, ZoneLists } from "@plafond/import";
+import type { RegionalCommune, TensePart, ZoneLists } from "@plafond/import";
 
 // A commune named by its INSEE code in a link, with the lists that give its zones.
 export interface KnownCommune
@@ -16,46 +16,82 @@ export function communeFrom<Commune extends RegionalCommune>(search: string, com
     return code === null || !/^\d[\dAB]\d{3}$/.test(code) ? undefined : communes.find((commune) => commune.code === code);
 }
 
-// Décret n° 2014-890 caps agency fees by the zone on the day the lease is signed: zone A bis first, as the arrêté of
-// 5 September 2025 set it from 7 September 2025 and the arrêté of 23 June 2026 from 26 June 2026; then either part of the
-// list of décret n° 2013-392, which Plafond holds as it stands since 24 December 2025. Earlier, the tenant says.
+const covers = (list: { from: Day; until: Day }, day: Day) => list.from <= day && day < list.until;
+
+// The part of the list of décret n° 2013-392 the commune was in on a day: the current version from 24 December 2025, the
+// older ones back to 13 May 2013, which had a single list that reads as part 1. Null before, or where Plafond lacks it.
+function tensePartOn(commune: RegionalCommune, day: Day, lists: ZoneLists): TensePart | null
+{
+    if (day >= lists.tense.from)
+    {
+        return commune.tensePart;
+    }
+
+    const index = lists.tenseHistory.findIndex((list) => covers(list, day));
+
+    return index < 0 ? null : commune.pastTense?.[index] ?? null;
+}
+
+// Whether the commune was in zone A bis on a day: since 26 June 2026, from 7 September 2025, and the older versions of the
+// arrêté of 1 August 2014 back to 7 August 2014. Null before, or for a commune merged since from parts the zone treated apart.
+function veryTenseOn(commune: RegionalCommune, day: Day, lists: ZoneLists): boolean | null
+{
+    if (day >= lists.veryTense.from)
+    {
+        return commune.abcZone === "Abis";
+    }
+
+    if (covers(lists.earlierVeryTense, day))
+    {
+        return commune.veryTenseBefore;
+    }
+
+    const index = lists.veryTenseHistory.findIndex((list) => covers(list, day));
+
+    return index < 0 ? null : commune.pastVeryTense?.[index] ?? null;
+}
+
+// Décret n° 2014-890 caps agency fees by the zone on the day the lease is signed: zone A bis first, then either part of the
+// list of décret n° 2013-392. When either is unknown for that day, the tenant says.
 export function feeZoneOn(commune: RegionalCommune, day: Day, lists: ZoneLists): FeeZone | null
 {
-    const earlier = lists.earlierVeryTense;
-    const veryTense = day >= lists.veryTense.from ? commune.abcZone === "Abis" : day >= earlier.from && day < earlier.until ? commune.veryTenseBefore : null;
+    const veryTense = veryTenseOn(commune, day, lists);
     if (veryTense === true)
     {
         return "very-tense";
     }
 
-    if (veryTense === null || day < lists.tense.from)
+    const part = tensePartOn(commune, day, lists);
+    if (veryTense === null || part === null)
     {
         return null;
     }
 
-    return commune.tensePart === 0 ? "other" : "tense";
-}
-
-// The first day from which the zone of the fees is known for every later day.
-function feeZoneSince(commune: RegionalCommune, lists: ZoneLists): Day
-{
-    return commune.veryTenseBefore ? lists.earlierVeryTense.from : lists.tense.from;
+    return part === 0 ? "other" : "tense";
 }
 
 // Article 15 of loi n° 89-462 shortens the notice of an empty dwelling in part 1 of the list, and the decree on reletting
-// rents applies there. The official simulator reads the list on the day the lease was signed or last renewed.
+// rents applies there. The official simulator reads the list on the day the lease was signed, renewed or tacitly renewed.
 export function tenseOn(commune: RegionalCommune, day: Day, lists: ZoneLists): boolean | null
 {
-    return day >= lists.tense.from ? commune.tensePart === 1 : null;
+    const part = tensePartOn(commune, day, lists);
+
+    return part === null ? null : part === 1;
 }
 
 const feeNames: Record<FeeZone, string> = { "very-tense": "zone très tendue", tense: "zone tendue", other: "hors zone tendue" };
 
-export function feeZoneNote(commune: RegionalCommune, zone: FeeZone | null, lists: ZoneLists): string
+export function feeZoneNote(commune: RegionalCommune, zone: FeeZone | null, lists: ZoneLists, day: Day): string
 {
-    return zone === null
-        ? `${commune.name} : pour un bail signé avant le ${frenchDay(feeZoneSince(commune, lists))}, Plafond n'a pas les listes de l'époque. Choisissez la zone vous-même.`
-        : `${commune.name} : ${feeNames[zone]} pour les frais d'agence, d'après les listes en vigueur à la date du bail. Vous pouvez corriger ce choix.`;
+    const first = [lists.tenseHistory[0]?.from ?? lists.tense.from, lists.veryTenseHistory[0]?.from ?? lists.earlierVeryTense.from].sort().at(-1)!;
+    if (zone !== null)
+    {
+        return `${commune.name} : ${feeNames[zone]} pour les frais d'agence, d'après les listes en vigueur à la date du bail. Vous pouvez corriger ce choix.`;
+    }
+
+    return day < first
+        ? `${commune.name} : pour un bail signé avant le ${frenchDay(first)}, Plafond n'a pas les listes de l'époque. Choisissez la zone vous-même.`
+        : `${commune.name} : à cette date, la zone dépend de l'ancienne commune où se trouve le logement, réunie depuis à ${commune.name}. Choisissez la zone vous-même.`;
 }
 
 // For the notice, the day is the lease's signature or last renewal; without it the form asks.
@@ -68,7 +104,7 @@ export function tenseNote(commune: RegionalCommune, tense: boolean | null, lists
 
     if (tense === null)
     {
-        return `${commune.name} : pour un bail signé ou renouvelé avant le ${frenchDay(lists.tense.from)}, Plafond n'a pas la liste de l'époque. Répondez vous-même.`;
+        return `${commune.name} : pour un bail signé ou renouvelé avant le ${frenchDay(lists.tenseHistory[0]?.from ?? lists.tense.from)}, Plafond n'a pas la liste de l'époque. Répondez vous-même.`;
     }
 
     return tense

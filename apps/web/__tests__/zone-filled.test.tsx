@@ -41,8 +41,9 @@ test("the date of the lease decides the zone, and a lease older than the lists l
 {
     expect(checked(fees("94002", { signedOn: "2026-06-25" }), "zone")).toEqual(["tense"]);
     expect(checked(fees("94002", { signedOn: "2026-06-26" }), "zone")).toEqual(["very-tense"]);
-    expect(checked(fees("91377", { signedOn: "2025-11-01" }), "zone")).toEqual([]);
-    expect(fees("91377", { signedOn: "2025-11-01" })).toContain("Plafond n'a pas les listes de l'époque");
+    expect(checked(fees("91377", { signedOn: "2025-11-01" }), "zone")).toEqual(["tense"]);
+    expect(checked(fees("91377", { signedOn: "2014-06-01" }), "zone")).toEqual([]);
+    expect(fees("91377", { signedOn: "2014-06-01" })).toContain("Plafond n'a pas les listes de l'époque");
 });
 
 // The notice reads the list on the lease's signature or last renewal, which the form asks for first.

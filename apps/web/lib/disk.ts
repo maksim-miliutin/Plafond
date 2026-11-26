@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { arrondissementOf, checkedSpans, outlineOf, type City, type FeeCaps, type LawPeriod, type Quartier, type RelocationPeriod, type Span } from "@plafond/domain";
-import { contoursOf, feeCapsOf, indexOf, latestFeeZone, lawOf, metropoleOf, regionalCommunesOf, relocationRulesOf, seedsFrom, zoneListsOf, zonesOf, type CommuneZone, type Contour, type RegionalCommune, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
+import { contoursOf, feeCapsOf, indexOf, latestFeeZone, lawOf, metropoleOf, regionalCommunesOf, relocationRulesOf, seedsFrom, zoneHistoryOf, zoneListsOf, zonesOf, type CommuneZone, type Contour, type RegionalCommune, type MetropoleCommune, type RentIndex, type Seeds, type ZoneLists } from "@plafond/import";
 
 import type { MappedCity } from "./city-copy";
 import { grandParisDrawing, lyonDrawing, type Drawing } from "./home-map";
@@ -123,9 +123,27 @@ export function territoryFromDisk(territory: Outer): TerritoryFacts
 
 const departments = ["75", "77", "78", "91", "92", "93", "94", "95"];
 
+// The communes of Île-de-France with the older versions of both lists, as zone-lists.json orders them.
 export function regionFromDisk(): RegionalCommune[]
 {
-    return regionalCommunesOf(readFileSync(join(seed, "ile-de-france-zones.csv"), "utf8"));
+    const lists = zoneListsFromDisk();
+    const history = zoneHistoryOf(
+        readFileSync(join(seed, "tlv-history.csv"), "utf8"),
+        readFileSync(join(seed, "a-bis-history.csv"), "utf8"),
+        lists.tenseHistory.map((list) => list.column),
+        lists.veryTenseHistory.map((list) => list.column),
+    );
+
+    return regionalCommunesOf(readFileSync(join(seed, "ile-de-france-zones.csv"), "utf8")).map((commune) =>
+    {
+        const past = history.get(commune.code);
+        if (past === undefined)
+        {
+            throw new Error(`no older zone is known for commune ${commune.code}`);
+        }
+
+        return { ...commune, pastTense: past.tense, pastVeryTense: past.veryTense };
+    });
 }
 
 // Every commune whose zone Plafond knows: Île-de-France by the latest lists, then the communes drawn around Lyon.

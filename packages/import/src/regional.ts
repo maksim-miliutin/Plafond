@@ -17,6 +17,8 @@ export interface RegionalCommune
     tensePart: TensePart;  // as the list stands since 24 December 2025, 0 when the commune is in neither part
     abcZone: AbcZone;  // since 26 June 2026
     veryTenseBefore: boolean;  // in zone A bis from 7 September 2025 to 25 June 2026
+    pastTense?: readonly (TensePart | null)[];  // by the older versions of the list, as ZoneLists.tenseHistory orders them
+    pastVeryTense?: readonly (boolean | null)[];  // by the older versions of zone A bis; null where the commune merged parts apart
 }
 
 export class RegionalError extends Error
@@ -85,4 +87,45 @@ export function latestFeeZone(commune: RegionalCommune): FeeZone
     }
 
     return commune.tensePart === 0 ? "other" : "tense";
+}
+
+export interface ZoneHistory
+{
+    tense: (TensePart | null)[];
+    veryTense: (boolean | null)[];
+}
+
+// The older versions of both lists for each commune, read from the two history tables by the columns the lists name.
+// A commune merged since a version, whose former parts it treated apart, reads "mixed": the zone then depends on the
+// former commune the dwelling stands in, so it is null.
+export function zoneHistoryOf(tenseText: string, veryTenseText: string, tenseColumns: readonly string[], veryTenseColumns: readonly string[]): Map<string, ZoneHistory>
+{
+    const tableOf = (text: string, columns: readonly string[], read: (value: string) => TensePart | boolean | null | undefined) =>
+    {
+        const [names = [], ...rows] = readRows(text.trimEnd() + "\n").filter((row) => row.some((field) => field !== ""));
+        const at = columns.map((column) => names.indexOf(column));
+        if (names[0] !== "code" || at.some((index) => index < 0))
+        {
+            throw new RegionalError(`a history table lacks the columns ${columns.join(", ")}`);
+        }
+
+        return new Map(rows.map((row, index) =>
+        {
+            const values = at.map((column) => read(row[column] ?? ""));
+            if (!/^\d[\dAB]\d{3}$/.test(row[0] ?? "") || values.some((value) => value === undefined))
+            {
+                throw new RegionalError(`line ${index + 2} of a history table has a code or a value it cannot read`);
+            }
+
+            return [row[0]!, values as (TensePart | boolean | null)[]];
+        }));
+    };
+    const tense = tableOf(tenseText, tenseColumns, (value) => (/^[012]$/.test(value) ? Number(value) as TensePart : undefined));
+    const veryTense = tableOf(veryTenseText, veryTenseColumns, (value) => (value === "1" ? true : value === "0" ? false : value === "mixed" ? null : undefined));
+    if (tense.size !== veryTense.size || [...tense.keys()].some((code) => !veryTense.has(code)))
+    {
+        throw new RegionalError("the two history tables do not hold the same communes");
+    }
+
+    return new Map([...tense].map(([code, values]) => [code, { tense: values as (TensePart | null)[], veryTense: veryTense.get(code) as (boolean | null)[] }]));
 }

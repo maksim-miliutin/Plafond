@@ -11,6 +11,6 @@ export { LawTableError, lawOf } from "./law.js";
 export { ContoursError, contoursOf, type Contour } from "./contours.js";
 export { MetropoleError, metropoleOf, type MetropoleCommune, type Territory } from "./metropole.js";
 export { TerritoryError, territoryAreas, territoryRates } from "./territories.js";
-export { ZonesError, zoneListsOf, zonesOf, type CommuneZone, type ZoneList, type ZoneLists } from "./zones.js";
+export { ZonesError, zoneListsOf, zonesOf, type CommuneZone, type PastList, type ZoneList, type ZoneLists } from "./zones.js";
 export { RelocationRulesError, relocationRulesOf } from "./relocation.js";
-export { latestFeeZone, RegionalError, regionalCommunesOf, type AbcZone, type RegionalCommune, type TensePart } from "./regional.js";
+export { latestFeeZone, RegionalError, regionalCommunesOf, zoneHistoryOf, type AbcZone, type RegionalCommune, type TensePart, type ZoneHistory } from "./regional.js";

@@ -53,7 +53,7 @@ test("a link naming Vincennes ticks zone très tendue, and an unknown code leave
     expect(ticked(await open("?commune=12345"))).toBeNull();
 });
 
-test("the date of the lease decides: Alfortville is tense on 25 June 2026, very tense from 26 June, unknown in 2025", async () =>
+test("the date of the lease decides: Alfortville is tense on 25 June 2026, very tense from 26 June, unknown before August 2014", async () =>
 {
     const host = await open("?commune=94002");
     await type(host, "signedOn", "2026-06-25");
@@ -62,7 +62,7 @@ test("the date of the lease decides: Alfortville is tense on 25 June 2026, very 
     await type(host, "signedOn", "2026-06-26");
     expect(ticked(host)).toBe("very-tense");
 
-    await type(host, "signedOn", "2025-11-01");
+    await type(host, "signedOn", "2014-06-01");
     expect(ticked(host)).toBeNull();
     expect(host.textContent).toContain("Plafond n'a pas les listes de l'époque");
 });

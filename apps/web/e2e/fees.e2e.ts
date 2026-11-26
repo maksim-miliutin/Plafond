@@ -51,7 +51,7 @@ test("opened from a commune, the fees form ticks its zone, asks for an older lea
     await expect(zone("very-tense")).toBeChecked();
     await expect(page.getByText("Vincennes : zone très tendue")).toBeVisible();
 
-    await page.getByLabel("Date de signature du bail").fill("2025-08-01");
+    await page.getByLabel("Date de signature du bail").fill("2014-06-01");
     await expect(page.locator('input[name="zone"]:checked')).toHaveCount(0);
     await expect(page.getByText("Choisissez la zone vous-même.")).toBeVisible();
 
@@ -68,7 +68,7 @@ test("a code the list does not hold leaves the fees form as it always was", asyn
     await expect(page.getByText("Vous pouvez corriger ce choix")).toHaveCount(0);
 });
 
-// The acceptance cases: Alfortville joined zone A bis on 26 June 2026, Massy and Barbizon are tense for the fees,
+// The acceptance cases: Alfortville came back to zone A bis on 26 June 2026, Massy and Barbizon are tense for the fees,
 // Bailly very tense though in neither part of the list, Fontainebleau in no zone.
 test("the zone filled in follows the commune and the lease's date across Île-de-France", async ({ page }) =>
 {

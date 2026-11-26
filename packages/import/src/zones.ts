@@ -68,11 +68,20 @@ export interface ZoneList
     url: string;
 }
 
+// An older version of a list, up to its last day excluded, and the column of the history table that holds it.
+export interface PastList extends ZoneList
+{
+    until: Day;
+    column: string;
+}
+
 export interface ZoneLists
 {
     tense: ZoneList;
     veryTense: ZoneList;
     earlierVeryTense: ZoneList & { until: Day };  // the version of zone A bis before the current one, up to its last day excluded
+    tenseHistory: PastList[];  // the versions of the list before the current one, oldest first
+    veryTenseHistory: PastList[];  // the versions of zone A bis before the earlier one, oldest first
 }
 
 export function zoneListsOf(source: unknown): ZoneLists
@@ -98,5 +107,46 @@ export function zoneListsOf(source: unknown): ZoneLists
         throw new ZonesError("the earlier version of zone A bis does not end the day the current one starts");
     }
 
-    return { tense, veryTense, earlierVeryTense: { ...earlier, until } };
+    const historyOf = (name: "tenseHistory" | "veryTenseHistory", next: Day): PastList[] =>
+    {
+        const listed = (source as Record<string, unknown>)[name];
+        if (!Array.isArray(listed))
+        {
+            throw new ZonesError(`there is no ${name}`);
+        }
+
+        const versions = listed.map((item: unknown, index): PastList =>
+        {
+            const fields = (typeof item === "object" && item !== null ? item : {}) as Record<string, unknown>;
+            const { title, url, column } = fields;
+            const from = fields["from"];
+            const last = fields["until"];
+            if (typeof from !== "string" || !isDay(from) || typeof last !== "string" || !isDay(last) || last <= from)
+            {
+                throw new ZonesError(`${name}, entry ${index + 1}: its days are missing or out of order`);
+            }
+
+            if (typeof title !== "string" || title === "" || typeof url !== "string" || !url.startsWith("https://") || typeof column !== "string" || column === "")
+            {
+                throw new ZonesError(`${name}, entry ${index + 1}: it has no title, no link or no column`);
+            }
+
+            return { from, until: last, title, url, column };
+        });
+        const ends = [...versions.slice(1).map((version) => version.from), next];
+        if (versions.some((version, index) => version.until !== ends[index]))
+        {
+            throw new ZonesError(`the versions of ${name} do not follow each other up to ${next}`);
+        }
+
+        return versions;
+    };
+
+    return {
+        tense,
+        veryTense,
+        earlierVeryTense: { ...earlier, until },
+        tenseHistory: historyOf("tenseHistory", tense.from),
+        veryTenseHistory: historyOf("veryTenseHistory", earlier.from),
+    };
 }
