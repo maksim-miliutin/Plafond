@@ -5,7 +5,7 @@ import { expect, test } from "vitest";
 import { metropoleOf } from "@plafond/import";
 
 import { IleDeFrance } from "../components/IleDeFrance";
-import { labelOf, packRegion, regionMatching, unpackRegion, zoneLineOf } from "../lib/region";
+import { departmentCounts, labelOf, packRegion, regionMatching, unpackRegion, zoneLineOf } from "../lib/region";
 import { regionCommunes } from "./zone-seeds";
 
 import list from "../../../db/seed/grand-paris-communes.csv?raw";
@@ -62,4 +62,14 @@ test("the page names its 1 266 communes, its sources and the Grand Paris, and li
     expect(page).toContain('<a href="../grand-paris/">Le Grand Paris commune par commune</a>');
     expect(page).toContain("Saisissez le nom de la commune ou son code Insee.");
     expect(page).not.toContain("<strong>Versailles</strong>");
+});
+
+test("the departments hold 1 266 communes between them, Seine-et-Marne the most", () =>
+{
+    const counts = departmentCounts(region);
+
+    expect(counts.map((department) => [department.code, department.count])).toEqual([
+        ["75", 1], ["77", 507], ["78", 259], ["91", 194], ["92", 36], ["93", 39], ["94", 47], ["95", 183],
+    ]);
+    expect(counts.reduce((sum, department) => sum + department.count, 0)).toBe(1266);
 });
