@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { communeFrom } from "../lib/commune-zone";
 import { helpers } from "../lib/help";
+import { labelOf, unpackRegion } from "../lib/region";
 import { nextRelocation, relocationStart, type RelocationEvent, type RelocationStep, type RelocationWorld } from "../lib/relocation-flow";
 import { HelpStep } from "./HelpStep";
 import { RelocationFormStep } from "./RelocationFormStep";
 import { RelocationResultStep } from "./RelocationResultStep";
 
-export function Relocation({ world }: { world: RelocationWorld })
+export function Relocation({ rules }: { rules: Omit<RelocationWorld, "communes"> & { communes: string } })
 {
+    const world = useMemo(() => ({ ...rules, communes: unpackRegion(rules.communes) }), [rules]);
     const [step, setStep] = useState<RelocationStep>(relocationStart);
 
     // The link's code is read in the browser: the page is built once for every commune. An unknown code leaves the choice open.
@@ -19,7 +21,7 @@ export function Relocation({ world }: { world: RelocationWorld })
         const commune = communeFrom(window.location.search, world.communes);
         if (commune !== undefined)
         {
-            setStep((current) => current.at === "form" && current.fields.commune === "" ? { ...current, fields: { ...current.fields, commune: commune.code } } : current);
+            setStep((current) => current.at === "form" && current.fields.commune === "" ? { ...current, fields: { ...current.fields, commune: labelOf(commune) } } : current);
         }
     }, [world.communes]);
 

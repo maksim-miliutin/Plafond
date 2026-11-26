@@ -1,8 +1,10 @@
 import { centsFrom, isDay, relocation } from "@plafond/domain";
 import type { Basis, IndexRow, Label, Relocation, RelocationCheck, RelocationPeriod, Vacancy } from "@plafond/domain";
-import type { CommuneZone, ZoneLists } from "@plafond/import";
+import type { ZoneLists } from "@plafond/import";
 
 import { tenseOn } from "./commune-zone";
+import { searchKey } from "./metropole";
+import { labelOf, type RegionCommune } from "./region";
 
 export interface RelocationFields
 {
@@ -22,7 +24,7 @@ export type RelocationErrors = Partial<Record<keyof RelocationFields, string>>;
 interface Reckoned
 {
     fields: RelocationFields;
-    commune: CommuneZone;
+    commune: RegionCommune;
     capped: boolean;
     lease: Relocation;
     firstAssumed: boolean;
@@ -42,7 +44,7 @@ export type RelocationEvent =
 
 export interface RelocationWorld
 {
-    communes: readonly CommuneZone[];
+    communes: readonly RegionCommune[];
     lists: ZoneLists;
     capped: readonly string[];  // the codes of the communes whose rents a decree caps
     periods: readonly RelocationPeriod[];
@@ -50,7 +52,7 @@ export interface RelocationWorld
 }
 
 export const relocationQuestions: Record<keyof RelocationFields, string> = {
-    commune: "Choisissez la commune du logement.",
+    commune: "Choisissez la commune du logement dans la liste.",
     signedOn: "Indiquez la date de signature du bail.",
     proposed: "Indiquez le loyer hors charges de votre bail.",
     first: "Indiquez si c'est la première location du logement.",
@@ -110,15 +112,35 @@ export function nextRelocation(step: RelocationStep, event: RelocationEvent, wor
     }
 }
 
+// The commune as the tenant typed or picked it: its name with its department as the list shows it, its code, or a name
+// only one commune bears, now or before a merger. Two communes of the same name need the department.
+export function communeNamed(typed: string, communes: readonly RegionCommune[]): RegionCommune | "several" | undefined
+{
+    const text = typed.trim();
+    const exact = communes.find((commune) => labelOf(commune) === text || commune.code === text);
+    if (exact !== undefined || text === "")
+    {
+        return exact;
+    }
+
+    const key = searchKey(text);
+    const named = communes.filter((commune) => [commune.name, ...commune.former].some((name) => searchKey(name) === key));
+
+    return named.length > 1 ? "several" : named[0];
+}
+
+const several = "Plusieurs communes portent ce nom : choisissez celle de votre département dans la liste.";
+
 function answered(fields: RelocationFields, world: RelocationWorld): RelocationStep
 {
     const needed = asked(fields);
-    const commune = world.communes.find((one) => one.code === fields.commune);
+    const named = communeNamed(fields.commune, world.communes);
+    const commune = named === "several" ? undefined : named;
     const proposed = centsFrom(fields.proposed);
     const lastRent = fields.lastRent.trim() === "" ? null : centsFrom(fields.lastRent);
     const unanswered = (["first", "dpe", "vacancy", "revised", "basis"] as const).filter((key) => needed.includes(key) && !answers[key].includes(fields[key]));
     const errors: RelocationErrors = {
-        ...(commune === undefined ? { commune: relocationQuestions.commune } : {}),
+        ...(named === "several" ? { commune: several } : commune === undefined ? { commune: relocationQuestions.commune } : {}),
         ...(isDay(fields.signedOn) ? {} : { signedOn: relocationQuestions.signedOn }),
         ...(typeof proposed === "number" && proposed > 0 ? {} : { proposed: relocationQuestions.proposed }),
         ...(needed.includes("lastRent") && lastRent !== null && !(typeof lastRent === "number" && lastRent > 0) ? { lastRent: relocationQuestions.lastRent } : {}),

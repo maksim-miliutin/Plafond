@@ -1,18 +1,20 @@
 import { Relocation } from "../../components/Relocation";
-import { grandParisZonesFromDisk, indexFromDisk, metropoleFromDisk, relocationRulesFromDisk, zoneListsFromDisk } from "../../lib/disk";
+import { indexFromDisk, metropoleFromDisk, regionFromDisk, relocationRulesFromDisk, zoneListsFromDisk } from "../../lib/disk";
+import { packRegion } from "../../lib/region";
 import { pageMetadata } from "../../lib/site";
 
 export const metadata = pageMetadata("relocation/");
 
 export default function RentOnReletting()
 {
-    const world = {
-        communes: grandParisZonesFromDisk(),
+    const metropole = metropoleFromDisk();
+    const rules = {
+        communes: packRegion(regionFromDisk(), metropole),
         lists: zoneListsFromDisk(),
-        capped: metropoleFromDisk().filter((commune) => commune.territory !== null).map((commune) => commune.code),
+        capped: metropole.filter((commune) => commune.territory !== null).map((commune) => commune.code),
         periods: relocationRulesFromDisk(),
         index: indexFromDisk().rows,
     };
 
-    return <Relocation world={world} />;
+    return <Relocation rules={rules} />;
 }

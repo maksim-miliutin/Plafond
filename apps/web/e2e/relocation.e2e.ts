@@ -15,7 +15,7 @@ test("a tenant opened from Vincennes finds 80 € too much each month, and nothi
     });
 
     await page.goto("/relocation/?commune=94080");
-    await expect(page.getByLabel("Commune du logement")).toHaveValue("94080");
+    await expect(page.getByLabel("Commune du logement")).toHaveValue("Vincennes (94)");
     await page.getByLabel("Date de signature du bail").fill("2026-09-01");
     await page.getByLabel("Loyer hors charges de votre bail").fill("1080");
     await page.locator('input[name="first"][value="no"]').check();
@@ -39,7 +39,7 @@ test("opened bare, the form asks for the commune; a first letting in Montreuil l
     await page.goto("/relocation/?commune=nowhere");
     await expect(page.getByLabel("Commune du logement")).toHaveValue("");
 
-    await page.getByLabel("Commune du logement").selectOption("93048");
+    await page.getByLabel("Commune du logement").fill("Montreuil (93)");
     await page.getByLabel("Date de signature du bail").fill("2026-09-01");
     await page.getByLabel("Loyer hors charges de votre bail").fill("900");
     await page.locator('input[name="first"][value="yes"]').check();
@@ -55,7 +55,7 @@ test("opened bare, the form asks for the commune; a first letting in Montreuil l
 test("a lease signed on 1 August 2027 is past the rules Plafond holds", async ({ page }) =>
 {
     await page.goto("/relocation/?commune=94080");
-    await expect(page.getByLabel("Commune du logement")).toHaveValue("94080");
+    await expect(page.getByLabel("Commune du logement")).toHaveValue("Vincennes (94)");
     await page.getByLabel("Date de signature du bail").fill("2027-08-01");
     await page.getByLabel("Loyer hors charges de votre bail").fill("1080");
     await page.locator('input[name="first"][value="no"]').check();
@@ -67,4 +67,22 @@ test("a lease signed on 1 August 2027 is past the rules Plafond holds", async ({
     await page.getByRole("button", { name: "Vérifier la hausse" }).click();
 
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Règles non disponibles pour cette date de bail");
+});
+
+test("Barbizon is outside the zone the decree reads, and the result leads to the DPE check", async ({ page }) =>
+{
+    await page.goto("/relocation/?commune=77022");
+    await expect(page.getByLabel("Commune du logement")).toHaveValue("Barbizon (77)");
+    await page.getByLabel("Date de signature du bail").fill("2026-11-25");
+    await page.getByLabel("Loyer hors charges de votre bail").fill("900");
+    await page.locator('input[name="first"][value="no"]').check();
+    await page.locator('input[name="dpe"][value="D"]').check();
+    await page.locator('input[name="vacancy"][value="within"]').check();
+    await page.getByLabel("Dernier loyer hors charges du locataire précédent").fill("850");
+    await page.locator('input[name="revised"][value="yes"]').check();
+    await page.locator('input[name="basis"][value="none"]').check();
+    await page.getByRole("button", { name: "Vérifier la hausse" }).click();
+
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Hors champ de cette vérification");
+    await expect(page.getByRole("link", { name: "Vérifier le DPE du logement" })).toHaveAttribute("href", "../dpe/");
 });

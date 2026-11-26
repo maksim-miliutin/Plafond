@@ -7,17 +7,16 @@ import { afterEach, expect, test } from "vitest";
 import { indexOf, relocationRulesOf, zoneListsOf } from "@plafond/import";
 
 import { Relocation } from "../components/Relocation";
-import type { RelocationWorld } from "../lib/relocation-flow";
 
 import sources from "../../../db/seed/zone-lists.json?raw";
 import rules from "../../../db/seed/relocation-rules.json?raw";
 import irl from "../../../db/seed/irl.json?raw";
-import { seededZones } from "./zone-seeds";
+import { packedRegion } from "./zone-seeds";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-const world: RelocationWorld = {
-    communes: seededZones.filter((row) => ["94080", "93066"].includes(row.code)),
+const given = {
+    communes: packedRegion,
     lists: zoneListsOf(JSON.parse(sources)),
     capped: ["93066"],
     periods: relocationRulesOf(JSON.parse(rules)),
@@ -39,17 +38,17 @@ async function open(search: string): Promise<HTMLElement>
     hosts.push(host);
     await act(async () =>
     {
-        createRoot(host).render(<Relocation world={world} />);
+        createRoot(host).render(<Relocation rules={given} />);
     });
 
     return host;
 }
 
-const chosen = (host: HTMLElement) => host.querySelector<HTMLSelectElement>("#commune")!.value;
+const chosen = (host: HTMLElement) => host.querySelector<HTMLInputElement>("#commune")!.value;
 
 test("a link naming Saint-Denis chooses it, and a code the list does not hold leaves the choice to the tenant", async () =>
 {
-    expect(chosen(await open("?commune=93066"))).toBe("93066");
+    expect(chosen(await open("?commune=93066"))).toBe("Saint-Denis (93)");
     expect(chosen(await open("?commune=99999"))).toBe("");
 });
 

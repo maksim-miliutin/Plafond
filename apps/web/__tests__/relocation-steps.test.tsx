@@ -11,10 +11,10 @@ import { nextRelocation, relocationStart, type RelocationFields, type Relocation
 import sources from "../../../db/seed/zone-lists.json?raw";
 import rules from "../../../db/seed/relocation-rules.json?raw";
 import irl from "../../../db/seed/irl.json?raw";
-import { seededZones } from "./zone-seeds";
+import { regionList } from "./zone-seeds";
 
 const world: RelocationWorld = {
-    communes: seededZones.filter((row) => ["94080", "93048", "75056", "91027"].includes(row.code)),
+    communes: regionList.filter((row) => ["94080", "93048", "75056", "91027", "77022"].includes(row.code)),
     lists: zoneListsOf(JSON.parse(sources)),
     capped: ["75056", "93048"],
     periods: relocationRulesOf(JSON.parse(rules)),
@@ -41,11 +41,13 @@ function result(fields: Partial<RelocationFields>): string
     return clean(renderToStaticMarkup(<RelocationResultStep communeName={step.commune.name} capped={step.capped} lease={step.lease} firstAssumed={step.firstAssumed} basisAssumed={step.basisAssumed} check={step.check} />));
 }
 
-test("opened from a commune, the form has it chosen; opened bare, it asks for one among the communes in order", () =>
+test("opened from a commune, the form has it written; opened bare, it suggests the communes in order", () =>
 {
-    expect(form({ commune: "94080" })).toMatch(/<option value="94080" selected="">Vincennes<\/option>/);
-    expect(form()).toMatch(/<option value="" selected="">Choisissez la commune<\/option>/);
-    expect([...form().matchAll(/<option value="\d{5}"[^>]*>([^<]+)</g)].map((found) => found[1])).toEqual(["Athis-Mons", "Montreuil", "Paris", "Vincennes"]);
+    const field = (html: string) => /<input id="commune"[^>]*>/.exec(html)?.[0] ?? "";
+
+    expect(field(form({ commune: "Vincennes (94)" }))).toContain('value="Vincennes (94)"');
+    expect(field(form())).toContain('value=""');
+    expect([...form().matchAll(/<option value="([^"]+)"/g)].map((found) => found[1])).toEqual(["Athis-Mons (91)", "Barbizon (77)", "Montreuil (93)", "Paris (75)", "Vincennes (94)"]);
 });
 
 test("the form asks only what the case needs", () =>
@@ -85,6 +87,8 @@ test("an unrevised rent shows the index published at signing and the sum", () =>
 
 test("each case the check cannot price says what it is and where to look", () =>
 {
+    expect(result({ commune: "77022" })).toContain("Barbizon n'est pas dans la zone tendue que vise le décret");
+    expect(result({ commune: "77022" })).toContain('<a href="../dpe/">Vérifier le DPE du logement</a>');
     expect(result({ signedOn: "2027-08-01" })).toContain("Règles non disponibles pour cette date de bail");
     expect(result({ signedOn: "2027-08-01" })).toContain("du 1er août 2026 au 31 juillet 2027");
     expect(result({ dpe: "unknown" })).toContain("Données insuffisantes");

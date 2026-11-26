@@ -82,7 +82,10 @@ function Finding({ lease, check, communeName }: { lease: Relocation; check: Relo
             return (
                 <>
                     <h1 className="title">Hors champ de cette vérification</h1>
-                    <p className="lead">{communeName} n'est pas en zone tendue&nbsp;: le décret ne limite pas le loyer à la relocation.</p>
+                    <p className="lead">
+                        {communeName} n'est pas dans la zone tendue que vise le décret&nbsp;: il ne limite pas le loyer à la relocation.
+                    </p>
+                    <p>Un logement classé F ou G garde en revanche son dernier loyer partout en France. <a href="../dpe/">Vérifier le DPE du logement</a></p>
                 </>
             );
 

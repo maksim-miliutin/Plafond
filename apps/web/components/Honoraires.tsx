@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-import type { CommuneZone, ZoneLists } from "@plafond/import";
+import type { RegionalCommune, ZoneLists } from "@plafond/import";
 
 import type { FeeCaps } from "@plafond/domain";
 
 import { feesStart, nextFees, type FeesEvent, type FeesStep } from "../lib/fees-flow";
 import { communeFrom } from "../lib/commune-zone";
+import { unpackRegion } from "../lib/region";
 import { helpers } from "../lib/help";
 import { todayInParis } from "../lib/today";
 import { FeesFormStep } from "./FeesFormStep";
@@ -24,19 +25,19 @@ const live: FeesNeeds = { now: () => new Date() };
 
 export interface ZoneNeeds
 {
-    communes: readonly CommuneZone[];
+    communes: string;  // the communes of the region, packed one per line
     lists: ZoneLists;
 }
 
 export function Honoraires({ caps, zones, needs = live }: { caps: readonly FeeCaps[]; zones?: ZoneNeeds; needs?: FeesNeeds })
 {
     const [step, setStep] = useState<FeesStep>(feesStart);
-    const [commune, setCommune] = useState<CommuneZone | undefined>(undefined);
+    const [commune, setCommune] = useState<RegionalCommune | undefined>(undefined);
 
     // The link's code is read in the browser: the page is built once for every commune.
     useEffect(() =>
     {
-        setCommune(zones === undefined ? undefined : communeFrom(window.location.search, zones.communes));
+        setCommune(zones === undefined ? undefined : communeFrom(window.location.search, unpackRegion(zones.communes)));
     }, [zones]);
 
     useEffect(() =>

@@ -2,19 +2,18 @@
 
 import { useState, type FormEvent } from "react";
 
-import type { CommuneZone } from "@plafond/import";
-
 import { readForm } from "../lib/forms";
+import { labelOf, type RegionCommune } from "../lib/region";
 import { asked, relocationStart, type RelocationErrors, type RelocationFields } from "../lib/relocation-flow";
 import { Brand } from "./Brand";
-import { Choice, Picked, Typed } from "./Fields";
+import { Choice, Listed, Typed } from "./Fields";
 import { LocalForm } from "./LocalForm";
 
 export interface RelocationFormProps
 {
     fields: RelocationFields;
     errors: RelocationErrors;
-    communes: readonly CommuneZone[];
+    communes: readonly RegionCommune[];
     onAnswer?: (fields: RelocationFields) => void;
 }
 
@@ -34,7 +33,7 @@ export function RelocationFormStep({ fields, errors, communes, onAnswer }: Reloc
     // The answers that decide which other questions the case needs, followed as the tenant ticks them.
     const [deciding, setDeciding] = useState({ first: fields.first, dpe: fields.dpe });
     const needed = asked({ ...fields, ...deciding });
-    const named = [...communes].sort((a, b) => a.name.localeCompare(b.name, "fr")).map((commune): [string, string] => [commune.code, commune.name]);
+    const named = [...communes].sort((a, b) => a.name.localeCompare(b.name, "fr")).map(labelOf);
 
     function answer(event: FormEvent<HTMLFormElement>)
     {
@@ -62,13 +61,12 @@ export function RelocationFormStep({ fields, errors, communes, onAnswer }: Reloc
             <a className="rule" href="https://www.service-public.gouv.fr/particuliers/vosdroits/F1314" rel="noopener">Comprendre la règle</a>
             <LocalForm className="stack form" noValidate onSubmit={answer} onChange={(event: { target: EventTarget | null }) => follow(event.target as HTMLInputElement)}>
                 <h2 className="section">Votre bail</h2>
-                <Picked
+                <Listed
                     key={fields.commune}
                     id="commune"
                     label="Commune du logement"
-                    hint="Une des 130 communes du Grand Paris."
-                    prompt="Choisissez la commune"
-                    options={named}
+                    hint="Une commune d'Île-de-France, avec son département."
+                    listed={named}
                     value={fields.commune}
                     error={errors.commune}
                 />
