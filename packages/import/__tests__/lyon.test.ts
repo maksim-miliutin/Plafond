@@ -95,15 +95,16 @@ test("two IRIS of one zone that disagree on a rent are a breakage, not a choice"
     expect(() => lyonTable(broken)).toThrow(LyonError);
 });
 
-// Article 3 of the decree of 23 October 2026 applies it from 1 November to 23 November 2026 inclusive.
-test("the Lyon decrees follow each other without a gap, the last one ending after 23 November 2026", async () =>
+// Article 3 of the decree of 23 October 2026 applied it from 1 November to 23 November 2026 inclusive; article 1 of the act
+// of 23 November 2026 keeps it to 31 October 2027.
+test("the Lyon decrees follow each other without a gap, the last one ending after 31 October 2027", async () =>
 {
     const { decreesOf } = await import("../src/decrees.js");
     const decrees = [...decreesOf(lyonDecrees).values()];
 
     expect(decrees.map((decree) => decree.from)).toEqual(["2021-11-01", "2022-11-01", "2023-11-01", "2024-11-01", "2025-11-01", "2026-11-01"]);
     decrees.slice(1).forEach((decree, index) => expect(decree.from).toBe(decrees[index]!.until));
-    expect(decrees.at(-1)).toMatchObject({ title: "Arrêté préfectoral n° DDT 69-2026-10-23-00004", until: "2026-11-24", contest: null });
+    expect(decrees.at(-1)).toMatchObject({ title: "Arrêté préfectoral n° DDT 69-2026-10-23-00004", until: "2027-11-01", contest: null });
 });
 
 // The decree of 28 September 2022 bears its number in the prefect's hand on its first page; article 3 applies it from 1 November 2022.

@@ -44,7 +44,11 @@
         "title": "Arrêté préfectoral n° IDF-2026-04-28-00033",
         "url": "https://www.drihl.ile-de-france.developpement-durable.gouv.fr/IMG/pdf/arrete_pco-2.pdf",
         "from": "2026-06-01",
-        "until": "2026-11-25",
-        "contest": null
+        "until": "2027-06-01",
+        "contest": null,
+        "extension": {
+            "title": "Arrêté préfectoral n° IDF-2026-11-23-00004 du 23 novembre 2026",
+            "url": "https://www.prefectures-regions.gouv.fr/ile-de-france/irecontenu/telechargement/142656/1036462/file/recueil-idf-041-2026-11-recueil-des-actes-administratifs-special%20du%2023.11.2026.pdf#page=3"
+        }
     }
 ]

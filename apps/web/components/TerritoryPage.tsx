@@ -76,6 +76,7 @@ export function TerritoryPage({ copy, communes, spans, example, simulator }: Ter
                         <a href={rate.decree.url}>{rate.decree.title}</a>, applicable du {frenchDay(rate.decree.from)} au{" "}
                         {frenchDay(dayBefore(rate.decree.until))}
                     </li>
+                    {rate.decree.extension !== undefined && <li><a href={rate.decree.extension.url}>{rate.decree.extension.title}</a>, qui le proroge</li>}
                 </ul>
             </section>
             <p className="fine">Une information générale, pas un conseil juridique. <a href="../../mentions/">Mentions légales</a></p>

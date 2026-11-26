@@ -27,8 +27,8 @@ test("the seeds the site reads date the leases Plafond can check, gaps included"
     const { paris, lyon } = seedsFrom(read);
     const law = lawOf(lawSeed);
 
-    expect(checkedSpans("paris", paris, law)).toEqual([{ from: "2019-07-01", lastDay: "2026-11-24" }]);
-    expect(checkedSpans("lyon", lyon.rates, law)).toEqual([{ from: "2021-11-01", lastDay: "2026-11-23" }]);
+    expect(checkedSpans("paris", paris, law)).toEqual([{ from: "2019-07-01", lastDay: "2027-06-30" }]);
+    expect(checkedSpans("lyon", lyon.rates, law)).toEqual([{ from: "2021-11-01", lastDay: "2027-10-31" }]);
 });
 
 test("a lease signed under the annulled decree of 2023 is priced, and carries the annulment for the screen to show", () =>
@@ -40,8 +40,9 @@ test("a lease signed under the annulled decree of 2023 is priced, and carries th
     expect(check(claim, lyon.rates, lawOf(lawSeed))).toMatchObject({ kind: "checked", rate: { decree: { from: "2023-11-01", contest: { outcome: "annulled" } } } });
 });
 
-// Article 3 of each Lyon decree sets these edges. The 2026 decree stops on 23 November 2026, while the law of
-// 21 November 2026 runs the control on to 24 November 2028: between the two a lease finds no rate, not a lapsed law.
+// Article 3 of each Lyon decree sets these edges. The 2026 decree first stopped on 23 November 2026; the act of
+// 23 November 2026 keeps it to 31 October 2027, while the law of 21 November 2026 runs the control on to 24 November 2028:
+// between the two a lease finds no rate, not a lapsed law.
 test("a Lyon lease is priced by the decree in force on the day it was signed, edge days included", () =>
 {
     const { lyon } = seedsFrom(read);
@@ -65,14 +66,16 @@ test("a Lyon lease is priced by the decree in force on the day it was signed, ed
     expect(signed("2026-10-31")).toBe("decree from 2025-11-01");
     expect(signed("2026-11-01")).toBe("decree from 2026-11-01");
     expect(signed("2026-11-23")).toBe("decree from 2026-11-01");
-    expect(signed("2026-11-24")).toBe("no rate, after");
-    expect(signed("2026-11-25")).toBe("no rate, after");
+    expect(signed("2026-11-24")).toBe("decree from 2026-11-01");
+    expect(signed("2027-10-31")).toBe("decree from 2026-11-01");
+    expect(signed("2027-11-01")).toBe("no rate, after");
     expect(signed("2028-11-24")).toBe("no rate, after");
     expect(signed("2028-11-25")).toBe("lapsed");
 });
 
 // The bug this guards: the law of 21 November 2026 extended the control to 24 November 2028, yet a Paris lease signed
-// on 25 November 2026 was still told that no published text extends it. The 2026 decree itself stops on 24 November.
+// on 25 November 2026 was still told that no published text extends it. The act of 23 November 2026 keeps the 2026
+// decree in force; Plafond holds it to the day before the next yearly decree, due on 1 July 2027.
 test("a Paris lease signed after the 2026 decree finds no rate under the extended law, and lapses only after 24 November 2028", () =>
 {
     const { paris } = seedsFrom(read);
@@ -92,7 +95,9 @@ test("a Paris lease signed after the 2026 decree finds no rate under the extende
     expect(signed("2026-06-30")).toBe("decree from 2025-07-01");
     expect(signed("2026-07-01")).toBe("decree from 2026-07-01");
     expect(signed("2026-11-24")).toBe("decree from 2026-07-01");
-    expect(signed("2026-11-25")).toBe("no rate, after");
+    expect(signed("2026-11-25")).toBe("decree from 2026-07-01");
+    expect(signed("2027-06-30")).toBe("decree from 2026-07-01");
+    expect(signed("2027-07-01")).toBe("no rate, after");
     expect(signed("2028-11-24")).toBe("no rate, after");
     expect(signed("2028-11-25")).toBe("lapsed");
 });
@@ -172,15 +177,15 @@ test("the twelve IRIS read blind off the decrees' maps lie in the sectors the se
     }
 });
 
-// Lyon and Villeurbanne share one decree, so both stop on its last day, 23 November 2026.
-test("a Villeurbanne lease finds the 2026 decree on 23 November 2026 and no rate from the day after", () =>
+// Lyon and Villeurbanne share one decree, so both run to its last day, 31 October 2027 since the act of 23 November 2026.
+test("a Villeurbanne lease finds the 2026 decree to 31 October 2027 and no rate from the day after", () =>
 {
     const { lyon } = seedsFrom(read);
     const law = lawOf(lawSeed);
     const flat = { city: "lyon" as const, quartier: 692660201, rooms: 1 as const, period: "before-1946" as const, furnished: false };
     const signed = (day: string) => check({ flat, surface: 2500, signedOn: day, startsOn: day, rent: 60000, complement: 0, on: "2026-11-22" }, lyon.rates, law);
 
-    expect(signed("2026-11-23")).toMatchObject({ kind: "checked", rate: { decree: { title: "Arrêté préfectoral n° DDT 69-2026-10-23-00004" } } });
-    expect(signed("2026-11-24")).toMatchObject({ kind: "no-rate", side: "after", until: "2026-11-23" });
-    expect(signed("2026-11-25")).toMatchObject({ kind: "no-rate", side: "after", until: "2026-11-23" });
+    expect(signed("2026-11-24")).toMatchObject({ kind: "checked", rate: { decree: { title: "Arrêté préfectoral n° DDT 69-2026-10-23-00004" } } });
+    expect(signed("2027-10-31")).toMatchObject({ kind: "checked", rate: { decree: { extension: { title: "Arrêté préfectoral n° 69-2026-11-23-00001 du 23 novembre 2026" } } } });
+    expect(signed("2027-11-01")).toMatchObject({ kind: "no-rate", side: "after", until: "2027-10-31" });
 });

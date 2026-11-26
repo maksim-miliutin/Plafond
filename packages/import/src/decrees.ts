@@ -67,7 +67,13 @@ function decreeOf(fields: Fields, where: string): Decree
         from,
         until,
         contest: fields["contest"] === null ? null : contestOf(record(fields["contest"], where), where),
+        ...(fields["extension"] === undefined ? {} : { extension: extensionOf(record(fields["extension"], `${where}, extension`)) }),
     };
+}
+
+function extensionOf(fields: Fields): { title: string; url: string }
+{
+    return { title: text(fields, "title", "extension"), url: link(fields, "url", "extension") };
 }
 
 function contestOf(fields: Fields, where: string): Contest

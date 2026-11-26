@@ -39,6 +39,7 @@ export function QuartierPage({ place }: { place: PlacePage })
                 <h2>Sources</h2>
                 <ul className="references">
                     <li><a href={place.decree.url}>{place.decree.title}</a></li>
+                    {place.decree.extension !== undefined && <li><a href={place.decree.extension.url}>{place.decree.extension.title}</a>, qui le proroge</li>}
                     <li><a href="http://www.referenceloyer.drihl.ile-de-france.developpement-durable.gouv.fr/">Carte officielle des loyers de référence (DRIHL)</a></li>
                 </ul>
             </section>

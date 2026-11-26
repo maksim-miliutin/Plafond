@@ -37,6 +37,7 @@ export function LyonPage({ commune }: { commune: CommunePage })
                 <h2>Sources</h2>
                 <ul className="references">
                     <li><a href={commune.decree.url}>{commune.decree.title}</a></li>
+                    {commune.decree.extension !== undefined && <li><a href={commune.decree.extension.url}>{commune.decree.extension.title}</a>, qui le proroge</li>}
                 </ul>
             </section>
             <p className="fine">Une information générale, pas un conseil juridique. <a href="../../mentions/">Mentions légales</a></p>
