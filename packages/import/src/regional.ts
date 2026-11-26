@@ -30,12 +30,30 @@ export class RegionalError extends Error
     }
 }
 
-const header = "code;nom;departement;grand_paris;tlv_part;abc_zone;a_bis_2025";
-const departments = new Set(["75", "77", "78", "91", "92", "93", "94", "95"]);
+// The zone of a commune for agency fees by the latest lists, as the maps tell it.
+export interface CommuneZone
+{
+    code: string;
+    name: string;
+    zone: FeeZone;
+}
+
 const abc = new Set(["Abis", "A", "B1", "B2", "C"]);
 
 // The communes of Île-de-France with the zones each rule reads, from the ministry's tables on data.gouv.fr.
 export function regionalCommunesOf(text: string): RegionalCommune[]
+{
+    return communesOf(text, "code;nom;departement;grand_paris;tlv_part;abc_zone;a_bis_2025", new Set(["75", "77", "78", "91", "92", "93", "94", "95"]), "Île-de-France");
+}
+
+// The 58 communes of the Métropole de Lyon, in the same layout; none is in the Grand Paris.
+export function lyonCommunesOf(text: string): RegionalCommune[]
+{
+    return communesOf(text, "code;nom;departement;metropole_lyon;tlv_part;abc_zone;a_bis_2025", new Set(["69"]), "the Métropole de Lyon")
+        .map((commune) => ({ ...commune, grandParis: false }));
+}
+
+function communesOf(text: string, header: string, departments: ReadonlySet<string>, region: string): RegionalCommune[]
 {
     const [names, ...rows] = readRows(text.trimEnd() + "\n").filter((row) => row.some((field) => field !== ""));
     if (names?.join(";") !== header)
@@ -51,7 +69,7 @@ export function regionalCommunesOf(text: string): RegionalCommune[]
         const where = `line ${index + 2}`;
         if (row.length !== 7 || !/^\d{5}$/.test(code) || name.trim() === "" || !departments.has(department) || !code.startsWith(department))
         {
-            throw new RegionalError(`${where} is not a commune of Île-de-France with its code, name and department`);
+            throw new RegionalError(`${where} is not a commune of ${region} with its code, name and department`);
         }
 
         if (!/^[01]$/.test(grandParis) || !/^[012]$/.test(part) || !abc.has(zone) || !/^[01]$/.test(before))

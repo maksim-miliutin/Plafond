@@ -13,8 +13,9 @@ export interface Shape
     kind: ShapeKind;
     group: "paris" | "est-ensemble" | "plaine-commune" | "lyon" | "villeurbanne" | "plain";
     page: string;  // relative to the first screen
-    code?: string;  // the INSEE code of a commune of the Grand Paris, Paris's for an arrondissement
-    zone?: FeeZone;  // what its notice and agency fees follow
+    code?: string;  // the INSEE code of the commune, Paris's or Lyon's for an arrondissement
+    zone?: FeeZone;  // what its agency fees follow
+    tense?: boolean;  // in part 1 of the list, which the notice and the reletting rent follow
 }
 
 export interface Label
@@ -137,9 +138,10 @@ export interface Outline
 export interface GrandParisInput
 {
     arrondissements: { number: number; slug: string; rings: Quartier["rings"] }[];
-    communes: (Outline & { territory: "est-ensemble" | "plaine-commune" | null; zone: FeeZone })[];  // every commune but Paris
+    communes: (Outline & { territory: "est-ensemble" | "plaine-commune" | null; zone: FeeZone; tense: boolean })[];  // every commune but Paris
     paris: Quartier["rings"];  // the outline the rent check searches
     parisZone: FeeZone;
+    parisTense: boolean;
     parisContour: Quartier["rings"];  // Paris among the outlines of the communes, which share its borders exactly
     departments: Outline[];
 }
@@ -147,15 +149,15 @@ export interface GrandParisInput
 const ordinalOf = (number: number) => (number === 1 ? "1er" : `${number}e`);
 
 // The Grand Paris on a 600 by 640 frame: Paris by arrondissement, the two territories and the other communes in grey.
-export function grandParisDrawing({ arrondissements, communes, paris, parisZone, parisContour, departments }: GrandParisInput, tolerance: number): Drawing
+export function grandParisDrawing({ arrondissements, communes, paris, parisZone, parisTense, parisContour, departments }: GrandParisInput, tolerance: number): Drawing
 {
     const [width, height] = [600, 640];
     const everything = [...paris, ...communes.flatMap((commune) => commune.rings)];
     const project = projectionOf(everything, width, height, 12);
     const shapes: Shape[] = [
-        ...communes.filter((commune) => commune.territory === null).map((commune): Shape => ({ name: commune.name, d: pathOf(commune.rings, project, tolerance), kind: "plain", group: "plain", page: "grand-paris/", code: commune.code, zone: commune.zone })),
-        ...communes.filter((commune) => commune.territory !== null).map((commune): Shape => ({ name: commune.name, d: pathOf(commune.rings, project, tolerance), kind: "capped", group: commune.territory!, page: `grand-paris/${commune.territory}/`, code: commune.code, zone: commune.zone })),
-        ...arrondissements.map(({ number, slug, rings }): Shape => ({ name: `Paris ${ordinalOf(number)}`, d: pathOf(rings, project, tolerance), kind: "capped", group: "paris", page: `arrondissements/${slug}/`, code: "75056", zone: parisZone })),
+        ...communes.filter((commune) => commune.territory === null).map((commune): Shape => ({ name: commune.name, d: pathOf(commune.rings, project, tolerance), kind: "plain", group: "plain", page: "grand-paris/", code: commune.code, zone: commune.zone, tense: commune.tense })),
+        ...communes.filter((commune) => commune.territory !== null).map((commune): Shape => ({ name: commune.name, d: pathOf(commune.rings, project, tolerance), kind: "capped", group: commune.territory!, page: `grand-paris/${commune.territory}/`, code: commune.code, zone: commune.zone, tense: commune.tense })),
+        ...arrondissements.map(({ number, slug, rings }): Shape => ({ name: `Paris ${ordinalOf(number)}`, d: pathOf(rings, project, tolerance), kind: "capped", group: "paris", page: `arrondissements/${slug}/`, code: "75056", zone: parisZone, tense: parisTense })),
     ];
     const all = [{ code: "75056", rings: parisContour }, ...communes];
     const metropole = outlineOf(all.map((area, number) => ({ number, name: area.code, rings: area.rings })));
@@ -194,8 +196,8 @@ export function grandParisDrawing({ arrondissements, communes, paris, parisZone,
 
 export interface LyonInput
 {
-    areas: { name: string; slug: string; rings: Quartier["rings"] }[];  // Lyon's nine arrondissements and Villeurbanne
-    communes: (Outline & { zone: FeeZone })[];  // the other communes of the Métropole
+    areas: { name: string; slug: string; rings: Quartier["rings"]; code: string; zone: FeeZone; tense: boolean }[];  // Lyon's nine arrondissements and Villeurbanne
+    communes: (Outline & { zone: FeeZone; tense: boolean })[];  // the other communes of the Métropole
 }
 
 // Lyon and Villeurbanne fill the frame; the communes around them show at its edges, cut by it.
@@ -206,13 +208,16 @@ export function lyonDrawing({ areas, communes }: LyonInput, tolerance: number): 
     const project = projectionOf(areas.flatMap((area) => area.rings), width, height, 56);
     const inFrame = (rings: Quartier["rings"]) => rings.some((ring) => ring.map(project).some(([x, y]) => x > -60 && x < width + 60 && y > -60 && y < height + 60));
     const shapes: Shape[] = [
-        ...communes.filter((commune) => inFrame(commune.rings)).map((commune): Shape => ({ name: commune.name, d: pathOf(commune.rings, project, tolerance), kind: "plain", group: "plain", page: "ailleurs/", zone: commune.zone })),
+        ...communes.filter((commune) => inFrame(commune.rings)).map((commune): Shape => ({ name: commune.name, d: pathOf(commune.rings, project, tolerance), kind: "plain", group: "plain", page: "ailleurs/", code: commune.code, zone: commune.zone, tense: commune.tense })),
         ...areas.map((area): Shape => ({
             name: area.name.replace(/ Arrondissement$/, ""),
             d: pathOf(area.rings, project, tolerance),
             kind: "capped",
             group: area.name === "Villeurbanne" ? "villeurbanne" : "lyon",
             page: `lyon/${area.slug}/`,
+            code: area.code,
+            zone: area.zone,
+            tense: area.tense,
         })),
     ];
     const label = (text: string, lon: number, lat: number, kind: Label["kind"]): Label =>

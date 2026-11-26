@@ -38,9 +38,9 @@ export const homeMaps: Record<MapName, Drawing> = {
         width: 600,
         height: 640,
         shapes: [
-            { name: "Paris 11e", d: "M10,10L20,10L20,20Z", kind: "capped", group: "paris", page: "arrondissements/paris-11e/", code: "75056", zone: "very-tense" },
-            { name: "Montreuil", d: "M30,10L40,10L40,20Z", kind: "capped", group: "est-ensemble", page: "grand-paris/est-ensemble/", code: "93048", zone: "very-tense" },
-            { name: "Vincennes", d: "M50,10L60,10L60,20Z", kind: "plain", group: "plain", page: "grand-paris/", code: "94080", zone: "very-tense" },
+            { name: "Paris 11e", d: "M10,10L20,10L20,20Z", kind: "capped", group: "paris", page: "arrondissements/paris-11e/", code: "75056", zone: "very-tense", tense: true },
+            { name: "Montreuil", d: "M30,10L40,10L40,20Z", kind: "capped", group: "est-ensemble", page: "grand-paris/est-ensemble/", code: "93048", zone: "very-tense", tense: true },
+            { name: "Vincennes", d: "M50,10L60,10L60,20Z", kind: "plain", group: "plain", page: "grand-paris/", code: "94080", zone: "very-tense", tense: true },
         ],
         borders: "M0,0L5,5",
         outline: "M0,0L600,0L600,640Z",

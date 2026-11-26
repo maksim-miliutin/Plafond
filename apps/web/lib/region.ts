@@ -17,7 +17,11 @@ export const departmentNames: Record<string, string> = {
     "93": "Seine-Saint-Denis",
     "94": "Val-de-Marne",
     "95": "Val-d'Oise",
+    "69": "Métropole de Lyon",
 };
+
+// The departments of Île-de-France, which the search of the region lists.
+export const regionDepartments = ["75", "77", "78", "91", "92", "93", "94", "95"] as const;
 
 // The 1 266 communes go to the browser as one line each, a fraction of the same list as objects: code;name;part;zone ABC;
 // A bis before;Grand Paris;former names joined by |;older parts of the list;older A bis, 1, 0 or m where merged parts differ.
@@ -113,5 +117,5 @@ export interface DepartmentCount
 // How many communes each department holds, for the tenant who looks for theirs before typing it.
 export function departmentCounts(communes: readonly RegionalCommune[]): DepartmentCount[]
 {
-    return Object.entries(departmentNames).map(([code, name]) => ({ code, name, count: communes.filter((commune) => commune.department === code).length }));
+    return regionDepartments.map((code) => ({ code, name: departmentNames[code]!, count: communes.filter((commune) => commune.department === code).length }));
 }

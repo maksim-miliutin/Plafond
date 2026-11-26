@@ -147,9 +147,8 @@ function Card({ shape }: { shape: Shape })
             <strong>{shape.name}</strong>
             <p>{shape.group === "plain" ? "Pas de loyer de référence dans cette commune. Les six autres vérifications s'appliquent." : cappedText[shape.group]}</p>
             {shape.zone !== undefined && <p>{zoneSentences[shape.zone]}</p>}
-            {/* A commune of the Grand Paris carries its code, and all 130 are in part 1 of the list, as the import's tests check. */}
             {shape.code !== undefined
-                ? <CommuneChecks code={shape.code} reach={{ capped, tense: true }} base="" className="map-actions" lead />
+                ? <CommuneChecks code={shape.code} reach={{ capped, tense: shape.tense ?? false }} base="" className="map-actions" lead />
                 : capped && <ul className="map-actions"><li><a href="loyer/" className="map-check">Vérifier le plafond du loyer</a></li></ul>}
             <p className="map-links">
                 {shape.group === "plain"
