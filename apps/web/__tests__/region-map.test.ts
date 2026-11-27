@@ -8,9 +8,11 @@ import { regionDrawing } from "../lib/home-map";
 import { metropole, regionCommunes } from "./zone-seeds";
 
 import outlines from "../../../db/seed/ile-de-france-communes.geojson?raw";
+import finerOutlines from "../../../db/seed/grand-paris-contours.geojson?raw";
 
 const contours = contoursOf(JSON.parse(outlines), regionCommunes.map((commune) => commune.code));
-const drawing = regionDrawing(contours, regionCommunes, metropole, 0.8);
+const finer = contoursOf(JSON.parse(finerOutlines), metropole.map((commune) => commune.code));
+const drawing = regionDrawing(contours, regionCommunes, metropole, 0.8, finer);
 const find = (code: string) => drawing.shapes.find((shape) => shape.code === code);
 
 test("the plan of the region draws each of its 1 266 communes once, from the outlines delivered with the zones", () =>
@@ -19,6 +21,16 @@ test("the plan of the region draws each of its 1 266 communes once, from the out
     expect(drawing.shapes).toHaveLength(1266);
     expect(new Set(drawing.shapes.map((shape) => shape.code)).size).toBe(1266);
     expect(drawing.borders).not.toBe("");
+});
+
+// The Grand Paris sits in the middle of the region and covers about a tenth of its width: the zoom button frames it.
+test("the plan knows where the Grand Paris lies, well inside the region", () =>
+{
+    const focus = drawing.focus!;
+
+    expect(focus.x).toBeGreaterThan(150);
+    expect(focus.x + focus.w).toBeLessThan(450);
+    expect(focus.w).toBeLessThan(drawing.width / 3);
 });
 
 // Part 1 of the list tints a commune without reference rents; the territories keep the colours of the Grand Paris plan.
@@ -37,4 +49,16 @@ test("the card says the notice keeps three months outside part 1, whatever zone 
     expect(zoneSentenceOf("tense", false)).toBe("Hors zone tendue pour le préavis : trois mois pour un logement vide, sauf autre motif. Les frais d'agence suivent le plafond de la zone tendue.");
     expect(zoneSentenceOf("very-tense", false)).toContain("plafond de la zone très tendue");
     expect(zoneSentenceOf("tense", true)).toMatch(/^Zone tendue : le préavis d'un logement vide est d'un mois/);
+});
+
+// The Grand Paris keeps the finer outlines of its own plan, drawn after the rest, so that zooming on it stays sharp.
+test("the 130 communes of the Grand Paris come last, from the finer outlines", () =>
+{
+    const points = (d: string) => (d.match(/[-\d.]+,[-\d.]+/g) ?? []).length;
+    const lighter = regionDrawing(contours, regionCommunes, metropole, 0.8);
+    const vincennes = (plan: typeof drawing) => points(plan.shapes.find((shape) => shape.code === "94080")!.d);
+
+    expect(drawing.shapes.slice(-130).every((shape) => regionCommunes.find((commune) => commune.code === shape.code)?.grandParis)).toBe(true);
+    expect(vincennes(drawing)).toBeGreaterThan(vincennes(lighter));
+    expect(drawing.borders).toBe(lighter.borders);
 });

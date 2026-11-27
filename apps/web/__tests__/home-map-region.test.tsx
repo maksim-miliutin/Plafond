@@ -20,6 +20,7 @@ const region: Drawing = {
     outline: "",
     city: "M0,0Z",
     labels: [],
+    focus: { x: 240, y: 180, w: 120, h: 80 },
 };
 const hosts: HTMLElement[] = [];
 const fetched: string[] = [];
@@ -86,4 +87,22 @@ test("when the plan cannot load, the panel says so and leads to the search by na
 
     expect(host.querySelector(".map-wait")?.textContent).toContain("Le plan n'a pas pu se charger.");
     expect(host.querySelector<HTMLAnchorElement>(".map-wait a")?.getAttribute("href")).toBe("ile-de-france/");
+});
+
+test("the Grand Paris button frames the middle of the region, and the whole region comes back", async () =>
+{
+    const host = await openRegion(async () => new Response(JSON.stringify(region)));
+    const viewBox = () => host.querySelector("svg")!.getAttribute("viewBox");
+    const button = (name: string) => [...host.querySelectorAll<HTMLButtonElement>(".map-zoom button")].find((one) => one.textContent === name || one.getAttribute("aria-label") === name)!;
+
+    expect(viewBox()).toBe("0 0 600 500");
+    expect(button("Toute la région").disabled).toBe(true);
+    await act(async () => button("Grand Paris").click());
+    expect(viewBox()).not.toBe("0 0 600 500");
+    expect(host.querySelector("svg")!.getAttribute("class")).toBe("zoomed");
+
+    await act(async () => button("Toute la région").click());
+    expect(viewBox()).toBe("0 0 600 500");
+    await act(async () => button("Agrandir").click());
+    expect(viewBox()).toBe("150 125 300 250");
 });

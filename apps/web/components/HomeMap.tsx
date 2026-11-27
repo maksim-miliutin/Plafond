@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, type MouseEvent } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 
 import type { FeeZone } from "@plafond/domain";
 
 import { CommuneChecks } from "./CommuneChecks";
 import type { Drawing, Label, Shape } from "../lib/home-map";
 import { regionMapFile } from "../lib/load";
+import { framing, fullView, isFull, panned, zoomed, type View } from "../lib/map-view";
 import { departmentNames } from "../lib/region";
 
 export type MapName = "grand-paris" | "lyon";
@@ -26,7 +27,7 @@ const tabs: Record<TabName, { title: string; label: string; hint: string }> = {
     "ile-de-france": {
         title: "Île-de-France",
         label: "Plan des 1 266 communes d'Île-de-France, par département",
-        hint: "Touchez votre commune sur le plan : les 1 266 communes de la région y sont.",
+        hint: "Touchez votre commune sur le plan : les 1 266 communes de la région y sont. Agrandissez avec le bouton Grand Paris ou +, puis faites glisser le plan.",
     },
 };
 
@@ -74,6 +75,14 @@ export const zoneSentences: Record<FeeZone, string> = {
     other: "Hors zone tendue : le préavis d'un logement vide est de trois mois, et les frais d'agence suivent le plafond le plus bas.",
 };
 
+// What a drag reads of a pointer event.
+interface Pointer
+{
+    clientX: number;
+    clientY: number;
+    currentTarget: { clientWidth: number };
+}
+
 // The plan of the region weighs more than both others together: it is fetched the first time its tab is opened.
 type Region = Drawing | "loading" | "failed" | null;
 
@@ -95,11 +104,55 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
     const [region, setRegion] = useState<Region>(null);
     const drawing = shown === "ile-de-france" ? (typeof region === "object" && region !== null ? region : undefined) : maps[shown];
     const shape = picked === null || drawing === undefined ? undefined : drawing.shapes[picked];
+    // Only the plan of the region zooms: its small communes around Paris need it, the two city plans do not.
+    const [view, setView] = useState<View | null>(null);
+    const full = drawing === undefined ? null : fullView(drawing);
+    const shownView = view !== null && full !== null && drawing?.focus !== undefined ? view : full;
+    const close = shownView !== null && full !== null && !isFull(shownView, full);
+    const drag = useRef<{ x: number; y: number; view: View; moved: boolean } | null>(null);
+    const dragged = useRef(false);
+
+    function zoom(next: (current: View, whole: View) => View)
+    {
+        if (full !== null)
+        {
+            setView(next(shownView ?? full, full));
+        }
+    }
+
+    function grab(event: Pointer)
+    {
+        drag.current = close && shownView !== null ? { x: event.clientX, y: event.clientY, view: shownView, moved: false } : null;
+    }
+
+    function slide(event: Pointer)
+    {
+        const start = drag.current;
+        if (start === null || full === null)
+        {
+            return;
+        }
+
+        const [dx, dy] = [event.clientX - start.x, event.clientY - start.y];
+        start.moved ||= Math.hypot(dx, dy) > 6;
+        if (start.moved)
+        {
+            const scale = start.view.w / event.currentTarget.clientWidth;
+            setView(panned(start.view, full, -dx * scale, -dy * scale));
+        }
+    }
+
+    function release()
+    {
+        dragged.current = drag.current?.moved ?? false;
+        drag.current = null;
+    }
 
     function show(name: TabName)
     {
         setShown(name);
         setPicked(null);
+        setView(null);
         if (name === "ile-de-france" && (region === null || region === "failed"))
         {
             setRegion("loading");
@@ -111,6 +164,12 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
 
     function pick(event: MouseEvent<SVGSVGElement>)
     {
+        if (dragged.current)
+        {
+            dragged.current = false;
+            return;
+        }
+
         const target = (event.target as Element).closest("[data-shape]");
         if (target !== null)
         {
@@ -143,7 +202,25 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
                             : "Chargement du plan des 1 266 communes…"}
                     </p>
                 )}
-                {drawing !== undefined && <svg role="img" aria-label={tabs[shown].label} viewBox={`0 0 ${drawing.width} ${drawing.height}`} onClick={pick}>
+                {drawing?.focus !== undefined && full !== null && (
+                    <div className="map-zoom" role="group" aria-label="Zoom du plan">
+                        <button type="button" onClick={() => setView(framing(drawing.focus!, full))}>Grand Paris</button>
+                        <button type="button" aria-label="Agrandir" onClick={() => zoom((current, whole) => zoomed(current, whole, 2))}>+</button>
+                        <button type="button" aria-label="Réduire" disabled={!close} onClick={() => zoom((current, whole) => zoomed(current, whole, 0.5))}>−</button>
+                        <button type="button" disabled={!close} onClick={() => setView(null)}>Toute la région</button>
+                    </div>
+                )}
+                {drawing !== undefined && shownView !== null && <svg
+                    role="img"
+                    aria-label={tabs[shown].label}
+                    viewBox={`${shownView.x} ${shownView.y} ${shownView.w} ${shownView.h}`}
+                    className={close ? "zoomed" : undefined}
+                    onClick={pick}
+                    onPointerDown={grab}
+                    onPointerMove={slide}
+                    onPointerUp={release}
+                    onPointerLeave={release}
+                >
                     <defs>
                         <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
                             <rect width="7" height="7" className="hatch-ground" />
@@ -158,7 +235,7 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
                     {drawing.borders !== "" && <path d={drawing.borders} className="borders" />}
                     {drawing.outline !== "" && <path d={drawing.outline} className="outline" />}
                     <path d={drawing.city} className="city" />
-                    {drawing.labels.map((label) => <MapLabel key={label.text} label={label} />)}
+                    {!close && drawing.labels.map((label) => <MapLabel key={label.text} label={label} />)}
                     {drawing.inset !== undefined && (
                         <g transform={`translate(${drawing.width - drawing.inset.width - 12},12)`} className="inset">
                             <rect x={-6} y={-6} width={drawing.inset.width + 12} height={drawing.inset.height + 12} rx={8} />

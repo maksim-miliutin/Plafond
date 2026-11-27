@@ -39,6 +39,7 @@ export interface Drawing
     city: string;  // the edge of the city whose rents are capped
     labels: Label[];
     inset?: { regions: string; frame: string; width: number; height: number };
+    focus?: { x: number; y: number; w: number; h: number };  // the Grand Paris on the plan of the region, which a button zooms to
 }
 
 export interface Projection
@@ -263,9 +264,13 @@ export function lyonDrawing({ areas, communes }: LyonInput, tolerance: number): 
 
 // The plan of Île-de-France: its 1 266 communes from a lighter outline than the Grand Paris uses, each with the zones and
 // the page a touch leads to. It is drawn at build time into a file the first screen loads only when the tab is opened.
-export function regionDrawing(contours: readonly Contour[], communes: readonly RegionalCommune[], metropole: readonly MetropoleCommune[], tolerance: number): Drawing
+// The finer outlines of the Grand Paris, when given, replace the lighter ones there and are drawn last, so the zoom on it
+// stays sharp; along its edge they may part from the lighter outlines around by a few hundred metres.
+export function regionDrawing(lighter: readonly Contour[], communes: readonly RegionalCommune[], metropole: readonly MetropoleCommune[], tolerance: number, finer: readonly Contour[] = []): Drawing
 {
     const [width, height] = [600, 500];
+    const sharp = new Map(finer.map((contour) => [contour.code, contour]));
+    const contours = [...lighter.filter((contour) => !sharp.has(contour.code)), ...lighter.filter((contour) => sharp.has(contour.code)).map((contour) => sharp.get(contour.code)!)];
     const known = new Map(communes.map((commune) => [commune.code, commune]));
     const territory = new Map(metropole.map((commune) => [commune.code, commune.territory]));
     const project = projectionOf(contours.flatMap((contour) => contour.rings), width, height, 10);
@@ -283,7 +288,7 @@ export function regionDrawing(contours: readonly Contour[], communes: readonly R
 
         return {
             name: commune.name,
-            d: pathOf(contour.rings, project, tolerance),
+            d: pathOf(contour.rings, project, sharp.has(contour.code) ? tolerance / 6 : tolerance),
             kind: group === "plain" ? "plain" : "capped",
             group,
             page,
@@ -295,6 +300,9 @@ export function regionDrawing(contours: readonly Contour[], communes: readonly R
         };
     });
     const paris = contours.find((contour) => contour.code === "75056")!;
+    const inner = contours.filter((contour) => known.get(contour.code)?.grandParis === true).flatMap((contour) => contour.rings.flat().map((point) => project(point)));
+    const [xs, ys] = [inner.map(([x]) => x), inner.map(([, y]) => y)];
+    const focus = { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
     const label = (text: string, lon: number, lat: number): Label =>
     {
         const [x, y] = project([lon, lat]);
@@ -305,9 +313,10 @@ export function regionDrawing(contours: readonly Contour[], communes: readonly R
         width,
         height,
         shapes,
-        borders: sharedSides(contours, (contour) => contour.code.slice(0, 2), project),
+        borders: sharedSides(lighter, (contour) => contour.code.slice(0, 2), project),
         outline: "",
-        city: pathOf(paris.rings, project, tolerance),
+        city: pathOf(paris.rings, project, sharp.has(paris.code) ? tolerance / 6 : tolerance),
         labels: [label("Yvelines", 1.84, 48.8), label("Val-d'Oise", 2.13, 49.12), label("Essonne", 2.22, 48.5), label("Seine-et-Marne", 2.95, 48.62)],
+        focus: { x: Math.round(focus.x), y: Math.round(focus.y), w: Math.round(focus.w), h: Math.round(focus.h) },
     };
 }
