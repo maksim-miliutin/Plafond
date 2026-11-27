@@ -117,5 +117,8 @@ test("an older lease is read under the decree of its year, with the index publis
     const step = answer({ signedOn: "2024-03-01", revised: "no", proposed: "1 100" });
 
     expect(step).toMatchObject({ at: "result", check: { kind: "indexed", period: { from: "2023-08-01" }, to: { year: 2023, quarter: 4 }, from: { year: 2022, quarter: 4 } } });
-    expect(answer({ signedOn: "2017-09-01", revised: "no" })).toMatchObject({ at: "result", check: { kind: "missing", field: "index" } });
+    expect(answer({ signedOn: "2017-09-01", revised: "no" })).toMatchObject({
+        at: "result",
+        check: { kind: "indexed", period: { from: "2017-08-01" }, to: { year: 2017, quarter: 2 }, from: { year: 2016, quarter: 2 }, allowed: 100750 },
+    });
 });

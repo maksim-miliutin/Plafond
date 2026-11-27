@@ -9,7 +9,7 @@
     },
     {
         "from": "2026-01-01",
-        "until": "2027-01-01",
+        "until": null,
         "letting": { "very-tense": 1210, "tense": 1009, "other": 807 },
         "inspection": 303,
         "title": "Arrêté du 17 juillet 2025 modifié par l'arrêté du 13 novembre 2025",

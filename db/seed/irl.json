@@ -1,6 +1,10 @@
 {
     "source": "https://anil.org/outils/indices-et-plafonds/tableau-de-lirl",
     "rows": [
+        { "year": 2016, "quarter": 1, "value": 12526, "change": 6, "publishedOn": "2016-04-13" },
+        { "year": 2016, "quarter": 2, "value": 12525, "change": 0, "publishedOn": "2016-07-13" },
+        { "year": 2016, "quarter": 3, "value": 12533, "change": 6, "publishedOn": "2016-10-12" },
+        { "year": 2016, "quarter": 4, "value": 12550, "change": 18, "publishedOn": "2017-01-12" },
         { "year": 2017, "quarter": 1, "value": 12590, "change": 51, "publishedOn": "2017-04-13" },
         { "year": 2017, "quarter": 2, "value": 12619, "change": 75, "publishedOn": "2017-07-13" },
         { "year": 2017, "quarter": 3, "value": 12646, "change": 90, "publishedOn": "2017-10-12" },

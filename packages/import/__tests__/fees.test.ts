@@ -1,9 +1,11 @@
 import { expect, test } from "vitest";
 
+import { agencyFees } from "@plafond/domain";
+
 import seed from "../../../db/seed/agency-fees.json" with { type: "json" };
 import { FeeCapsError, feeCapsOf } from "../src/fees.js";
 
-function row(from: string, until: string, change: Record<string, unknown> = {}): Record<string, unknown>
+function row(from: string, until: string | null, change: Record<string, unknown> = {}): Record<string, unknown>
 {
     return {
         from,
@@ -35,6 +37,7 @@ test("a row that leaves a gap or overlaps the next is refused, so every lease fi
 {
     expect(() => feeCapsOf([row("2014-09-15", "2026-01-01"), row("2026-02-01", "2027-01-01")])).toThrow(FeeCapsError);
     expect(() => feeCapsOf([row("2014-09-15", "2026-01-01"), row("2025-12-01", "2027-01-01")])).toThrow(/^fee caps: /);
+    expect(() => feeCapsOf([row("2014-09-15", null), row("2026-01-01", "2027-01-01")])).toThrow(FeeCapsError);
 });
 
 test("a cap that is not a whole number of cents, a zone left out, a day that is not one or a plain link is refused", () =>
@@ -49,16 +52,19 @@ test("a cap that is not a whole number of cents, a zone left out, a day that is 
 
 // Décret n° 2014-890, article 2, and the arrêté of 17 July 2025 as amended on 13 November 2025, which raised the caps from
 // 1 January 2026 by the change of the rent index from the third quarter of 2024 to that of 2025: +0,87 %.
-test("the seed holds the caps of 2014 and those of 2026, the second the first raised by 0,87 % to the cent", () =>
+test("the seed holds the caps of 2014 and the open-ended caps of 2026, raised by 0,87 % to the cent", () =>
 {
-    const [old, raised] = feeCapsOf(seed);
+    const caps = feeCapsOf(seed);
+    const [old, raised] = caps;
 
     expect(old).toMatchObject({ from: "2014-09-15", until: "2026-01-01", letting: { "very-tense": 1200, tense: 1000, other: 800 }, inspection: 300 });
-    expect(raised).toMatchObject({ from: "2026-01-01", until: "2027-01-01", letting: { "very-tense": 1210, tense: 1009, other: 807 }, inspection: 303 });
+    expect(raised).toMatchObject({ from: "2026-01-01", until: null, letting: { "very-tense": 1210, tense: 1009, other: 807 }, inspection: 303 });
     for (const zone of ["very-tense", "tense", "other"] as const)
     {
         expect(raised!.letting[zone], zone).toBe(Math.round(old!.letting[zone] * 1.0087));
     }
 
     expect(raised!.inspection).toBe(Math.round(old!.inspection * 1.0087));
+    expect(agencyFees({ zone: "very-tense", surface: 3000, letting: 50000, inspection: 12000, signedOn: "2027-01-01" }, caps))
+        .toMatchObject({ kind: "fees", lettingCap: 36300, inspectionCap: 9090 });
 });

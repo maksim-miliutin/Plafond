@@ -6,7 +6,7 @@ export type FeeZone = "very-tense" | "tense" | "other";
 export interface FeeCaps
 {
     from: Day;
-    until: Day;  // the first day it no longer applies
+    until: Day | null;  // the first day it no longer applies, if set
     letting: Record<FeeZone, number>;  // cents per square metre for the visits, the file and the lease together
     inspection: number;  // cents per square metre for the entry inspection, in every zone
     title: string;
@@ -63,12 +63,12 @@ export function agencyFees(paid: AgencyFees, table: readonly FeeCaps[]): FeesChe
         return { kind: "no-caps", side: "before", from: first.from };
     }
 
-    if (paid.signedOn >= last.until)
+    if (last.until !== null && paid.signedOn >= last.until)
     {
         return { kind: "no-caps", side: "after", until: last.until };
     }
 
-    const caps = ordered.find((row) => row.from <= paid.signedOn && paid.signedOn < row.until);
+    const caps = ordered.find((row) => row.from <= paid.signedOn && (row.until === null || paid.signedOn < row.until));
     if (caps === undefined)
     {
         throw new AgencyError(`no fee caps cover ${paid.signedOn}, between ${first.from} and ${last.until}`);
