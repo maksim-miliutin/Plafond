@@ -1614,6 +1614,8 @@ a:hover
 .region-ask
 {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
     gap: 12px;
     padding: 18px;
     border: 1px solid var(--line);
@@ -1655,7 +1657,7 @@ a:hover
 .department-links
 {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr));
     gap: 8px;
     margin: 0;
     padding: 0;

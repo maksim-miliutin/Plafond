@@ -1,6 +1,7 @@
 import type { DepartmentCount } from "../lib/region";
 
-// Under the map of the Grand Paris: the rest of Île-de-France, by name or by department, on the page of the region.
+// Under the map of the Grand Paris: the rest of Île-de-France, by name or by department, on the page of the region. Paris,
+// a department of one commune, has its own door on the first screen.
 export function RegionAsk({ departments }: { departments: readonly DepartmentCount[] })
 {
     const total = departments.reduce((sum, department) => sum + department.count, 0);
@@ -20,7 +21,7 @@ export function RegionAsk({ departments }: { departments: readonly DepartmentCou
                 </div>
             </form>
             <ul className="department-links" aria-label="Les communes par département">
-                {departments.map((department) => (
+                {departments.filter((department) => department.code !== "75").map((department) => (
                     <li key={department.code}>
                         <a href={`ile-de-france/?departement=${department.code}`}>
                             <strong>{department.name} ({department.code})</strong>
