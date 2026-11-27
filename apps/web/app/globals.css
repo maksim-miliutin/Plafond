@@ -1719,3 +1719,42 @@ a:hover
     display: block;
     margin: 2px 0 0;
 }
+
+.map-zoom
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.map-zoom button
+{
+    min-width: 44px;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1.5px solid var(--blue);
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: var(--blue);
+    font: 700 15px var(--text);
+    cursor: pointer;
+}
+
+.map-zoom button:disabled
+{
+    border-color: var(--line);
+    color: var(--muted);
+    cursor: default;
+}
+
+.map-panel svg.zoomed
+{
+    touch-action: none;
+    cursor: grab;
+}
+
+.map-panel svg.zoomed path
+{
+    vector-effect: non-scaling-stroke;
+}

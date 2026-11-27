@@ -69,6 +69,9 @@ test("the Île-de-France tab loads the plan of the region, and a touch on Massy 
     const panel = page.getByRole("tabpanel");
 
     await expect(panel.locator("path.shape")).toHaveCount(1266);
+    await panel.getByRole("button", { name: "Grand Paris" }).click();
+    await expect(panel.locator("svg")).toHaveClass("zoomed");
+    await panel.getByRole("button", { name: "Toute la région" }).click();
     await touch(page, "Massy");
     await expect(panel.locator(".map-card")).toContainText("Essonne (91)");
     await expect(panel.getByRole("link", { name: "Vérifier mon préavis" })).toHaveAttribute("href", "preavis/?commune=91377");
