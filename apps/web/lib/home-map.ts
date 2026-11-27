@@ -64,7 +64,7 @@ export function projectionOf(rings: readonly Ring[], width: number, height: numb
 // The algorithm of Ramer, Douglas and Peucker on the projected points: a point closer than the tolerance to the line it sits on adds nothing.
 export function simplified(points: readonly Spot[], tolerance: number): Spot[]
 {
-    if (points.length < 3)
+    if (points.length < 3 || tolerance === 0)
     {
         return [...points];
     }
@@ -262,15 +262,11 @@ export function lyonDrawing({ areas, communes }: LyonInput, tolerance: number): 
     };
 }
 
-// The plan of Île-de-France: its 1 266 communes from a lighter outline than the Grand Paris uses, each with the zones and
-// the page a touch leads to. It is drawn at build time into a file the first screen loads only when the tab is opened.
-// The finer outlines of the Grand Paris, when given, replace the lighter ones there and are drawn last, so the zoom on it
-// stays sharp; along its edge they may part from the lighter outlines around by a few hundred metres.
-export function regionDrawing(lighter: readonly Contour[], communes: readonly RegionalCommune[], metropole: readonly MetropoleCommune[], tolerance: number, finer: readonly Contour[] = []): Drawing
+// All 1 266 communes use the same Mapshaper outlines, retaining the points of their shared borders.
+// The build writes the drawing into a file the first screen loads when the Île-de-France tab is opened.
+export function regionDrawing(contours: readonly Contour[], communes: readonly RegionalCommune[], metropole: readonly MetropoleCommune[]): Drawing
 {
     const [width, height] = [600, 500];
-    const sharp = new Map(finer.map((contour) => [contour.code, contour]));
-    const contours = [...lighter.filter((contour) => !sharp.has(contour.code)), ...lighter.filter((contour) => sharp.has(contour.code)).map((contour) => sharp.get(contour.code)!)];
     const known = new Map(communes.map((commune) => [commune.code, commune]));
     const territory = new Map(metropole.map((commune) => [commune.code, commune.territory]));
     const project = projectionOf(contours.flatMap((contour) => contour.rings), width, height, 10);
@@ -288,7 +284,7 @@ export function regionDrawing(lighter: readonly Contour[], communes: readonly Re
 
         return {
             name: commune.name,
-            d: pathOf(contour.rings, project, sharp.has(contour.code) ? tolerance / 6 : tolerance),
+            d: pathOf(contour.rings, project, 0),
             kind: group === "plain" ? "plain" : "capped",
             group,
             page,
@@ -313,9 +309,9 @@ export function regionDrawing(lighter: readonly Contour[], communes: readonly Re
         width,
         height,
         shapes,
-        borders: sharedSides(lighter, (contour) => contour.code.slice(0, 2), project),
+        borders: sharedSides(contours, (contour) => contour.code.slice(0, 2), project),
         outline: "",
-        city: pathOf(paris.rings, project, sharp.has(paris.code) ? tolerance / 6 : tolerance),
+        city: pathOf(paris.rings, project, 0),
         labels: [label("Yvelines", 1.84, 48.8), label("Val-d'Oise", 2.13, 49.12), label("Essonne", 2.22, 48.5), label("Seine-et-Marne", 2.95, 48.62)],
         focus: { x: Math.round(focus.x), y: Math.round(focus.y), w: Math.round(focus.w), h: Math.round(focus.h) },
     };
