@@ -6,10 +6,13 @@ import type { FeeZone } from "@plafond/domain";
 
 import { CommuneChecks } from "./CommuneChecks";
 import type { Drawing, Label, Shape } from "../lib/home-map";
+import { regionMapFile } from "../lib/load";
+import { departmentNames } from "../lib/region";
 
 export type MapName = "grand-paris" | "lyon";
+type TabName = MapName | "ile-de-france";
 
-const tabs: Record<MapName, { title: string; label: string; hint: string }> = {
+const tabs: Record<TabName, { title: string; label: string; hint: string }> = {
     "grand-paris": {
         title: "Grand Paris",
         label: "Plan du Grand Paris : Paris par arrondissement, Est Ensemble, Plaine Commune et les autres communes de la Métropole",
@@ -20,9 +23,14 @@ const tabs: Record<MapName, { title: string; label: string; hint: string }> = {
         label: "Plan de Lyon par arrondissement, de Villeurbanne et des communes voisines",
         hint: "Touchez votre arrondissement, Villeurbanne ou votre commune sur le plan pour savoir ce que Plafond y vérifie.",
     },
+    "ile-de-france": {
+        title: "Île-de-France",
+        label: "Plan des 1 266 communes d'Île-de-France, par département",
+        hint: "Touchez votre commune sur le plan : les 1 266 communes de la région y sont.",
+    },
 };
 
-const legends: Record<MapName, { group: Shape["group"]; text: string }[]> = {
+const legends: Record<TabName, { group: Shape["group"] | "tinted"; text: string }[]> = {
     "grand-paris": [
         { group: "paris", text: "Paris, loyer encadré" },
         { group: "est-ensemble", text: "Est Ensemble, loyer encadré" },
@@ -33,6 +41,13 @@ const legends: Record<MapName, { group: Shape["group"]; text: string }[]> = {
         { group: "lyon", text: "Lyon, loyer encadré" },
         { group: "villeurbanne", text: "Villeurbanne, loyer encadré" },
         { group: "plain", text: "Sans loyer de référence" },
+    ],
+    "ile-de-france": [
+        { group: "paris", text: "Paris, loyer encadré" },
+        { group: "est-ensemble", text: "Est Ensemble, loyer encadré" },
+        { group: "plaine-commune", text: "Plaine Commune, loyer encadré" },
+        { group: "tinted", text: "Zone tendue" },
+        { group: "plain", text: "Hors zone tendue" },
     ],
 };
 
@@ -59,17 +74,39 @@ export const zoneSentences: Record<FeeZone, string> = {
     other: "Hors zone tendue : le préavis d'un logement vide est de trois mois, et les frais d'agence suivent le plafond le plus bas.",
 };
 
+// The plan of the region weighs more than both others together: it is fetched the first time its tab is opened.
+type Region = Drawing | "loading" | "failed" | null;
+
+// Outside part 1 of the list the notice keeps three months, though part 2 or zone A bis still sets the fees' zone.
+export function zoneSentenceOf(zone: FeeZone, tense: boolean): string
+{
+    if (tense || zone === "other")
+    {
+        return zoneSentences[zone];
+    }
+
+    return `Hors zone tendue pour le préavis : trois mois pour un logement vide, sauf autre motif. Les frais d'agence suivent le plafond de la zone ${zone === "very-tense" ? "très tendue" : "tendue"}.`;
+}
+
 export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
 {
-    const [shown, setShown] = useState<MapName>("grand-paris");
+    const [shown, setShown] = useState<TabName>("grand-paris");
     const [picked, setPicked] = useState<number | null>(null);
-    const drawing = maps[shown];
-    const shape = picked === null ? undefined : drawing.shapes[picked];
+    const [region, setRegion] = useState<Region>(null);
+    const drawing = shown === "ile-de-france" ? (typeof region === "object" && region !== null ? region : undefined) : maps[shown];
+    const shape = picked === null || drawing === undefined ? undefined : drawing.shapes[picked];
 
-    function show(name: MapName)
+    function show(name: TabName)
     {
         setShown(name);
         setPicked(null);
+        if (name === "ile-de-france" && (region === null || region === "failed"))
+        {
+            setRegion("loading");
+            fetch(regionMapFile)
+                .then((response) => (response.ok ? response.json() as Promise<Drawing> : Promise.reject(new Error(String(response.status)))))
+                .then((loaded) => setRegion(loaded), () => setRegion("failed"));
+        }
     }
 
     function pick(event: MouseEvent<SVGSVGElement>)
@@ -84,7 +121,7 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
     return (
         <div className="home-map">
             <div role="tablist" aria-label="Choisir le plan" className="map-tabs">
-                {(Object.keys(tabs) as MapName[]).map((name) => (
+                {(Object.keys(tabs) as TabName[]).map((name) => (
                     <button
                         key={name}
                         type="button"
@@ -99,7 +136,14 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
                 ))}
             </div>
             <div role="tabpanel" id="map-panel" aria-labelledby={`map-tab-${shown}`} className="map-panel">
-                <svg role="img" aria-label={tabs[shown].label} viewBox={`0 0 ${drawing.width} ${drawing.height}`} onClick={pick}>
+                {drawing === undefined && (
+                    <p className="map-wait" aria-live="polite">
+                        {region === "failed"
+                            ? <>Le plan n'a pas pu se charger. <a href="ile-de-france/">Cherchez votre commune par son nom</a>.</>
+                            : "Chargement du plan des 1 266 communes…"}
+                    </p>
+                )}
+                {drawing !== undefined && <svg role="img" aria-label={tabs[shown].label} viewBox={`0 0 ${drawing.width} ${drawing.height}`} onClick={pick}>
                     <defs>
                         <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
                             <rect width="7" height="7" className="hatch-ground" />
@@ -107,7 +151,7 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
                         </pattern>
                     </defs>
                     {drawing.shapes.map((one, index) => (
-                        <path key={index} d={one.d} data-shape={index} className={`shape ${one.group}${index === picked ? " picked" : ""}`}>
+                        <path key={index} d={one.d} data-shape={index} className={`shape ${one.group}${one.tinted === true ? " tinted" : ""}${index === picked ? " picked" : ""}`}>
                             <title>{one.name}</title>
                         </path>
                     ))}
@@ -122,7 +166,7 @@ export function HomeMap({ maps }: { maps: Record<MapName, Drawing> })
                             <path d={drawing.inset.frame} className="frame" />
                         </g>
                     )}
-                </svg>
+                </svg>}
                 <ul className="map-key" aria-label="Légende">
                     {legends[shown].map((item) => <li key={item.group} className={item.group}>{item.text}</li>)}
                 </ul>
@@ -145,8 +189,9 @@ function Card({ shape }: { shape: Shape })
     return (
         <>
             <strong>{shape.name}</strong>
+            {shape.department !== undefined && <span className="department">{departmentNames[shape.department]} ({shape.department})</span>}
             <p>{shape.group === "plain" ? "Pas de loyer de référence dans cette commune. Les six autres vérifications s'appliquent." : cappedText[shape.group]}</p>
-            {shape.zone !== undefined && <p>{zoneSentences[shape.zone]}</p>}
+            {shape.zone !== undefined && <p>{zoneSentenceOf(shape.zone, shape.tense ?? true)}</p>}
             {shape.code !== undefined
                 ? <CommuneChecks code={shape.code} reach={{ capped, tense: shape.tense ?? false }} base="" className="map-actions" lead />
                 : capped && <ul className="map-actions"><li><a href="loyer/" className="map-check">Vérifier le plafond du loyer</a></li></ul>}

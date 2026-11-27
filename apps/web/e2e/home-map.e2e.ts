@@ -61,3 +61,18 @@ test("the plan fits a 320 px phone and a wide screen, and passes the accessibili
     const found = await new AxeBuilder({ page }).exclude("next-route-announcer").analyze();
     expect(found.violations.map((v) => `${v.id}: ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
 });
+
+test("the Île-de-France tab loads the plan of the region, and a touch on Massy opens its checks", async ({ page }) =>
+{
+    await page.goto("/");
+    await page.getByRole("tab", { name: "Île-de-France" }).click();
+    const panel = page.getByRole("tabpanel");
+
+    await expect(panel.locator("path.shape")).toHaveCount(1266);
+    await touch(page, "Massy");
+    await expect(panel.locator(".map-card")).toContainText("Essonne (91)");
+    await expect(panel.getByRole("link", { name: "Vérifier mon préavis" })).toHaveAttribute("href", "preavis/?commune=91377");
+
+    await page.setViewportSize({ width: 320, height: 640 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+});

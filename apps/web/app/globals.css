@@ -1197,9 +1197,13 @@ a:hover
     border-radius: 12px 0 0 12px;
 }
 
-.map-tabs button:last-child
+.map-tabs button + button
 {
     margin-left: -1.5px;
+}
+
+.map-tabs button:last-child
+{
     border-radius: 0 12px 12px 0;
 }
 
@@ -1255,6 +1259,11 @@ a:hover
 .map-panel .plaine-commune
 {
     fill: url(#hatch);
+}
+
+.map-panel .tinted
+{
+    fill: #C9DBEE;
 }
 
 .map-panel .hatch-ground
@@ -1393,6 +1402,12 @@ a:hover
 .map-key .plaine-commune::before
 {
     background: repeating-linear-gradient(45deg, #8FB8E2 0 3px, #E3EEF9 3px 7px);
+}
+
+.map-key .tinted::before
+{
+    border-color: #7F90A6;
+    background: #C9DBEE;
 }
 
 .map-key .plain::before
@@ -1672,4 +1687,17 @@ a:hover
     text-align: left;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.map-wait
+{
+    display: grid;
+    place-items: center;
+    min-height: 260px;
+    margin: 0;
+    padding: 24px;
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    color: var(--muted);
+    text-align: center;
 }

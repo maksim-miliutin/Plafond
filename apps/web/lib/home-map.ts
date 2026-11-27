@@ -1,4 +1,5 @@
 import { outlineOf, type FeeZone, type Quartier } from "@plafond/domain";
+import { latestFeeZone, type Contour, type MetropoleCommune, type RegionalCommune } from "@plafond/import";
 
 type Ring = Quartier["rings"][number];
 type Spot = [number, number];
@@ -16,6 +17,8 @@ export interface Shape
     code?: string;  // the INSEE code of the commune, Paris's or Lyon's for an arrondissement
     zone?: FeeZone;  // what its agency fees follow
     tense?: boolean;  // in part 1 of the list, which the notice and the reletting rent follow
+    department?: string;  // on the plan of the region, where names repeat
+    tinted?: boolean;  // on the plan of the region, a commune without reference rents in part 1 of the list
 }
 
 export interface Label
@@ -255,5 +258,56 @@ export function lyonDrawing({ areas, communes }: LyonInput, tolerance: number): 
                 return { text: area.name.replace(/^Lyon /, "").replace(/ Arrondissement$/, ""), x: Math.round(x), y: Math.round(y), kind: "area" as const };
             }),
         ],
+    };
+}
+
+// The plan of Île-de-France: its 1 266 communes from a lighter outline than the Grand Paris uses, each with the zones and
+// the page a touch leads to. It is drawn at build time into a file the first screen loads only when the tab is opened.
+export function regionDrawing(contours: readonly Contour[], communes: readonly RegionalCommune[], metropole: readonly MetropoleCommune[], tolerance: number): Drawing
+{
+    const [width, height] = [600, 500];
+    const known = new Map(communes.map((commune) => [commune.code, commune]));
+    const territory = new Map(metropole.map((commune) => [commune.code, commune.territory]));
+    const project = projectionOf(contours.flatMap((contour) => contour.rings), width, height, 10);
+    const shapes = contours.map((contour): Shape =>
+    {
+        const commune = known.get(contour.code);
+        if (commune === undefined)
+        {
+            throw new Error(`no zone is known for commune ${contour.code}`);
+        }
+
+        const group = territory.get(contour.code) ?? "plain";
+        const tense = commune.tensePart === 1;
+        const page = group === "paris" ? "paris/" : group === "plain" ? "ailleurs/" : `grand-paris/${group}/`;
+
+        return {
+            name: commune.name,
+            d: pathOf(contour.rings, project, tolerance),
+            kind: group === "plain" ? "plain" : "capped",
+            group,
+            page,
+            code: commune.code,
+            zone: latestFeeZone(commune),
+            tense,
+            department: commune.department,
+            ...(group === "plain" && tense ? { tinted: true } : {}),
+        };
+    });
+    const paris = contours.find((contour) => contour.code === "75056")!;
+    const label = (text: string, lon: number, lat: number): Label =>
+    {
+        const [x, y] = project([lon, lat]);
+        return { text, x: Math.round(x), y: Math.round(y), kind: "region" };
+    };
+
+    return {
+        width,
+        height,
+        shapes,
+        borders: sharedSides(contours, (contour) => contour.code.slice(0, 2), project),
+        outline: "",
+        city: pathOf(paris.rings, project, tolerance),
+        labels: [label("Yvelines", 1.84, 48.8), label("Val-d'Oise", 2.13, 49.12), label("Essonne", 2.22, 48.5), label("Seine-et-Marne", 2.95, 48.62)],
     };
 }
