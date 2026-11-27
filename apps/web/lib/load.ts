@@ -10,6 +10,7 @@ export const tableFiles: Record<City, { rates: string; areas: string }> = {
 };
 
 export const ratesFile = tableFiles.paris.rates;
+export const regionMapFile = "ile-de-france-map.json";
 export const quartiersFile = tableFiles.paris.areas;
 
 export interface Unreachable
