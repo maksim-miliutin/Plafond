@@ -9,7 +9,10 @@ import firstSectors from "../../../db/seed/lyon-sectors-2021.csv?raw";
 import annex from "../../../db/seed/lyon-annex-2026.csv?raw";
 import sectors from "../../../db/seed/lyon-sectors-2026.csv?raw";
 import lyonDecrees from "../../../db/seed/lyon-decrees.json" with { type: "json" };
+import { lyonSectors } from "../src/annex.js";
+import { decreesOf } from "../src/decrees.js";
 import { LyonError, lyonOutlines, lyonRates, lyonTable } from "../src/lyon.js";
+import { lyonSeed, SeedError } from "../src/seed.js";
 
 const decree = { title: "Arrêté préfectoral n° DDT 69-2025-10-23-00004", url: "https://example.org/decree", from: "2025-11-01", until: "2026-11-01", contest: null };
 
@@ -97,9 +100,8 @@ test("two IRIS of one zone that disagree on a rent are a breakage, not a choice"
 
 // Article 3 of the decree of 23 October 2026 applied it from 1 November to 23 November 2026 inclusive; article 1 of the act
 // of 23 November 2026 keeps it to 31 October 2027.
-test("the Lyon decrees follow each other without a gap, the last one ending after 31 October 2027", async () =>
+test("the Lyon decrees follow each other without a gap, the last one ending after 31 October 2027", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
     const decrees = [...decreesOf(lyonDecrees).values()];
 
     expect(decrees.map((decree) => decree.from)).toEqual(["2021-11-01", "2022-11-01", "2023-11-01", "2024-11-01", "2025-11-01", "2026-11-01"]);
@@ -108,9 +110,8 @@ test("the Lyon decrees follow each other without a gap, the last one ending afte
 });
 
 // The decree of 28 September 2022 bears its number in the prefect's hand on its first page; article 3 applies it from 1 November 2022.
-test("every Lyon decree is named by its number, the 2022 one included", async () =>
+test("every Lyon decree is named by its number, the 2022 one included", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
     const decrees = decreesOf(lyonDecrees);
 
     expect(decrees.get(2022)).toMatchObject({ title: "Arrêté préfectoral n° DDT 69-2022-09-28-00002", from: "2022-11-01" });
@@ -119,9 +120,8 @@ test("every Lyon decree is named by its number, the 2022 one included", async ()
 
 // Tribunal administratif de Lyon, 14 octobre 2025, n° 2309987: the decree of 29 September 2023 was annulled for an unreadable map,
 // with no limit in time; the prefecture announced an appeal, so the screen must say the annulment and send the tenant to the ADIL.
-test("the decree of 2023 carries its annulment as the judgment itself states it, so no cap from it is shown without that warning", async () =>
+test("the decree of 2023 carries its annulment as the judgment itself states it, so no cap from it is shown without that warning", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
 
     expect(decreesOf(lyonDecrees).get(2023)?.contest).toEqual({
         outcome: "annulled",
@@ -132,10 +132,8 @@ test("the decree of 2023 carries its annulment as the judgment itself states it,
     });
 });
 
-test("the seed joins each year's table to its decree and draws the outlines from the latest file that has them", async () =>
+test("the seed joins each year's table to its decree and draws the outlines from the latest file that has them", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
-    const { lyonSeed } = await import("../src/seed.js");
     const decrees = decreesOf(lyonDecrees);
     const { rates, outlines } = lyonSeed({ tables: new Map([[2022, early], [2024, geojson], [2025, recent]]), annexes: new Map(), decrees });
     const iris = outlines[0]!.number;
@@ -148,18 +146,14 @@ test("the seed joins each year's table to its decree and draws the outlines from
     expect(yearOn("2024-02-01")).toBeUndefined();
 });
 
-test("a table without its decree is a breakage", async () =>
+test("a table without its decree is a breakage", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
-    const { SeedError, lyonSeed } = await import("../src/seed.js");
 
     expect(() => lyonSeed({ tables: new Map([[2019, recent]]), annexes: new Map(), decrees: decreesOf(lyonDecrees) })).toThrow(SeedError);
 });
 
-test("the seed also says which zone each IRIS falls in, in the latest year, for pages that explain the zones", async () =>
+test("the seed also says which zone each IRIS falls in, in the latest year, for pages that explain the zones", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
-    const { lyonSeed } = await import("../src/seed.js");
     const { zoning } = lyonSeed({ tables: new Map([[2022, early], [2025, recent]]), annexes: new Map(), decrees: decreesOf(lyonDecrees) });
 
     expect(zoning.size).toBe(233);
@@ -167,10 +161,8 @@ test("the seed also says which zone each IRIS falls in, in the latest year, for 
 });
 
 // Read off the maps of the 2026 decree IRIS by IRIS, every sector is the zone the 2025 file gives.
-test("a year read from its decree joins the seed on its own sectors, which become the latest zoning", async () =>
+test("a year read from its decree joins the seed on its own sectors, which become the latest zoning", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
-    const { lyonSeed } = await import("../src/seed.js");
     const seeded = lyonSeed({ tables: new Map([[2025, recent]]), annexes: new Map([[2026, { annex, sectors }]]), decrees: decreesOf(lyonDecrees) });
 
     expect(seeded.rates).toHaveLength(233 * 40 * 2);
@@ -181,10 +173,8 @@ test("a year read from its decree joins the seed on its own sectors, which becom
     expect(moved.zoning.get(692660101)).toBe(5);
 });
 
-test("sectors that leave out an IRIS the outlines draw, or a year given both as a table and as an annex, are a breakage", async () =>
+test("sectors that leave out an IRIS the outlines draw, or a year given both as a table and as an annex, are a breakage", () =>
 {
-    const { decreesOf } = await import("../src/decrees.js");
-    const { SeedError, lyonSeed } = await import("../src/seed.js");
     const decrees = decreesOf(lyonDecrees);
     const short = sectors.trimEnd().split("\n").slice(0, -1).join("\n");
 
@@ -193,9 +183,8 @@ test("sectors that leave out an IRIS the outlines draw, or a year given both as 
 });
 
 // Read off the scanned map of the 2021 decree IRIS by IRIS, every zone is the one the 2022 file gives.
-test("the 2021 decree draws the four zones of the 2022 file", async () =>
+test("the 2021 decree draws the four zones of the 2022 file", () =>
 {
-    const { lyonSectors } = await import("../src/annex.js");
 
     expect(lyonSectors(firstSectors)).toEqual(lyonTable(early).zones);
 });
