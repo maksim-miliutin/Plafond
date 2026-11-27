@@ -37,7 +37,7 @@ test("the first screen draws the Grand Paris and tells what Plafond checks in th
 test("the Lyon tab draws Lyon by arrondissement and leads to the page of the one touched", async ({ page }) =>
 {
     await page.goto("/");
-    const tab = page.getByRole("tab", { name: "Lyon et Villeurbanne" });
+    const tab = page.getByRole("tab", { name: "Lyon", exact: true });
     await tab.click();
 
     await expect(tab).toHaveAttribute("aria-selected", "true");

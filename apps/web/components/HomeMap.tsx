@@ -19,7 +19,7 @@ const tabs: Record<TabName, { title: string; label: string; hint: string }> = {
         hint: "Touchez votre arrondissement ou votre commune sur le plan pour savoir ce que Plafond y vérifie.",
     },
     lyon: {
-        title: "Lyon et Villeurbanne",
+        title: "Lyon",
         label: "Plan de Lyon par arrondissement, de Villeurbanne et des communes voisines",
         hint: "Touchez votre arrondissement, Villeurbanne ou votre commune sur le plan pour savoir ce que Plafond y vérifie.",
     },
@@ -193,7 +193,7 @@ function Card({ shape }: { shape: Shape })
             <p>{shape.group === "plain" ? "Pas de loyer de référence dans cette commune. Les six autres vérifications s'appliquent." : cappedText[shape.group]}</p>
             {shape.zone !== undefined && <p>{zoneSentenceOf(shape.zone, shape.tense ?? true)}</p>}
             {shape.code !== undefined
-                ? <CommuneChecks code={shape.code} reach={{ capped, tense: shape.tense ?? false }} base="" className="map-actions" lead />
+                ? <CommuneChecks code={shape.code} reach={{ capped, tense: shape.tense ?? false }} base="" className="map-actions" lead tag={false} />
                 : capped && <ul className="map-actions"><li><a href="loyer/" className="map-check">Vérifier le plafond du loyer</a></li></ul>}
             <p className="map-links">
                 {shape.group === "plain"

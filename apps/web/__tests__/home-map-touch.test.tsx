@@ -49,7 +49,7 @@ test("a commune without reference rents tells its zone and leads to the six chec
     expect(card(host).querySelector("strong")?.textContent).toBe("Vincennes");
     expect(card(host).textContent).toContain("Pas de loyer de référence dans cette commune.");
     expect(card(host).textContent).toContain("Zone très tendue");
-    expect(card(host).querySelector(".zone-tag")?.textContent).toBe("Zone tendue");
+    expect(card(host).querySelector(".zone-tag")).toBeNull();
     expect(links(host)).toEqual([
         ["preavis/?commune=94080", "Vérifier mon préavis"],
         ["frais-agence/?commune=94080", "Vérifier les frais d'agence"],

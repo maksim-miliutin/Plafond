@@ -10,7 +10,7 @@ test("the map opens on the Grand Paris, and a tab switches it to Lyon", () =>
 {
     expect(page).toMatch(/<div role="tablist" aria-label="Choisir le plan"/);
     expect(page).toMatch(/<button type="button" role="tab" id="map-tab-grand-paris" aria-selected="true" aria-controls="map-panel">Grand Paris<\/button>/);
-    expect(page).toMatch(/<button type="button" role="tab" id="map-tab-lyon" aria-selected="false" aria-controls="map-panel">Lyon et Villeurbanne<\/button>/);
+    expect(page).toMatch(/<button type="button" role="tab" id="map-tab-lyon" aria-selected="false" aria-controls="map-panel">Lyon<\/button>/);
     expect(page).toMatch(/<button type="button" role="tab" id="map-tab-ile-de-france" aria-selected="false" aria-controls="map-panel">Île-de-France<\/button>/);
     expect(page).toMatch(/<div role="tabpanel" id="map-panel" aria-labelledby="map-tab-grand-paris"/);
 });
