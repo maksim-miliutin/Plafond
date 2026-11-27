@@ -128,12 +128,13 @@ test("a Lyon line that breaks the decree's arithmetic, or names a category the L
     expect(() => lyonAnnexRates(parisLabel, zones, lyonDecree)).toThrow(AnnexError);
 });
 
+// A checkout on Windows may end the seed's lines with \r\n: the change below must find the line either way.
 test("an IRIS given twice, or put in a sector the annex does not price, is a breakage", () =>
 {
     const lines = lyonSectorsText.trimEnd().split("\n");
 
     expect(() => lyonSectors([...lines, lines[1]].join("\n"))).toThrow(AnnexError);
-    expect(() => lyonAnnexRates(lyonAnnex, lyonSectors(lyonSectorsText.replace(";Villeurbanne;4\n", ";Villeurbanne;6\n")), lyonDecree)).toThrow(AnnexError);
+    expect(() => lyonAnnexRates(lyonAnnex, lyonSectors(lyonSectorsText.replace(/;Villeurbanne;4(\r?\n)/, ";Villeurbanne;6$1")), lyonDecree)).toThrow(AnnexError);
 });
 
 const firstDecree: Decree = {
