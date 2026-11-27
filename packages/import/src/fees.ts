@@ -35,8 +35,8 @@ export function feeCapsOf(source: unknown): FeeCaps[]
 function capsOf(fields: Fields, where: string): FeeCaps
 {
     const from = day(fields, "from", where);
-    const until = day(fields, "until", where);
-    if (until <= from)
+    const until = fields["until"] === null ? null : day(fields, "until", where);
+    if (until !== null && until <= from)
     {
         throw new FeeCapsError(`${where}: it ends on ${until}, no later than it starts`);
     }

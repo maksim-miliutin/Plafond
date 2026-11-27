@@ -152,7 +152,7 @@ test("the agency fees guide shows every row of caps from the seed, with its date
     expect(fees.check.href).toBe("frais-agence/");
     expect(page.match(/<table/g)).toHaveLength(2);
     expect(page).toContain("Baux signés du 15 septembre 2014 au 31 décembre 2025");
-    expect(page).toContain("Baux signés du 1er janvier 2026 au 31 décembre 2026");
+    expect(page).toContain("Baux signés à partir du 1er janvier 2026");
     for (const sum of ["12,10", "10,09", "8,07", "3,03", "12,00", "10,00", "8,00", "3,00"])
     {
         expect(page, sum).toContain(`${sum}\u00A0€`);

@@ -1,8 +1,8 @@
 {
     "tense": {
-        "from": "2025-12-24",
-        "title": "Décret n° 2025-1267 du 22 décembre 2025, qui modifie la liste du décret n° 2013-392 du 10 mai 2013",
-        "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053143539/"
+        "from": "2027-01-01",
+        "title": "Décret n° 2026-831 du 25 août 2026 relatif au champ d'application de la taxe sur la vacance des locaux d'habitation prévue par l'article 1406 bis du code général des impôts",
+        "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054761859"
     },
     "veryTense": {
         "from": "2026-06-26",
@@ -36,6 +36,13 @@
             "until": "2025-12-24",
             "title": "Annexe du décret n° 2013-392, dans sa version du 27 août 2023 (décret n° 2023-822)",
             "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000048000600"
+        },
+        {
+            "column": "tlv_2025_part",
+            "from": "2025-12-24",
+            "until": "2027-01-01",
+            "title": "Décret n° 2025-1267 du 22 décembre 2025, qui modifie la liste du décret n° 2013-392 du 10 mai 2013",
+            "url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053143539/"
         }
     ],
     "veryTenseHistory": [

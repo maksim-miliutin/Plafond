@@ -33,6 +33,16 @@ test("Barbizon is tense for the fees only, Bailly very tense for the fees only, 
     expect([fee("77186"), tense("77186"), fee("77379"), tense("77379")]).toEqual(["other", false, "other", false]);
 });
 
+test("the new TLV decree keeps both parts of the list on 1 January 2027", () =>
+{
+    for (const day of ["2026-12-31", "2027-01-01"])
+    {
+        expect([fee("91377", day), tense("91377", day)]).toEqual(["tense", true]);
+        expect([fee("77022", day), tense("77022", day)]).toEqual(["tense", false]);
+        expect([fee("77186", day), tense("77186", day)]).toEqual(["other", false]);
+    }
+});
+
 // Alfortville joined zone A bis on 26 June 2026; the day before, it was only on the list, which Plafond holds from 24 December 2025.
 test("Alfortville's fees are tense for a lease of 25 June 2026 and very tense from the next day", () =>
 {

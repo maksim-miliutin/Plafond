@@ -11,7 +11,11 @@ export function FeeCapsTable({ caps }: { caps: readonly FeeCaps[] })
             {[...caps].reverse().map((row) => (
                 <div key={row.from} className="grid-wrap">
                     <table className="caps">
-                        <caption>Baux signés du {frenchDay(row.from)} au {frenchDay(dayBefore(row.until))}</caption>
+                        <caption>
+                            {row.until === null
+                                ? `Baux signés à partir du ${frenchDay(row.from)}`
+                                : `Baux signés du ${frenchDay(row.from)} au ${frenchDay(dayBefore(row.until))}`}
+                        </caption>
                         <thead>
                             <tr>
                                 <th scope="col">Logement situé</th>

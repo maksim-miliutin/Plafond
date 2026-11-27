@@ -20,7 +20,7 @@ test("the packed list comes back as it went, Saint-Denis with Pierrefitte, in a 
     expect(region).toHaveLength(1266);
     expect(region.find((commune) => commune.code === "93066")).toMatchObject({ name: "Saint-Denis", department: "93", tensePart: 1, abcZone: "Abis", grandParis: true, former: ["Pierrefitte-sur-Seine"] });
     expect(region.map(({ former, ...commune }) => commune)).toEqual(regionCommunes);
-    expect(region.find((commune) => commune.code === "78551")).toMatchObject({ pastTense: [1, 1, 1], pastVeryTense: [null, null, null, null, null, null] });
+    expect(region.find((commune) => commune.code === "78551")).toMatchObject({ pastTense: [1, 1, 1, 1], pastVeryTense: [null, null, null, null, null, null] });
     expect(packed.length).toBeLessThan(JSON.stringify(regionCommunes).length / 2);
 });
 

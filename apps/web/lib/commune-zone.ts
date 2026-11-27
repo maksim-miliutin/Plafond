@@ -18,8 +18,8 @@ export function communeFrom<Commune extends RegionalCommune>(search: string, com
 
 const covers = (list: { from: Day; until: Day }, day: Day) => list.from <= day && day < list.until;
 
-// The part of the list of décret n° 2013-392 the commune was in on a day: the current version from 24 December 2025, the
-// older ones back to 13 May 2013, which had a single list that reads as part 1. Null before, or where Plafond lacks it.
+// The part of the list the commune was in on a day: décret n° 2026-831 from 1 January 2027, older versions of décret
+// n° 2013-392 back to 13 May 2013. A single list reads as part 1. Null before, or where Plafond lacks it.
 function tensePartOn(commune: RegionalCommune, day: Day, lists: ZoneLists): TensePart | null
 {
     if (day >= lists.tense.from)
@@ -51,8 +51,8 @@ function veryTenseOn(commune: RegionalCommune, day: Day, lists: ZoneLists): bool
     return index < 0 ? null : commune.pastVeryTense?.[index] ?? null;
 }
 
-// Décret n° 2014-890 caps agency fees by the zone on the day the lease is signed: zone A bis first, then either part of the
-// list of décret n° 2013-392. When either is unknown for that day, the tenant says.
+// Décret n° 2014-890 caps agency fees by the zone on the day the lease is signed: zone A bis first, then either part of
+// the list in force. When either is unknown for that day, the tenant says.
 export function feeZoneOn(commune: RegionalCommune, day: Day, lists: ZoneLists): FeeZone | null
 {
     const veryTense = veryTenseOn(commune, day, lists);

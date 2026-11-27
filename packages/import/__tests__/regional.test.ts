@@ -61,21 +61,26 @@ test("a table that is not the one expected is refused", () =>
 const lists = zoneListsOf(JSON.parse(sources));
 const history = zoneHistoryOf(tenseTable, veryTenseTable, lists.tenseHistory.map((list) => list.column), lists.veryTenseHistory.map((list) => list.column));
 
-// The annex of décret n° 2013-392 in its versions of 2013, 2015 and 2023, and annex I of the arrêté of 1 August 2014 in six
+// The annex of décret n° 2013-392 in its versions of 2013, 2015, 2023 and 2025, and annex I of the arrêté of 1 August 2014 in six
 // versions to 6 September 2025, as LEGI dates them; the communes are named by their codes of 2025.
 test("the history holds every commune of Île-de-France and around Lyon, Saint-Germain-en-Laye and Saint-Denis mixed in zone A bis", () =>
 {
     expect(history.size).toBe(1324);
     expect(region.every((row) => history.has(row.code))).toBe(true);
-    expect(history.get("91377")).toEqual({ tense: [1, 1, 1], veryTense: [false, false, false, false, false, false] });
+    expect(history.get("91377")).toEqual({ tense: [1, 1, 1, 1], veryTense: [false, false, false, false, false, false] });
     expect(history.get("94002")?.veryTense).toEqual([false, false, false, false, false, true]);
-    expect(history.get("77022")?.tense).toEqual([0, 0, 2]);
+    expect(history.get("77022")?.tense).toEqual([0, 0, 2, 2]);
     expect([...history].filter(([, past]) => past.veryTense.includes(null)).map(([code]) => code).sort()).toEqual(["78551", "93066"]);
 });
 
 test("the versions follow each other up to the current ones, and a history table with an unknown value is refused", () =>
 {
-    expect(lists.tenseHistory.map((list) => [list.from, list.until])).toEqual([["2013-05-13", "2015-10-16"], ["2015-10-16", "2023-08-27"], ["2023-08-27", "2025-12-24"]]);
+    expect(lists.tenseHistory.map((list) => [list.from, list.until])).toEqual([
+        ["2013-05-13", "2015-10-16"],
+        ["2015-10-16", "2023-08-27"],
+        ["2023-08-27", "2025-12-24"],
+        ["2025-12-24", "2027-01-01"],
+    ]);
     expect(lists.veryTenseHistory.at(-1)).toMatchObject({ from: "2024-07-12", until: "2025-09-07", column: "a_bis_2024" });
     expect(() => zoneHistoryOf("code;tlv_2013\n75056;3\n", "code;a_bis_2014\n75056;1\n", ["tlv_2013"], ["a_bis_2014"])).toThrow(RegionalError);
     expect(() => zoneHistoryOf("code;tlv_2013\n75056;1\n", "code;a_bis_2014\n75056;1\n", ["tlv_2015"], ["a_bis_2014"])).toThrow("lacks the columns");
