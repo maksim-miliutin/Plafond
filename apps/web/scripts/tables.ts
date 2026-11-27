@@ -25,5 +25,4 @@ const read = (name: string) => readFileSync(new URL(name, seed), "utf8");
 const region = regionalCommunesOf(read("ile-de-france-zones.csv"));
 const outlines = contoursOf(JSON.parse(read("ile-de-france-communes.geojson")), region.map((commune) => commune.code));
 const metropole = metropoleOf(read("grand-paris-communes.csv"));
-const finer = contoursOf(JSON.parse(read("grand-paris-contours.geojson")), metropole.map((commune) => commune.code));
-writeFileSync(new URL(regionMapFile, site), JSON.stringify(regionDrawing(outlines, region, metropole, 0.8, finer)));
+writeFileSync(new URL(regionMapFile, site), JSON.stringify(regionDrawing(outlines, region, metropole)));

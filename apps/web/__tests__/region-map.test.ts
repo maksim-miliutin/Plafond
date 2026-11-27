@@ -8,11 +8,9 @@ import { regionDrawing } from "../lib/home-map";
 import { metropole, regionCommunes } from "./zone-seeds";
 
 import outlines from "../../../db/seed/ile-de-france-communes.geojson?raw";
-import finerOutlines from "../../../db/seed/grand-paris-contours.geojson?raw";
 
 const contours = contoursOf(JSON.parse(outlines), regionCommunes.map((commune) => commune.code));
-const finer = contoursOf(JSON.parse(finerOutlines), metropole.map((commune) => commune.code));
-const drawing = regionDrawing(contours, regionCommunes, metropole, 0.8, finer);
+const drawing = regionDrawing(contours, regionCommunes, metropole);
 const find = (code: string) => drawing.shapes.find((shape) => shape.code === code);
 
 test("the plan of the region draws each of its 1 266 communes once, from the outlines delivered with the zones", () =>
@@ -51,14 +49,11 @@ test("the card says the notice keeps three months outside part 1, whatever zone 
     expect(zoneSentenceOf("tense", true)).toMatch(/^Zone tendue : le préavis d'un logement vide est d'un mois/);
 });
 
-// The Grand Paris keeps the finer outlines of its own plan, drawn after the rest, so that zooming on it stays sharp.
-test("the 130 communes of the Grand Paris come last, from the finer outlines", () =>
+test("the map keeps all outline points, so neighbours keep their shared borders", () =>
 {
-    const points = (d: string) => (d.match(/[-\d.]+,[-\d.]+/g) ?? []).length;
-    const lighter = regionDrawing(contours, regionCommunes, metropole, 0.8);
-    const vincennes = (plan: typeof drawing) => points(plan.shapes.find((shape) => shape.code === "94080")!.d);
-
-    expect(drawing.shapes.slice(-130).every((shape) => regionCommunes.find((commune) => commune.code === shape.code)?.grandParis)).toBe(true);
-    expect(vincennes(drawing)).toBeGreaterThan(vincennes(lighter));
-    expect(drawing.borders).toBe(lighter.borders);
+    const pointCounts = new Map(drawing.shapes.map(({ code, d }) => [code, d.match(/[-\d.]+,[-\d.]+/g)?.length ?? 0]));
+    for (const contour of contours)
+    {
+        expect(pointCounts.get(contour.code), contour.code).toBe(contour.rings.reduce((sum, ring) => sum + ring.length, 0));
+    }
 });
