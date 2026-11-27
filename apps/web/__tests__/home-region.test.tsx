@@ -23,11 +23,11 @@ test("under the map, the home says every commune of Île-de-France is there and 
     expect(field).toContain('type="search"');
 });
 
-test("each department leads to its communes, with how many it holds", () =>
+// Paris, one commune, has its own door to the city: a second link named Paris would only confuse.
+test("each department but Paris leads to its communes, with how many it holds", () =>
 {
     const links = [...page.matchAll(/<a href="ile-de-france\/\?departement=(\d\d)"><strong>([^<]+)<\/strong><span>([^<]+)<\/span>/g)].map((found) => found.slice(1));
 
-    expect(links).toHaveLength(8);
+    expect(links.map((link) => link[0])).toEqual(["77", "78", "91", "92", "93", "94", "95"]);
     expect(links.find((link) => link[0] === "77")).toEqual(["77", "Seine-et-Marne (77)", "507 communes"]);
-    expect(links.find((link) => link[0] === "75")).toEqual(["75", "Paris (75)", "1 commune"]);
 });
