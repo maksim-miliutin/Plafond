@@ -38,6 +38,19 @@ test("a shared link shows the large card, with the page's own words and its cano
     expect(described.twitter).toMatchObject({ card: "summary_large_image" });
 });
 
+// LinkedIn's Post Inspector left Author and Publish date empty for the notice check.
+test("the notice check names its author and the day it first went live, and the other pages stay plain websites", () =>
+{
+    expect(pageMetadata("preavis/")).toMatchObject({
+        alternates: { canonical: `${siteUrl}/preavis/` },
+        authors: [{ name: "Maksim Miliutin" }],
+        openGraph: { type: "article", publishedTime: "2026-11-10T18:02:32Z", url: `${siteUrl}/preavis/`, images: [{ url: `${siteUrl}/og.png` }] },
+        twitter: { card: "summary_large_image" },
+    });
+    expect(pageMetadata("depot/").authors).toBeUndefined();
+    expect(pageMetadata("depot/").openGraph).toMatchObject({ type: "website" });
+});
+
 test("each page declares the words the table holds for it", () =>
 {
     const declared = { "": home, "loyer/": rent, "dpe/": energy, "depot/": deposit, "charges/": charges, "preavis/": leaving, "frais-agence/": agency, "revision/": raise, "relocation/": relet, "ile-de-france/": region, "mentions/": notice, "ailleurs/": elsewhere, "grand-paris/": metropole, "grand-paris/est-ensemble/": east, "grand-paris/plaine-commune/": north };

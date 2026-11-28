@@ -10,7 +10,15 @@ export interface Page
     path: string;
     title: string;
     description: string;
+    // A page shared on its own carries its author and the moment it first went live, which link previews show.
+    published?: string;
 }
+
+export const author = {
+    name: "Maksim Miliutin",
+    github: "https://github.com/maksim-miliutin",
+    linkedin: "https://www.linkedin.com/in/miliutin-maksim/",
+};
 
 export class SiteError extends Error
 {
@@ -86,6 +94,8 @@ export const pages: readonly Page[] = [
         path: "preavis/",
         title: "Calculer la fin de mon préavis de départ | Plafond",
         description: "Calculez quand finit votre préavis, un ou trois mois selon le logement et votre situation, le loyer du dernier mois, et préparez la lettre de congé.",
+        // The GitHub Pages deploy of 861c577, the first to serve this page, finished then; later deploys keep the date.
+        published: "2026-11-10T18:02:32Z",
     },
     {
         path: "frais-agence/",
@@ -170,11 +180,14 @@ function described(page: Page): Metadata
     const url = `${siteUrl}/${page.path}`;
     const image = { url: `${siteUrl}/og.png`, width: 1200, height: 630, alt: "Plafond\u00A0: vérifiez vos droits de locataire" };
 
+    const shared = { locale: "fr_FR", siteName: "Plafond", url, title: page.title, description: page.description, images: [image] };
+
     return {
         title: page.title,
         description: page.description,
         alternates: { canonical: url },
-        openGraph: { type: "website", locale: "fr_FR", siteName: "Plafond", url, title: page.title, description: page.description, images: [image] },
+        ...(page.published === undefined ? {} : { authors: [{ name: author.name }] }),
+        openGraph: page.published === undefined ? { type: "website", ...shared } : { type: "article", publishedTime: page.published, ...shared },
         twitter: { card: "summary_large_image", title: page.title, description: page.description, images: [image.url] },
     };
 }

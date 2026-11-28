@@ -65,3 +65,12 @@ test("opened from a commune, the notice form asks for the lease's date, then ans
 
     await expect(page.locator('input[name="reason"]').first()).toBeVisible();
 });
+
+test("the notice check tells a link preview who wrote it and when it first went live, once each", async ({ page }) =>
+{
+    await page.goto("/preavis/");
+
+    await expect(page.locator('meta[name="author"]')).toHaveAttribute("content", "Maksim Miliutin");
+    await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
+    await expect(page.locator('meta[property="article:published_time"]')).toHaveAttribute("content", "2026-11-10T18:02:32Z");
+});

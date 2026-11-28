@@ -1,11 +1,7 @@
+import { author } from "../lib/site";
+
 // The footer sits under every page, so its link to the legal notice starts from the root of the site.
 const siteRoot = process.env.NEXT_PUBLIC_SITE_ROOT ?? "";
-
-export const author = {
-    name: "Maksim Miliutin",
-    github: "https://github.com/maksim-miliutin",
-    linkedin: "https://www.linkedin.com/in/miliutin-maksim/",
-};
 
 export function SiteFooter()
 {
