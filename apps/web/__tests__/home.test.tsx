@@ -5,19 +5,17 @@ import { CheckList } from "../components/Checks";
 import { Home } from "../components/Home";
 import { homeMaps } from "./fixtures";
 
-const page = renderToStaticMarkup(<Home shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} maps={homeMaps} />);
-const doors = page.match(/<a[^>]*class="check"[^>]*>.*?<\/a>/gs) ?? [];
+const page = renderToStaticMarkup(<Home maps={homeMaps} />);
 
-test("the first screen opens on the two cities as its doors, as links relative to the page", () =>
+test("beside the map, one plain line reaches both city pages and the rest of France, with no picture doors", () =>
 {
-    expect(doors).toHaveLength(2);
-    expect(doors[0]).toMatch(/href="paris\/"/);
-    expect(doors[0]).toContain("<strong>Paris</strong>");
-    expect(doors[0]).toContain("Les 20 arrondissements. Le plan de la zone et les sept vérifications.");
-    expect(doors[0]).toMatch(/<svg[^>]*aria-hidden="true".*d="M1,1Z"/s);
-    expect(doors[1]).toMatch(/href="lyon\/"/);
-    expect(doors[1]).toContain("<strong>Lyon et Villeurbanne</strong>");
-    expect(doors[1]).toMatch(/<svg[^>]*aria-hidden="true".*d="M2,2Z"/s);
+    const line = /<nav class="elsewhere" aria-label="Villes">.*?<\/nav>/s.exec(page)?.[0] ?? "";
+    const links = [...line.matchAll(/<a href="([^"]+)">([^<]+)<\/a>/g)].map(([, href, name]) => [href, name]);
+
+    expect(line).toContain("Sans passer par la carte");
+    expect(links).toEqual([["paris/", "Paris"], ["lyon/", "Lyon et Villeurbanne"], ["ailleurs/", "une autre ville en\u00A0France"]]);
+    expect(page).not.toContain('class="check"');
+    expect(page).not.toContain('href="grand-paris/"');
 });
 
 test("the first screen asks where the home is and leaves the guides to the city pages", () =>
@@ -61,12 +59,6 @@ test("the welcome promises a letter only when the case calls for one, to the lan
 
     expect(text).toContain("Quand votre cas le justifie, Plafond prépare la lettre au propriétaire ou à l'agence.");
     expect(text).not.toContain("Chacune se termine par une lettre");
-});
-
-test("under the two cities, a calm link leads the tenants of every other town to the checks that hold everywhere", () =>
-{
-    expect(page).toMatch(/<a href="ailleurs\/">Autre ville en France<\/a>/);
-    expect(page).toMatch(/<a href="grand-paris\/">Autre commune du Grand Paris<\/a>/);
 });
 
 // On a phone the list of checks broke two questions before their question mark, which then stood alone on a line.

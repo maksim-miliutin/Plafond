@@ -10,8 +10,8 @@ test.beforeEach(async ({ page }) =>
 
 test("a tenant of the Grand Paris finds a commune by a name typed without accents and learns what Plafond checks there", async ({ page }) =>
 {
-    await page.goto("/");
-    await page.getByRole("link", { name: "Autre commune du Grand Paris" }).click();
+    await page.goto("/ile-de-france/");
+    await page.getByRole("link", { name: "Le Grand Paris commune par commune" }).click();
     await expect.poll(() => new URL(page.url()).pathname).toBe("/grand-paris/");
     await expect(page.locator("#commune-count")).toHaveText("130 communes");
 

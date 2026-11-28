@@ -15,7 +15,7 @@ test("a tenant from another town reaches each check that holds everywhere in two
     for (const check of everywhere)
     {
         await page.goto("/");
-        await page.getByRole("link", { name: "Autre ville en France" }).click();
+        await page.getByRole("link", { name: "une autre ville en France" }).click();
         await expect(page.getByRole("link", { name: /Mon loyer dépasse/ })).toHaveCount(0);
         await page.getByRole("link", { name: check.question }).click();
         await expect.poll(() => new URL(page.url()).pathname, check.path).toBe(check.path);

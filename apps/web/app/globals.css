@@ -1117,14 +1117,6 @@ a:hover
     color: var(--blue);
 }
 
-.cities .drawing svg path
-{
-    fill: var(--sky);
-    stroke: var(--blue);
-    stroke-width: 1.2;
-    stroke-linejoin: round;
-}
-
 
 .site-footer
 {
@@ -1491,24 +1483,13 @@ a:hover
         grid-column: 2;
     }
 
-    .screen.home .department-links
-    {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .screen.home .region-ask form
-    {
-        max-width: 560px;
-    }
-
     .screen.home > .home-map
     {
         grid-column: 1;
-        grid-row: 1 / span 7;
+        grid-row: 1 / span 5;
     }
 
     .screen.home > .findings,
-    .screen.home > .region-ask,
     .screen.home > .grow,
     .screen.home > .fine
     {
