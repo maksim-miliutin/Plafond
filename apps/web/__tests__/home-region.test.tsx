@@ -6,7 +6,7 @@ import { departmentCounts } from "../lib/region";
 import { homeMaps } from "./fixtures";
 import { regionList } from "./zone-seeds";
 
-const page = renderToStaticMarkup(<Home shapes={{ paris: "M1,1Z", lyon: "M2,2Z" }} maps={homeMaps} departments={departmentCounts(regionList)} />)
+const page = renderToStaticMarkup(<Home maps={homeMaps} departments={departmentCounts(regionList)} />)
     .replaceAll("&#x27;", "'");
 
 test("under the map, the home says every commune of Île-de-France is there and searches it by name", () =>

@@ -146,7 +146,7 @@ test("the Lyon page draws Lyon and Villeurbanne apart and leads to each commune"
     await expect(page).toHaveURL(/\/lyon\/villeurbanne\/$/);
 });
 
-test("the first screen offers the two cities and fetches nothing from another site", async ({ page, baseURL }) =>
+test("the first screen links the two cities and the rest of France, and fetches nothing from another site", async ({ page, baseURL }) =>
 {
     const elsewhere: string[] = [];
     page.on("request", (request) =>
@@ -159,7 +159,7 @@ test("the first screen offers the two cities and fetches nothing from another si
     await page.setViewportSize({ width: 320, height: 640 });
     await page.goto("/");
 
-    await expect(page.getByRole("navigation", { name: "Villes" }).getByRole("link")).toHaveCount(2);
+    await expect(page.getByRole("navigation", { name: "Villes" }).getByRole("link")).toHaveCount(3);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     await page.waitForLoadState("networkidle");
     expect(elsewhere).toEqual([]);

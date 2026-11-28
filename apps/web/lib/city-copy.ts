@@ -11,7 +11,6 @@ export interface CityCopy
     linksTitle: string;
     otherGuide: string;
     neighbours: string;
-    door: string;
 }
 
 export const territories = {
@@ -32,7 +31,6 @@ export const cityCopy: Record<MappedCity, CityCopy> = {
         linksTitle: "Les loyers de référence par arrondissement",
         otherGuide: "encadrement-des-loyers-lyon",
         neighbours: "Est Ensemble et Plaine Commune, à l'est et au nord de Paris, ont leurs propres loyers de référence, que Plafond vérifie aussi.",
-        door: "Les 20 arrondissements. Le plan de la zone et les sept vérifications.",
     },
     lyon: {
         name: "Lyon et Villeurbanne",
@@ -42,6 +40,5 @@ export const cityCopy: Record<MappedCity, CityCopy> = {
         linksTitle: "Les loyers de référence par commune",
         otherGuide: "encadrement-des-loyers-paris",
         neighbours: "Dans la Métropole de Lyon, seules Lyon et Villeurbanne ont des loyers de référence.",
-        door: "Les 9 arrondissements de Lyon et Villeurbanne. Le plan de la zone et les sept vérifications.",
     },
 };
